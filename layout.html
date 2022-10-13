@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="./js/vue.js"></script>
+    <script src="https://kit.fontawesome.com/8704175fcb.js" crossorigin="anonymous"></script>
+    <title>ALM</title>
+    <style>
+        :root{
+            --main: #67FF64;
+        }
+        @font-face {
+            font-family: en;
+            src: url(./fonts/Mellati.ttf);
+        }
+        @font-face {
+            font-family: fa;
+            src: url(./fonts/Sahra.ttf);
+        }
+        body, html, #el{
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+
+        }
+        body{
+            background-color: #1B222B;
+        }
+        a{
+            font-family: yekan;
+            user-select: none;
+        }
+        .main-glowing-text{
+            color: var(--main);
+            text-shadow: 0 0 20px var(--main);
+            transition: 0.4s color ease-in-out, 0.4s text-shadow ease-in-out;
+        }
+        .main-glowing-box{
+            background-color: var(--main);
+            fill: var(--main);
+            filter: drop-shadow(0 0 7px var(--main));
+            box-shadow: 0 0 7px 0 var(--main);
+            transition: 0.4s background-color ease-in-out, 0.4s box-shadow ease-in-out,0.4s fill ease-in-out,0.4s filter ease-in-out;
+        }
+        .float-language-bar{
+            position:fixed;
+            left: 37px;
+            top: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .language{
+            font-size: 30px;
+            cursor: pointer;
+            line-height: 35px;
+        }
+        .disabled-language{
+            color: #5E5E5E;
+            text-shadow: none;
+        }
+        .selected-color{
+            width: 25px;
+        }
+        .disabled-color{
+            width: 10px;
+        }
+        .color{
+            transition: 0.3s width ease-in-out;
+            cursor: pointer;
+            height:10px;
+            border-radius: 5px;
+        }
+        @keyframes showText{
+            0%{
+                opacity: 0;
+            }
+            100%{
+                opacity: 100%;
+            }
+        }
+        .menu-line{
+            width: 30px;
+            height: 3px;
+            border-radius: 5px;
+            margin: 3px;
+            opacity: 1;
+            animation: 0.6s x-rotator ease-in-out;
+            transition: 0.4s background-color ease-in-out, 0.4s box-shadow ease-in-out;
+        }
+        .float-menu-bar{
+            position:fixed;
+            right: 37px;
+            top: 30px;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .menu-line-rotated{
+            position: absolute;
+            transition: 0.8s transform linear;
+        }
+        .menu-line-rotated-1{
+            transform: rotate(45deg);
+            animation: 0.4s rotator ease-in-out;
+        }
+        .menu-line-rotated-2{
+            opacity: 0;
+            transition: 0.3s opacity ease-in-out;
+        }
+        .menu-line-rotated-3{
+            transform: rotate(-45deg);
+            animation: 0.4s rotator ease-in-out;
+        }
+        @keyframes rotator {
+            0%{
+                opacity: 1;
+                margin: 3px;
+            }
+            30%{
+                margin: 0;
+            }
+            50%{
+                opacity: 0;
+            }
+            100%{
+                opacity: 1;
+            }
+        }
+        @keyframes x-rotator {
+            0%{
+                margin: 0;
+                opacity: 0;
+            }
+            100%{
+                margin: 3;
+                opacity: 1;
+            }
+        }
+        .hover-blinker{
+            
+        }
+        .hover-blinker:hover{
+            animation: 1s hover-blinker step-end;
+        }
+        @keyframes hover-blinker {
+            0%{
+                color: var(--main);
+                text-shadow: 0 0 20px var(--main);
+            }
+            10%{
+                color: rgba(0,0,0,0);
+                text-shadow: 0 0 20px rgba(0,0,0,0.4);
+            }
+            20%{
+                color: var(--main);
+                text-shadow: 0 0 20px var(--main);
+            }
+            30%{
+                color: rgba(0,0,0,0);
+                text-shadow: 0 0 20px rgba(0,0,0,0.4);
+            }
+            45%{
+                color: var(--main);
+                text-shadow: 0 0 20px var(--main);
+            }
+            70%{
+                color: rgba(0,0,0,0);
+                text-shadow: 0 0 20px rgba(0,0,0,0.4);
+            }
+            100%{
+                color: var(--main);
+                text-shadow: 0 0 20px var(--main);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="el">
+        <div class="float-language-bar" >
+            <a class="language" :class="fa" @click='change_default_language("fa")'>FA</a>
+            <a class="language" :class="en" @click='change_default_language("en")'>EN</a>
+        </div>
+        <div class="float-menu-bar">
+            <div style="display: flex; justify-content:center; align-items:center; flex-direction: column; " @click="switch_menu_bar">
+                <div style="display: flex; justify-content: center; align-items: center; flex-direction: column; position: relative; width: 100%; height: 100%;cursor: pointer;">
+                    <div class="menu-line main-glowing-box" :class="menu_line_1"></div>
+                    <div class="menu-line main-glowing-box" :class="menu_line_2" ></div>
+                    <div class="menu-line main-glowing-box" :class="menu_line_3"></div>
+                </div>
+            </div>
+        </div>
+        <div style="height: 75%; width:100%;">
+        </div>
+        <div style="height: 25%; width:100%; display: flex; justify-content: center; flex-direction: column; align-items: center;">
+            <p style="font-size: 40px;  " class="main-glowing-text name-font hover-blinker">{{this.name}}</p>
+            <div style="display: flex; justify-content:space-between; align-items:center; flex-direction:row; width:15%; overflow: hidden;">
+                <div style="background-color:#ffffff;" class="color" :class="color_ffffff" @click='change_color("#ffffff")'></div>
+                <div style="background-color:#f4ff00;" class="color" :class="color_f4ff00" @click='change_color("#f4ff00")'></div>
+                <div style="background-color:#67ff64;" class="color" :class="color_67ff64" @click='change_color("#67ff64")'></div>
+                <div style="background-color:#00ffff;" class="color" :class="color_00ffff" @click='change_color("#00ffff")'></div>
+                <div style="background-color:#ff00fc;" class="color" :class="color_ff00fc" @click='change_color("#ff00fc")'></div>
+                <div style="background-color:#ff0040;" class="color" :class="color_ff0040" @click='change_color("#ff0040")'></div>
+            </div>    
+        </div>
+        <div style="position: fixed;
+        top: 12.5%;
+        width: 100%;
+        height: 200px;
+        z-index: -2000;">
+            <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 -20 1128.05 440">
+                <path class="main-glowing-box" d="M1.8,285.11c62.57-24.47,126,17.3,183.63,37.26,28.77,10,58.59,18.34,88.81,22.41,25,3.36,51.05,3.73,75.46-3.3,22.72-6.53,44.59-20.12,56.07-41.36,10.15-18.8,12.25-44.33-4.89-59.88-15.76-14.3-40.07-13-58.22-4.33-21.73,10.34-36.28,32.94-40.57,56.18-9.36,50.68,32.31,96.87,83.19,95.57,60.94-1.56,101.22-53.48,135.46-97.24,40.12-51.28,78.89-104.22,123.08-152.12,39.24-42.54,84.11-79,136.69-103.78,49.14-23.13,104.21-36,158.63-30.25,59.1,6.24,109.65,36.55,153.78,74.83,11.15,9.68,21.92,19.77,32.55,30,1.39,1.34,3.52-.78,2.12-2.12-39.72-38.25-82.93-75.48-135.76-94C944.38-3.61,892.76-3.41,844.27,8.54,794,20.93,746.86,45.25,705.85,76.61c-46.66,35.68-84.68,81.21-120.94,127-19.94,25.21-39.66,50.61-59.48,75.94C507.6,302.38,490.26,326,469,345.81s-47.18,35.36-76.42,38.38c-26.93,2.77-53.13-7-70.64-27.83A77.5,77.5,0,0,1,307.43,283c7.61-24.26,26.65-44.68,52.15-49.56,11.57-2.21,24.29-1.16,34.41,5.28,11,7,16.77,19.22,16.75,32,0,26.09-18.86,47.72-40.85,59.4-47.84,25.41-107.95,12.12-157-2.21-29.63-8.66-57.83-20.54-86.37-32.15C99.81,285,72,275.16,42.88,274.52A108.15,108.15,0,0,0,1,282.22c-1.78.69-1,3.6.79,2.89Z" />
+            </svg>
+        </div>
+    </div>
+    <script>
+        new Vue({
+        el: "#el",
+        data:{
+            fa: "",
+            en: "",
+            default_language: "",
+            name: "",
+            color_ffffff: "",
+            color_f4ff00: "",
+            color_67ff64: "",
+            color_00ffff: "",
+            color_ff00fc: "",
+            color_ff0040: "",
+            menu_line_1: "",
+            menu_line_2: "",
+            menu_line_3: "",
+            menu_status: 0,
+        },
+        methods:{
+            change_default_language: function(lang){
+                this.fa = (lang == "fa") ? "main-glowing-text" : "disabled-language"
+                this.en = (lang == "en") ? "main-glowing-text" : "disabled-language"
+                
+                font = document.querySelector(".name-font")
+                font.style.setProperty("font-family", lang)
+                if(lang == "fa"){
+                    this.name = "علیرضا لطفی مقدم"
+                }
+                else if(lang == "en"){
+                    this.name = "Alireza Lotfi Moghaddam"
+                }
+                
+
+                this.set_cookie("lang", lang)
+            },
+            sleep: function(delay){
+                var start = new Date().getTime();
+                while (new Date().getTime() < start + delay);
+            },
+            set_cookie: function(key, value){
+                document.cookie = key + "=" + value
+                return 1
+            },
+            get_cookie: function(key){
+                let cookies = document.cookie.replace(" ", "")
+                console.log(cookies)
+                let value = ""
+                let cookiesList = cookies.split(";")
+                cookiesList.forEach(element => {
+                    let parts = element.split("=")
+                    if(parts[0] == key){
+                        value = parts[1]
+                    }
+                });
+                
+                if(key == "lang"){
+                    console.log(key + ":" + value)
+                    if(value == ""){
+                        value = "en"
+                    }
+
+                }
+                else if( key == "color"){
+                    console.log(key + ":" + value)  
+                    if(value == ""){
+                        value = "#67ff64"
+                    }
+                    
+                }
+                
+                return value
+            },
+            change_color: async function(color){
+                let r = document.querySelector(":root")
+                r.style.setProperty('--main', color)
+                console.log("Logger; " + color + " " + color.substr(1,6))
+                this.color_ffffff = color.substr(1,6) == "ffffff" ? "selected-color" : "disabled-color"
+                this.color_f4ff00 = color.substr(1,6) == "f4ff00" ? "selected-color" : "disabled-color"
+                this.color_67ff64 = color.substr(1,6) == "67ff64" ? "selected-color" : "disabled-color"
+                this.color_00ffff = color.substr(1,6) == "00ffff" ? "selected-color" : "disabled-color"
+                this.color_ff00fc = color.substr(1,6) == "ff00fc" ? "selected-color" : "disabled-color"
+                this.color_ff0040 = color.substr(1,6) == "ff0040" ? "selected-color" : "disabled-color"
+                
+
+                this.set_cookie("color", color)
+            },
+            switch_menu_bar: function(){
+                
+                this.menu_line_1 = this.menu_status == 0 ? "menu-line-rotated-1 menu-line-rotated" : ""
+                this.menu_line_2 = this.menu_status == 0 ? "menu-line-rotated-2 menu-line-rotated" : ""
+                this.menu_line_3 = this.menu_status == 0 ? "menu-line-rotated-3 menu-line-rotated" : ""
+                this.menu_status = this.menu_status == 0 ? 1 : 0
+            },
+        },
+        mounted:function(){
+            let lang = this.get_cookie("lang")
+            let color = this.get_cookie("color")
+            
+            this.change_color(color)
+            this.default_language = lang
+            this.change_default_language(lang)
+        }
+        })
+    </script>
+</body>
+</html>
