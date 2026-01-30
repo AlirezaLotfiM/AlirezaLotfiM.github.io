@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, computed, onUnmounted, nextTick } from 'vue';
-import { marked } from 'marked'; // ایمپورت کتابخانه مارک‌داون
+import { marked } from 'marked'; 
 import CustomCursor from './components/CustomCursor.vue'; 
 import CyberParticles from './components/CyberParticles.vue';
 import MatrixRain from './components/MatrixRain.vue';
@@ -8,7 +8,8 @@ import TerminalModal from './components/TerminalModal.vue';
 import ContextMenu from './components/ContextMenu.vue';
 import BootSequence from './components/BootSequence.vue';
 
-const appVersion = 'v1.2.1';
+// --- تنظیمات نسخه ---
+const appVersion = 'v1.2.3';
 
 const showBoot = ref(true);
 const isBooted = ref(false);
@@ -147,13 +148,41 @@ const handleKeydown = (e) => {
   if (e.ctrlKey && e.key === 'k') { e.preventDefault(); showTerminal.value = !showTerminal.value; }
   if (e.ctrlKey && e.key === 'z' && selectedNote.value) { e.preventDefault(); isZenMode.value = !isZenMode.value; }
 };
+
+// --- FIX: اصلاح تابع چرخش سه بعدی ---
 const handleMouseMove = (e) => { if (window.innerWidth < 768) return; const cards = document.querySelectorAll('.spotlight-card'); cards.forEach(card => { const rect = card.getBoundingClientRect(); card.style.setProperty('--x', `${e.clientX - rect.left}px`); card.style.setProperty('--y', `${e.clientY - rect.top}px`); }); };
-const handleCardTilt = (e) => { if (window.innerWidth < 768) return; const card = e.currentTarget; const rect = card.getBoundingClientRect(); const x = e.clientX - rect.left; y = e.clientY - rect.top; const centerX = rect.width / 2; const centerY = rect.height / 2; const rotateX = ((y - centerY) / centerY) * -5; const rotateY = ((x - centerX) / centerX) * 5; card.style.setProperty('--rx', `${rotateX}deg`); card.style.setProperty('--ry', `${rotateY}deg`); };
+
+const handleCardTilt = (e) => { 
+  if (window.innerWidth < 768) return;
+  const card = e.currentTarget;
+  const rect = card.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top; // <--- اینجا قبلا const نداشت و باعث خطا میشد
+  
+  const centerX = rect.width / 2;
+  const centerY = rect.height / 2;
+  
+  const rotateX = ((y - centerY) / centerY) * -5;
+  const rotateY = ((x - centerX) / centerX) * 5;
+  
+  card.style.setProperty('--rx', `${rotateX}deg`);
+  card.style.setProperty('--ry', `${rotateY}deg`);
+};
+
 const resetCard = (e) => { const card = e.currentTarget; card.style.setProperty('--rx', `0deg`); card.style.setProperty('--ry', `0deg`); card.style.setProperty('--x', `-1000px`); };
 
-onMounted(() => { fetchData(); typeWriter(); window.addEventListener('keydown', handleKeydown); document.addEventListener('contextmenu', onContextMenu); });
+onMounted(() => { 
+  fetchData(); 
+  typeWriter(); 
+  window.addEventListener('keydown', handleKeydown); 
+  document.addEventListener('contextmenu', onContextMenu);
+  
+  console.log(
+    '%c Hello from Damoon! 🌲💻 \n Looking for bugs? Good luck! ',
+    'background: #0a0a0a; color: #67FF64; font-size: 14px; padding: 15px; border-radius: 5px; border: 2px solid #67FF64; font-family: monospace;'
+  );
+});
 onUnmounted(() => { clearTimeout(typeTimeout); window.removeEventListener('keydown', handleKeydown); document.removeEventListener('contextmenu', onContextMenu); });
-
 </script>
 
 <template>
@@ -178,13 +207,13 @@ onUnmounted(() => { clearTimeout(typeTimeout); window.removeEventListener('keydo
               <div class="avatar-glow"><img :src="`https://github.com/${userGithub}.png`" alt="Avatar"></div>
               <div class="profile-texts">
                 <h1>علیرضا لطفی‌مقدم</h1>
-                <p class="role"><span class="typewriter">{{ typeText }}</span><span class="cursor">|</span></p>
+                <p class="role" dir="ltr"><span class="typewriter">{{ typeText }}</span><span class="cursor">|</span></p>
                 <p class="role-sub">Software Expert</p>
               </div>
             </div>
             
             <div class="action-buttons">
-              <button class="terminal-toggle" @click="showTerminal = true" title="Ctrl + K">_CMD ></button>
+              <button class="terminal-toggle" @click="showTerminal = true" title="Ctrl + K">damoon@root:~$</button>
               <a href="/MyResume.pdf" download class="resume-btn" title="دانلود رزومه">📄 PDF</a>
             </div>
 
@@ -255,7 +284,12 @@ onUnmounted(() => { clearTimeout(typeTimeout); window.removeEventListener('keydo
                 <div class="thread-header">
                   <div class="note-meta">
                     <h3>{{ selectedNote.title }}</h3>
-                    <span class="post-date">{{ new Date(selectedNote.created_at).toLocaleDateString('fa-IR') }}</span>
+                    <div class="meta-row">
+                      <span class="post-date">{{ new Date(selectedNote.created_at).toLocaleDateString('fa-IR') }}</span>
+                      <div class="tag-container inline" v-if="selectedNote.labels && selectedNote.labels.length">
+                        <span v-for="label in selectedNote.labels" :key="label.id" class="tag-pill" :style="{ borderColor: '#' + label.color, color: '#' + label.color, backgroundColor: '#' + label.color + '15' }">{{ label.name }}</span>
+                      </div>
+                    </div>
                   </div>
                   <div class="header-left">
                     <button @click="shareNote" class="icon-btn share-btn" :title="shareTooltip">🔗</button>
@@ -282,7 +316,15 @@ onUnmounted(() => { clearTimeout(typeTimeout); window.removeEventListener('keydo
                 <div v-for="(step, index) in roadmapItems" :key="index" class="roadmap-item spotlight-card" :class="step.status" @mousemove="handleCardTilt" @mouseleave="resetCard"><div class="spotlight-bg"></div><div class="step-line"></div><div class="step-dot"></div><div class="step-content"><h4>{{ step.title }}</h4><p>{{ step.desc }}</p><span class="status-badge">{{ step.status === 'done' ? 'انجام شده ✅' : step.status === 'progress' ? 'در حال کار 🚧' : 'در برنامه 📅' }}</span></div></div>
               </div>
               <div v-else-if="!loading && activeTab==='notes'" class="notes-list" key="notes">
-                <div v-for="n in notes" :key="n.id" class="note-row spotlight-card" @click="openNote(n)" @mousemove="handleCardTilt" @mouseleave="resetCard" style="cursor: pointer;"><div class="spotlight-bg"></div><div class="note-inner"><div class="note-head"><h4><span class="note-icon">📝</span> {{ n.title }}</h4></div><p class="note-preview">{{ n.body ? n.body.substring(0, 140) + (n.body.length > 140 ? '...' : '') : 'بدون توضیحات...' }}</p><div class="note-footer"><span class="date">{{ new Date(n.created_at).toLocaleDateString('fa-IR') }}</span><span class="read-btn">بخوانید &larr;</span></div></div></div>
+                <div v-for="n in notes" :key="n.id" class="note-row spotlight-card" @click="openNote(n)" @mousemove="handleCardTilt" @mouseleave="resetCard" style="cursor: pointer;">
+                  <div class="spotlight-bg"></div>
+                  <div class="note-inner">
+                    <div class="note-head"><h4><span class="note-icon">📝</span> {{ n.title }}</h4></div>
+                    <div class="tag-container" v-if="n.labels && n.labels.length"><span v-for="label in n.labels" :key="label.id" class="tag-pill" :style="{ borderColor: '#' + label.color, color: '#' + label.color, backgroundColor: '#' + label.color + '15' }">{{ label.name }}</span></div>
+                    <p class="note-preview">{{ n.body ? n.body.substring(0, 140) + (n.body.length > 140 ? '...' : '') : 'بدون توضیحات...' }}</p>
+                    <div class="note-footer"><span class="date">{{ new Date(n.created_at).toLocaleDateString('fa-IR') }}</span><span class="read-btn">بخوانید &larr;</span></div>
+                  </div>
+                </div>
                 <div v-if="notes.length === 0" class="empty-state"><p>هنوز یادداشتی منتشر نشده است.</p></div>
               </div>
             </Transition>
@@ -299,8 +341,8 @@ onUnmounted(() => { clearTimeout(typeTimeout); window.removeEventListener('keydo
           </div>
         </aside>
       </div>
-      <footer class="app-footer">
-        <span class="made-by">Handcrafted by <strong style="color:var(--neon)">Alireza</strong></span>
+      <footer class="app-footer" dir="ltr">
+        <span class="made-by">Handcrafted by <strong class="brand-signature" style="color:var(--neon)">Damoon</strong></span>
         <span class="divider">|</span>
         <span class="version-tag">{{ appVersion }}</span> <span class="divider">|</span>
         <span class="ai-credit">Co-piloted by <span class="gemini-text">Gemini</span></span>
@@ -310,6 +352,19 @@ onUnmounted(() => { clearTimeout(typeTimeout); window.removeEventListener('keydo
 </template>
 
 <style scoped>
+.brand-signature {
+  font-family: 'Courier New', monospace; 
+  letter-spacing: 1px;
+  text-shadow: 0 0 5px var(--neon), 0 0 10px var(--neon);
+  transition: all 0.3s ease;
+  display: inline-block;
+  cursor: default;
+}
+.brand-signature:hover {
+  text-shadow: 0 0 10px var(--neon), 0 0 20px var(--neon), 0 0 30px var(--neon);
+  transform: scale(1.1);
+}
+
 .version-tag { font-family: monospace; background: rgba(255, 255, 255, 0.05); padding: 2px 6px; border-radius: 4px; color: var(--text-muted); font-size: 0.75rem; border: 1px solid rgba(255, 255, 255, 0.1); }
 :global(button), :global(input), :global(textarea) { font-family: 'Vazirmatn', sans-serif !important; }
 :global(::selection), :global(::-moz-selection) { background: var(--neon); color: #000; text-shadow: none; }
@@ -341,15 +396,11 @@ onUnmounted(() => { clearTimeout(typeTimeout); window.removeEventListener('keydo
 .contact-btn.linkedin:hover { background: rgba(10, 102, 194, 0.15); color: #0a66c2; box-shadow: 0 5px 15px rgba(10, 102, 194, 0.3); }
 .contact-btn.telegram:hover { background: rgba(36, 129, 204, 0.15); color: #2481cc; box-shadow: 0 5px 15px rgba(36, 129, 204, 0.3); }
 .contact-btn.github:hover { background: rgba(255, 255, 255, 0.1); color: #ffffff; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2); }
-
-/* --- استایل هدر و کنترل‌ها (اصلاح شده) --- */
 .header-controls { margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px; width: 100%; padding-left: 30px; padding-right: 30px;}
 .project-controls { display: flex; width: 100%; align-items: center; justify-content: space-between; }
-/* حالا چپ: فیلترها، راست: تم */
 .controls-left { display: flex; justify-content: flex-start; }
 .controls-right { display: flex; flex-grow: 1; justify-content: flex-end; }
 .filter-chips { display: flex; gap: 8px; flex-wrap: wrap; }
-
 .icon-btn { background: transparent; border: 1px solid var(--neon); color: var(--neon); width: 34px; height: 34px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; transition: 0.3s; }
 .icon-btn:hover, .icon-btn.active { background: var(--neon); color: black; box-shadow: 0 0 10px var(--neon); }
 .filter-btn { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); font-size: 0.8rem; padding: 4px 12px; border-radius: 20px; cursor: pointer; transition: 0.2s; }
@@ -371,6 +422,12 @@ onUnmounted(() => { clearTimeout(typeTimeout); window.removeEventListener('keydo
 :deep(blockquote) { border-right: 3px solid var(--neon); padding-right: 15px; margin: 15px 0; color: var(--text-muted); background: rgba(255,255,255,0.02); padding: 10px; border-radius: 4px; }
 :deep(pre.code-block) { background: #1e1e1e; padding: 15px; border-radius: 8px; overflow-x: auto; border: 1px solid rgba(255,255,255,0.1); margin: 15px 0; direction: ltr; text-align: left; }
 :deep(pre.code-block code) { font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.9rem; color: #d4d4d4; white-space: pre-wrap; }
+.tag-container { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; margin-top: 4px; }
+.tag-container.inline { display: inline-flex; margin: 0 10px 0 0; vertical-align: middle; }
+.tag-pill { font-size: 0.7rem; padding: 2px 8px; border-radius: 50px; border: 1px solid; font-weight: bold; white-space: nowrap; letter-spacing: 0.5px; transition: 0.3s; }
+.tag-pill:hover { filter: brightness(1.2); transform: translateY(-1px); }
+.meta-row { display: flex; align-items: center; gap: 15px; margin-top: 5px; flex-wrap: wrap; }
+
 .avatar-glow { position: relative; overflow: hidden; width: 90px; height: 90px; margin: 0 auto 10px; border-radius: 50%; padding: 4px; background: linear-gradient(135deg, var(--neon), transparent); }
 .avatar-glow img { width: 100%; height: 100%; border-radius: 50%; background: #000; }
 .avatar-glow:hover img { animation: glitch-anim 0.3s infinite; }
@@ -473,15 +530,52 @@ onUnmounted(() => { clearTimeout(typeTimeout); window.removeEventListener('keydo
 .fade-slide-leave-to { opacity: 0; transform: translateY(-10px); }
 .scroll-area { overflow-y: auto; padding-right: 5px; }
 
+/* FIX FOR MOBILE ZEN MODE SCROLL */
 @media (max-width: 1024px) {
   body { overflow-y: auto; }
   .dashboard { display: block; padding: 15px; height: auto; overflow: auto; }
   .layout-grid { display: flex; flex-direction: column; height: auto; max-height: none; gap: 20px; }
-  .dashboard.zen-mode { height: 100vh !important; overflow: hidden !important; display: flex !important; flex-direction: column; padding: 0 !important; }
-  .layout-grid.zen-active { display: flex; flex-direction: column; height: 100% !important; gap: 0; }
-  .layout-grid.zen-active .col-profile, .layout-grid.zen-active .col-skills { display: none !important; }
-  .layout-grid.zen-active .col-main { flex: 1; height: 100% !important; max-height: 100%; display: flex; flex-direction: column; border-radius: 0; border: none; }
-  .layout-grid.zen-active .content-body { flex: 1; height: 100%; overflow-y: auto !important; -webkit-overflow-scrolling: touch; padding-bottom: 20px; }
+  
+  /* Zen Mode Logic */
+  .dashboard.zen-mode {
+    height: 100vh !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column;
+    padding: 0 !important;
+  }
+
+  .layout-grid.zen-active {
+    display: flex;
+    flex-direction: column;
+    height: 100% !important;
+    gap: 0;
+  }
+  
+  .layout-grid.zen-active .col-profile,
+  .layout-grid.zen-active .col-skills {
+    display: none !important;
+  }
+  
+  .layout-grid.zen-active .col-main {
+    flex: 1;
+    height: 100% !important;
+    max-height: 100%;
+    display: flex;
+    flex-direction: column;
+    border-radius: 0;
+    border: none;
+  }
+
+  /* Force scroll inside content-body in Zen Mode */
+  .layout-grid.zen-active .content-body {
+    flex: 1;
+    height: 100%;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 20px;
+  }
+
   .col-profile { order: 1; height: auto; }
   .col-main { order: 2; height: auto; min-height: 500px; }
   .col-skills { order: 3; height: auto; }
