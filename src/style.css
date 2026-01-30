@@ -1,0 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100;300;500;700;900&display=swap');
+
+:root {
+  --neon: #67FF64;          /* سبز نئونی */
+  --bg-dark: #050505;       /* مشکی عمیق */
+  /* شفافیت 0.6 برای اینکه ذرات متحرک پشتش دیده بشن */
+  --glass-panel: rgba(20, 20, 20, 0.6); 
+  --border-color: rgba(255, 255, 255, 0.1);
+  --text-white: #ffffff;
+  --text-muted: #9ca3af;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-dark);
+  color: var(--text-white);
+  font-family: 'Vazirmatn', sans-serif;
+  width: 100vw;
+  overflow-x: hidden;
+  direction: rtl;
+}
+
+/* --- نکته حیاتی: این کلاس‌ها باعث میشن موس از روی انیمیشن‌ها رد بشه --- */
+.cyber-bg, canvas, .cursor-wrapper {
+  pointer-events: none !important;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* استایل اسکرول بار */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #000; }
+::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--neon); }
+
+* { box-sizing: border-box; }
+a { text-decoration: none; color: inherit; }
