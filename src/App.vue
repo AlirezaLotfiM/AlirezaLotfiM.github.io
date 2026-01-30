@@ -11,7 +11,7 @@ const showBoot = ref(true);
 const isBooted = ref(false);
 const handleBootComplete = () => { showBoot.value = false; setTimeout(() => isBooted.value = true, 100); };
 
-// --- مدیریت تم ---
+// --- مدیریت تم (Themes) ---
 const themes = [
   { name: 'Matrix Green', color: '#67FF64', bg: 'rgba(103, 255, 100, 0.03)' },
   { name: 'Cyber Blue',   color: '#00f3ff', bg: 'rgba(0, 243, 255, 0.03)' },
@@ -25,17 +25,19 @@ const toggleTheme = () => {
   currentThemeIndex.value = (currentThemeIndex.value + 1) % themes.length;
   const theme = themes[currentThemeIndex.value];
   currentThemeColor.value = theme.color;
+  // تغییر متغیرهای CSS گلوبال
   document.documentElement.style.setProperty('--neon', theme.color);
   document.documentElement.style.setProperty('--glass-panel', `linear-gradient(145deg, rgba(20,20,20,0.9), ${theme.bg})`);
 };
 
-// --- تنظیمات کاربر ---
+// --- اطلاعات کاربر ---
 const userGithub = 'AlirezaLotfiM';
 const myEmail = 'Lotfi.moghaddam.alireza@gmail.com';
 const myLinkedin = 'https://linkedin.com/in/alireza-lotfi-moghaddam-378a8018a';
 const myTelegram = 'https://t.me/YourTelegramID';
 const myTelegramID = '@YourID';
 
+// --- افکت تایپ‌نویس (Typewriter) ---
 const typeText = ref('');
 const titles = ["Software Engineer", ".NET & Desktop Developer", "Database Enthusiast", "Backend Developer"];
 let typeIndex = 0; let charIndex = 0; let isDeleting = false; let typeTimeout = null;
@@ -50,6 +52,7 @@ const typeWriter = () => {
   typeTimeout = setTimeout(typeWriter, typeSpeed);
 };
 
+// --- دیتا و متغیرها ---
 const activeTab = ref('projects');
 const activeFilter = ref('All');
 const projects = ref([]);
@@ -85,14 +88,23 @@ const roadmapItems = ref([
   { title: 'Distributed Systems', status: 'todo', desc: 'پیاده‌سازی معماری میکروسرویس و Message Brokerها.' },
 ]);
 
+// --- توابع کمکی ---
 const toPersianDigits = (num) => { const id = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹']; return num.toString().replace(/[0-9]/g, (w) => id[+w]); };
 
 const parseMarkdown = (text) => {
   if (!text) return '';
-  return text.replace(/!\[(.*?)\]\((.*?)\)/g, '<img src="$2" alt="$1" class="md-image">').replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank">$1</a>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/`(.*?)`/g, '<code class="inline-code">$1</code>').replace(/\n/g, '<br>');
+  return text.replace(/!\[(.*?)\]\((.*?)\)/g, '<img src="$2" alt="$1" class="md-image">')
+             .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank">$1</a>')
+             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+             .replace(/`(.*?)`/g, '<code class="inline-code">$1</code>')
+             .replace(/\n/g, '<br>');
 };
 
-const copyToClipboard = (text, type) => { navigator.clipboard.writeText(text); copiedTooltip.value = type; setTimeout(() => { copiedTooltip.value = null; }, 2000); };
+const copyToClipboard = (text, type) => { 
+  navigator.clipboard.writeText(text); 
+  copiedTooltip.value = type; 
+  setTimeout(() => { copiedTooltip.value = null; }, 2000); 
+};
 
 const shareNote = () => {
   if (!selectedNote.value) return;
@@ -101,21 +113,58 @@ const shareNote = () => {
   setTimeout(() => { shareTooltip.value = 'کپی لینک'; }, 2000);
 };
 
-const experienceYears = computed(() => { const startDate = new Date('2020-08-22'); const now = new Date(); let years = now.getFullYear() - startDate.getFullYear(); if (now.getMonth() < startDate.getMonth()) years--; return toPersianDigits(`+${years}`); });
-const getLangColor = (lang) => { if (!lang) return '#888'; const colors = { 'C#': '#178600', 'Vue': '#41b883', 'JavaScript': '#f1e05a', 'HTML': '#e34c26', 'CSS': '#563d7c', 'Python': '#3572A5' }; return colors[lang] || currentThemeColor.value; };
+const experienceYears = computed(() => { 
+  const startDate = new Date('2020-08-22'); 
+  const now = new Date(); 
+  let years = now.getFullYear() - startDate.getFullYear(); 
+  if (now.getMonth() < startDate.getMonth()) years--; 
+  return toPersianDigits(`+${years}`); 
+});
+
+const getLangColor = (lang) => { 
+  if (!lang) return '#888'; 
+  const colors = { 'C#': '#178600', 'Vue': '#41b883', 'JavaScript': '#f1e05a', 'HTML': '#e34c26', 'CSS': '#563d7c', 'Python': '#3572A5' }; 
+  return colors[lang] || currentThemeColor.value; 
+};
 
 const fetchData = async () => {
   try {
-    const [repoRes, noteRes] = await Promise.all([ fetch(`https://api.github.com/users/${userGithub}/repos?sort=updated`), fetch(`https://api.github.com/repos/${userGithub}/${userGithub}.github.io/issues?state=open`) ]);
-    const repos = await repoRes.json(); const issues = await noteRes.json();
+    const [repoRes, noteRes] = await Promise.all([ 
+      fetch(`https://api.github.com/users/${userGithub}/repos?sort=updated`), 
+      fetch(`https://api.github.com/repos/${userGithub}/${userGithub}.github.io/issues?state=open`) 
+    ]);
+    const repos = await repoRes.json(); 
+    const issues = await noteRes.json();
     let githubProjects = Array.isArray(repos) ? repos.filter(r => !r.fork).slice(0, 6) : [];
-    const manualProjects = [ { id: 101, name: 'سامانه مانیتورینگ بانک ملت', language: 'C#', description: 'مانیتورینگ نوبت‌دهی آنلاین (Windows App/Backend).', html_url: '#', isPrivate: true }, { id: 102, name: 'سامانه آموزش بیودارو', language: 'Vue', description: 'فول‌اسک (NET Core + SQL + Vue). پنل آزمون پرسنل.', html_url: '#', isPrivate: true }, { id: 103, name: 'Nexus Queue System', language: 'Concept', description: 'ایده‌پردازی و طراحی اولیه معماری سیستم نوبت‌دهی توزیع‌شده.', html_url: '#', isPrivate: true } ];
-    projects.value = [...manualProjects, ...githubProjects]; notes.value = Array.isArray(issues) ? issues : [];
-  } catch(e) {} loading.value = false;
+    const manualProjects = [ 
+      { id: 101, name: 'سامانه مانیتورینگ بانک ملت', language: 'C#', description: 'مانیتورینگ نوبت‌دهی آنلاین (Windows App/Backend).', html_url: '#', isPrivate: true }, 
+      { id: 102, name: 'سامانه آموزش بیودارو', language: 'Vue', description: 'فول‌اسک (NET Core + SQL + Vue). پنل آزمون پرسنل.', html_url: '#', isPrivate: true }, 
+      { id: 103, name: 'Nexus Queue System', language: 'Concept', description: 'ایده‌پردازی و طراحی اولیه معماری سیستم نوبت‌دهی توزیع‌شده.', html_url: '#', isPrivate: true } 
+    ];
+    projects.value = [...manualProjects, ...githubProjects]; 
+    notes.value = Array.isArray(issues) ? issues : [];
+  } catch(e) {} 
+  loading.value = false;
 };
 
-const openNote = async (note) => { selectedNote.value = note; loadingComments.value = true; noteComments.value = []; try { if (note.comments > 0) { const res = await fetch(note.comments_url); if (res.ok) noteComments.value = await res.json(); } } catch (e) {} loadingComments.value = false; };
-const closeNote = () => { selectedNote.value = null; noteComments.value = []; isZenMode.value = false; };
+const openNote = async (note) => { 
+  selectedNote.value = note; 
+  loadingComments.value = true; 
+  noteComments.value = []; 
+  try { 
+    if (note.comments > 0) { 
+      const res = await fetch(note.comments_url); 
+      if (res.ok) noteComments.value = await res.json(); 
+    } 
+  } catch (e) {} 
+  loadingComments.value = false; 
+};
+
+const closeNote = () => { 
+  selectedNote.value = null; 
+  noteComments.value = []; 
+  isZenMode.value = false; 
+};
 
 const availableLanguages = computed(() => { const langs = new Set(projects.value.map(p => p.language).filter(Boolean)); return ['All', ...langs]; });
 const filteredProjects = computed(() => { if (activeFilter.value === 'All') return projects.value; return projects.value.filter(p => p.language === activeFilter.value); });
@@ -148,6 +197,7 @@ onUnmounted(() => { clearTimeout(typeTimeout); window.removeEventListener('keydo
     
     <div class="dashboard" @mousemove="handleMouseMove">
       <div class="layout-grid" :class="{ 'zen-active': isZenMode }">
+        
         <aside class="col-profile">
           <div class="glass-panel profile-box spotlight-card" @mousemove="handleCardTilt" @mouseleave="resetCard">
             <div class="spotlight-bg"></div>
@@ -159,18 +209,43 @@ onUnmounted(() => { clearTimeout(typeTimeout); window.removeEventListener('keydo
                 <p class="role-sub">Software Expert @ NedaPardaz</p>
               </div>
             </div>
+            
             <div class="action-buttons">
               <button class="terminal-toggle" @click="showTerminal = true" title="Ctrl + K">_CMD ></button>
               <a href="/MyResume.pdf" download class="resume-btn" title="دانلود رزومه">📄 PDF</a>
             </div>
+
             <div class="bio-short">توسعه‌دهنده با تجربه در C#، دیتابیس و سیستم‌های سازمانی. در حال یادگیری معماری‌های توزیع‌شده.</div>
+            
             <div class="stats-row"><div class="stat"><strong>{{ experienceYears }}</strong><span>سال تجربه</span></div><div class="sep"></div><div class="stat"><strong>{{ toPersianDigits(`+${projects.length}`) }}</strong><span>پروژه</span></div></div>
+            
             <div class="contact-grid">
-              <div class="contact-wrapper"><button class="contact-btn email" @click="handleCopy(myEmail, $event, 'کپی ایمیل')" data-tooltip="کپی ایمیل">📧</button><div class="tooltip-box"><span class="label">ایمیل</span><button class="copy-btn" @click.prevent="copyToClipboard(myEmail, 'email')">{{ copiedTooltip === 'email' ? 'کپی شد! ✅' : 'کپی آدرس' }}</button></div></div>
-              <div class="contact-wrapper"><a :href="myLinkedin" target="_blank" class="contact-btn linkedin">💼</a><div class="tooltip-box"><span class="label">پروفایل لینکدین</span><button class="copy-btn" @click.prevent="copyToClipboard(myLinkedin, 'linkedin')">{{ copiedTooltip === 'linkedin' ? 'کپی لینک! ✅' : 'کپی لینک' }}</button></div></div>
-              <div class="contact-wrapper"><a :href="myTelegram" target="_blank" class="contact-btn telegram">✈️</a><div class="tooltip-box"><span class="label">تلگرام</span><button class="copy-btn" @click.prevent="copyToClipboard(myTelegramID, 'telegram')">{{ copiedTooltip === 'telegram' ? 'کپی شد! ✅' : 'کپی ID' }}</button></div></div>
-              <div class="contact-wrapper"><a :href="`https://github.com/${userGithub}`" target="_blank" class="contact-btn github">🐱</a><div class="tooltip-box"><span class="label">گیت‌هاب</span></div></div>
+              <div class="contact-wrapper">
+                <button class="contact-btn email" @click="handleCopy(myEmail, $event, 'کپی ایمیل')" aria-label="Email">
+                  <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                </button>
+                <div class="tooltip-box"><span class="label">ایمیل</span><button class="copy-btn" @click.prevent="copyToClipboard(myEmail, 'email')">{{ copiedTooltip === 'email' ? 'کپی شد! ✅' : 'کپی آدرس' }}</button></div>
+              </div>
+              <div class="contact-wrapper">
+                <a :href="myLinkedin" target="_blank" class="contact-btn linkedin" aria-label="LinkedIn">
+                  <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+                </a>
+                <div class="tooltip-box"><span class="label">لینکدین</span><button class="copy-btn" @click.prevent="copyToClipboard(myLinkedin, 'linkedin')">{{ copiedTooltip === 'linkedin' ? 'کپی لینک! ✅' : 'کپی لینک' }}</button></div>
+              </div>
+              <div class="contact-wrapper">
+                <a :href="myTelegram" target="_blank" class="contact-btn telegram" aria-label="Telegram">
+                  <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+                </a>
+                <div class="tooltip-box"><span class="label">تلگرام</span><button class="copy-btn" @click.prevent="copyToClipboard(myTelegramID, 'telegram')">{{ copiedTooltip === 'telegram' ? 'کپی شد! ✅' : 'کپی ID' }}</button></div>
+              </div>
+              <div class="contact-wrapper">
+                <a :href="`https://github.com/${userGithub}`" target="_blank" class="contact-btn github" aria-label="GitHub">
+                  <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+                </a>
+                <div class="tooltip-box"><span class="label">گیت‌هاب</span></div>
+              </div>
             </div>
+
           </div>
         </aside>
 
@@ -186,8 +261,6 @@ onUnmounted(() => { clearTimeout(typeTimeout); window.removeEventListener('keydo
             <div class="header-controls">
               <div v-if="activeTab==='projects' && !selectedNote" class="project-controls">
                 
-                
-
                 <div class="controls-right">
                   <div class="filter-chips">
                     <button v-for="lang in availableLanguages" :key="lang" @click="activeFilter = lang" :class="{ 'active-filter': activeFilter === lang }" class="filter-btn">
@@ -195,11 +268,9 @@ onUnmounted(() => { clearTimeout(typeTimeout); window.removeEventListener('keydo
                     </button>
                   </div>
                 </div>
-
                 <div class="controls-left">
                   <button @click="toggleTheme" class="icon-btn theme-btn" title="تغییر رنگ تم">🎨</button>
                 </div>
-
               </div>
             </div>
           </div>
@@ -284,40 +355,53 @@ onUnmounted(() => { clearTimeout(typeTimeout); window.removeEventListener('keydo
 .content-body::-webkit-scrollbar, .rack-container::-webkit-scrollbar { width: 6px; }
 .content-body::-webkit-scrollbar-thumb, .rack-container::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
 
-/* --- استایل هدر و کنترل‌ها (فیکس شده) --- */
-.header-controls { 
-  margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px; width: 100%; 
+/* --- استایل دکمه‌های تماس (SVG Style) --- */
+.contact-grid { 
+  display: flex; /* تغییر به فلکس برای چیدمان خطی */
+  justify-content: center;
+  gap: 15px; 
+  margin-top: auto; 
+  width: 100%; 
+  position: relative; 
+  padding-top: 15px;
 }
+.contact-wrapper { position: relative; }
+.contact-btn { 
+  width: 45px; height: 45px; 
+  display: flex; align-items: center; justify-content: center; 
+  background: rgba(255,255,255,0.03); 
+  border: 1px solid rgba(255,255,255,0.1); 
+  border-radius: 12px; 
+  color: var(--text-muted); 
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer; 
+  text-decoration: none;
+}
+.contact-btn svg { transition: transform 0.3s ease; }
+.contact-btn:hover { transform: translateY(-3px); color: white; border-color: transparent; }
+/* رنگ‌های برندینگ */
+.contact-btn.email:hover { background: rgba(234, 67, 53, 0.15); color: #ea4335; box-shadow: 0 5px 15px rgba(234, 67, 53, 0.3); }
+.contact-btn.linkedin:hover { background: rgba(10, 102, 194, 0.15); color: #0a66c2; box-shadow: 0 5px 15px rgba(10, 102, 194, 0.3); }
+.contact-btn.telegram:hover { background: rgba(36, 129, 204, 0.15); color: #2481cc; box-shadow: 0 5px 15px rgba(36, 129, 204, 0.3); }
+.contact-btn.github:hover { background: rgba(255, 255, 255, 0.1); color: #ffffff; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2); }
+
+/* --- استایل هدر و کنترل‌ها --- */
+.header-controls { margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px; width: 100%; }
 .project-controls { 
   display: flex; width: 100%; align-items: center; justify-content: space-between; 
-  /* space-between باعث میشه یکی بره چپ یکی بره راست */
 }
-
-/* سمت چپ: دکمه تم */
-.controls-left { display: flex;justify-content: flex-end; }
-
-/* سمت راست: دکمه‌های فیلتر */
-.controls-right { display: flex; flex-grow: 1; justify-content: flex-start; }
-
-/* چیدمان دکمه‌های فیلتر: row-reverse برای راست‌چین شدن */
-.filter-chips { 
-  display: flex; gap: 8px; flex-wrap: wrap; 
-  
-}
+.controls-left { display: flex; justify-content: flex-end; } /* دکمه تم سمت چپ */
+.controls-right { display: flex; flex-grow: 1; justify-content: flex-start; } /* فیلترها سمت راست */
+.filter-chips { display: flex; gap: 8px; flex-wrap: wrap; } /* چیدمان دکمه‌ها راست‌چین */
 
 .icon-btn { background: transparent; border: 1px solid var(--neon); color: var(--neon); width: 34px; height: 34px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; transition: 0.3s; }
 .icon-btn:hover, .icon-btn.active { background: var(--neon); color: black; box-shadow: 0 0 10px var(--neon); }
-
 .filter-btn { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); font-size: 0.8rem; padding: 4px 12px; border-radius: 20px; cursor: pointer; transition: 0.2s; }
 .filter-btn:hover { background: rgba(255,255,255,0.1); color: white; }
 .filter-btn.active-filter { background: var(--neon); color: black; border-color: var(--neon); font-weight: bold; }
 
-/* --- بقیه استایل‌ها --- */
+/* ... (بقیه کدهای استایل بدون تغییر) ... */
 .header-left { display: flex; gap: 10px; align-items: center; }
-.contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: auto; width: 100%; position: relative; }
-.contact-wrapper { position: relative; width: 100%; }
-.contact-btn { width: 100%; padding: 12px; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; transition: 0.3s; cursor: pointer; color: white; text-decoration: none; border: none; }
-.contact-btn:hover { background: rgba(255,255,255,0.1); border-color: var(--neon); }
 :deep(.md-image), :deep(.block-body img), :deep(.note-inner img) { max-width: 100% !important; height: auto !important; border-radius: 10px; margin: 10px 0; border: 1px solid rgba(255,255,255,0.1); display: block; }
 .avatar-glow { position: relative; overflow: hidden; width: 90px; height: 90px; margin: 0 auto 10px; border-radius: 50%; padding: 4px; background: linear-gradient(135deg, var(--neon), transparent); }
 .avatar-glow img { width: 100%; height: 100%; border-radius: 50%; background: #000; }
@@ -328,7 +412,7 @@ onUnmounted(() => { clearTimeout(typeTimeout); window.removeEventListener('keydo
 .typewriter { color: var(--neon); font-weight: bold; }
 .cursor { animation: blink 1s infinite; display: inline-block; color: var(--neon); }
 @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-.tooltip-box { position: absolute; bottom: 120%; left: 50%; transform: translateX(-50%) translateY(10px); background: #0a0a0a; border: 1px solid var(--neon); border-radius: 8px; padding: 8px; width: max-content; min-width: 120px; display: flex; flex-direction: column; align-items: center; gap: 5px; opacity: 0; pointer-events: none; transition: 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55); box-shadow: 0 5px 20px rgba(0,0,0,0.8); z-index: 20; }
+.tooltip-box { position: absolute; bottom: 125%; left: 50%; transform: translateX(-50%) translateY(10px); background: #0a0a0a; border: 1px solid var(--neon); border-radius: 8px; padding: 8px; width: max-content; min-width: 120px; display: flex; flex-direction: column; align-items: center; gap: 5px; opacity: 0; pointer-events: none; transition: 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55); box-shadow: 0 5px 20px rgba(0,0,0,0.8); z-index: 20; }
 .contact-wrapper:hover .tooltip-box { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
 .tooltip-box::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border-width: 6px; border-style: solid; border-color: var(--neon) transparent transparent transparent; }
 .tooltip-box .label { font-size: 0.75rem; color: #fff; margin-bottom: 2px; }
