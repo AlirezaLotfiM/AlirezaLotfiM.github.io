@@ -187,6 +187,7 @@ const draw = () => {
     drawCenterText("GAME OVER", -20, 24, "#ff0055");
     drawCenterText(`SCORE: ${score.value}`, 10, 16, "#fff");
     drawCenterText("PRESS SPACE TO RESTART", 40, 14, "#888");
+    drawCenterText("PRESS ESC TO EXIT", 70, 12, "#555");
   }
 };
 
@@ -239,9 +240,11 @@ onUnmounted(() => {
 <template>
   <div class="snake-terminal-container">
     <div class="game-info-bar">
-      <span>SCORE: {{ score }}</span>
-      <span class="high-score">HIGH: {{ highScore }}</span>
-      <span class="exit-hint">[ESC] TO EXIT</span>
+      <div class="left-info">
+        <span>SCORE: {{ score }}</span>
+        <span class="high-score">HIGH: {{ highScore }}</span>
+      </div>
+      <button class="exit-btn" @click="$emit('exit')">EXIT_GAME</button>
     </div>
     <div class="canvas-wrapper">
       <canvas ref="canvasRef"></canvas>
@@ -264,6 +267,7 @@ onUnmounted(() => {
 .game-info-bar {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding: 5px 10px;
   background: #111;
   border-bottom: 1px solid #333;
@@ -273,12 +277,29 @@ onUnmounted(() => {
   flex-shrink: 0;
 }
 
+.left-info {
+  display: flex;
+  gap: 15px;
+}
+
 .high-score {
   color: var(--neon);
 }
 
-.exit-hint {
-  font-size: 0.8rem;
+.exit-btn {
+  background: transparent;
+  border: 1px solid #333;
+  color: #ff5f56;
+  font-family: inherit;
+  font-size: 0.75rem;
+  padding: 2px 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.exit-btn:hover {
+  border-color: #ff5f56;
+  background: rgba(255, 95, 86, 0.1);
 }
 
 .canvas-wrapper {

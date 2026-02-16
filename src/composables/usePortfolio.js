@@ -152,7 +152,7 @@ const fetchData = async () => {
     const [repoRes, noteRes] = await Promise.all([
       fetch(`https://api.github.com/users/${userGithub}/repos?sort=updated`),
       fetch(
-        `https://api.github.com/repos/${userGithub}/${userGithub}.github.io/issues?state=open`,
+        `https://api.github.com/repos/${userGithub}/${userGithub}.github.io/issues?state=open&creator=${userGithub}`,
       ),
     ]);
     const repos = await repoRes.json();

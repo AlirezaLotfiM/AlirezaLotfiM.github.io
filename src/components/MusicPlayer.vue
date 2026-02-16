@@ -7,6 +7,16 @@ const volume = ref(0.5);
 const currentTrackIndex = ref(0);
 const isMinimized = ref(false);
 
+// Dragging state
+const playerRef = ref(null);
+const isDragging = ref(false);
+const offset = ref({ x: 0, y: 0 });
+const position = ref({ right: 20, bottom: 20 }); // Using right/bottom for RTL friendly default, but drag will likely set left/top or transform.
+// Actually, dragging usually sets left/top. Let's stick to standard dragging.
+// But initial position is bottom-right.
+const useTransform = ref(false);
+const dragPos = ref({ x: 0, y: 0 });
+
 const tracks = [
   {
     title: "Neon Dreams",
@@ -50,9 +60,54 @@ const handleEnded = () => {
   nextTrack();
 };
 
-const toggleMinimize = () => {
+const toggleMinimize = (e) => {
+  // Prevent toggle if it was a drag
   isMinimized.value = !isMinimized.value;
 };
+
+// Drag Logic
+const startDrag = (e) => {
+  // Ignore clicks on buttons/inputs
+  if (['BUTTON', 'INPUT'].includes(e.target.tagName)) return;
+
+  isDragging.value = true;
+  const rect = playerRef.value.getBoundingClientRect();
+  // Calculate offset from top-left of the element
+  offset.value = {
+    x: e.clientX - rect.left,
+    y: e.clientY - rect.top
+  };
+
+  // Disable transition during drag
+  playerRef.value.style.transition = 'none';
+
+  window.addEventListener('mousemove', onDrag);
+  window.addEventListener('mouseup', stopDrag);
+};
+
+const onDrag = (e) => {
+  if (!isDragging.value) return;
+
+  // Set position based on mouse - offset
+  // We need to switch from bottom/right positioning to top/left on first drag, or use transform.
+  // Easiest is to set left/top directly.
+  const x = e.clientX - offset.value.x;
+  const y = e.clientY - offset.value.y;
+
+  playerRef.value.style.left = `${x}px`;
+  playerRef.value.style.top = `${y}px`;
+  playerRef.value.style.bottom = 'auto';
+  playerRef.value.style.right = 'auto';
+  playerRef.value.style.transform = 'none';
+};
+
+const stopDrag = () => {
+  isDragging.value = false;
+  playerRef.value.style.transition = 'width 0.3s, height 0.3s'; // Restore transition
+  window.removeEventListener('mousemove', onDrag);
+  window.removeEventListener('mouseup', stopDrag);
+};
+
 
 onMounted(() => {
   if (audioRef.value) {
@@ -62,34 +117,43 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="music-player" :class="{ minimized: isMinimized }" @click="isMinimized ? toggleMinimize() : null">
+  <div
+    ref="playerRef"
+    class="music-player"
+    :class="{ minimized: isMinimized }"
+    @mousedown="startDrag"
+    dir="ltr"
+  >
     <!-- Header / Drag Handle -->
     <div class="player-header">
       <div class="track-info" v-if="!isMinimized">
         <span class="track-title">{{ tracks[currentTrackIndex].title }}</span>
         <span class="track-artist">{{ tracks[currentTrackIndex].artist }}</span>
       </div>
-      <div class="mini-icon" v-else>🎵</div>
+      <div class="mini-icon" v-else @click.stop="toggleMinimize">🎵</div>
 
-      <button class="minimize-btn" @click="toggleMinimize">
+      <button class="minimize-btn" @click.stop="toggleMinimize">
         {{ isMinimized ? '+' : '−' }}
       </button>
     </div>
 
     <!-- Controls -->
     <div class="player-controls" v-show="!isMinimized">
-      <button class="control-btn" @click="togglePlay">
+      <button class="control-btn" @click.stop="togglePlay">
         {{ isPlaying ? '❚❚' : '▶' }}
       </button>
-      <button class="control-btn" @click="nextTrack">⏭</button>
+      <button class="control-btn" @click.stop="nextTrack">⏭</button>
 
-      <input
-        type="range"
-        min="0" max="1" step="0.01"
-        :value="volume"
-        @input="updateVolume"
-        class="volume-slider"
-      />
+      <div class="volume-wrap">
+        <input
+          type="range"
+          min="0" max="1" step="0.01"
+          :value="volume"
+          @input="updateVolume"
+          class="volume-slider"
+          @mousedown.stop
+        />
+      </div>
     </div>
 
     <!-- Audio Element -->
@@ -115,9 +179,9 @@ onMounted(() => {
 .music-player {
   position: fixed;
   bottom: 20px;
-  right: 20px;
+  right: 20px; /* Initial position */
   width: 250px;
-  background: rgba(10, 10, 10, 0.85);
+  background: rgba(10, 10, 10, 0.95);
   backdrop-filter: blur(10px);
   border: 1px solid var(--neon, #67FF64);
   border-radius: 8px;
@@ -125,7 +189,13 @@ onMounted(() => {
   z-index: 9999;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
   font-family: 'Consolas', monospace;
-  transition: width 0.3s, height 0.3s, transform 0.3s;
+  transition: width 0.3s, height 0.3s;
+  cursor: grab;
+  user-select: none;
+}
+
+.music-player:active {
+  cursor: grabbing;
 }
 
 .music-player.minimized {
@@ -137,7 +207,6 @@ onMounted(() => {
   justify-content: center;
   border-radius: 50%;
   overflow: hidden;
-  cursor: pointer;
 }
 
 .player-header {
@@ -145,6 +214,11 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
+  pointer-events: none; /* Let clicks pass through to container for dragging, except buttons */
+}
+
+.player-header > * {
+  pointer-events: auto;
 }
 
 .minimized .player-header {
@@ -158,6 +232,7 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  pointer-events: none;
 }
 
 .track-title {
@@ -184,12 +259,8 @@ onMounted(() => {
 }
 
 .minimized .minimize-btn {
-  display: none; /* Click anywhere to expand */
+  display: none;
 }
-
-/* When minimized, clicking the container expands it, so we need a click handler on root if minimized?
-   Actually the button is hidden. I'll make the whole div clickable when minimized.
-*/
 
 .player-controls {
   display: flex;
@@ -210,6 +281,7 @@ onMounted(() => {
   justify-content: center;
   font-size: 0.8rem;
   transition: 0.2s;
+  flex-shrink: 0;
 }
 
 .control-btn:hover {
@@ -217,13 +289,20 @@ onMounted(() => {
   color: #000;
 }
 
-.volume-slider {
+.volume-wrap {
   flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.volume-slider {
+  width: 100%;
   height: 4px;
   -webkit-appearance: none;
   background: #333;
   border-radius: 2px;
   outline: none;
+  direction: ltr; /* Force LTR for volume slider */
 }
 
 .volume-slider::-webkit-slider-thumb {
@@ -242,6 +321,7 @@ onMounted(() => {
   margin-top: 8px;
   height: 15px;
   align-items: flex-end;
+  pointer-events: none;
 }
 
 .bar {
@@ -263,6 +343,13 @@ onMounted(() => {
 .mini-icon {
   font-size: 1.5rem;
   animation: spin 3s linear infinite;
+  cursor: pointer;
+  pointer-events: auto;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 @keyframes spin {

@@ -35,7 +35,11 @@ onMounted(() => {
     <div class="guestbook-header">
       <h2>دفترچه یادگاری</h2>
       <p>خوشحال می‌شم نظرتون رو راجع به سایت بدونم! 👇</p>
-      <small style="color: #666; display: block; margin-top: 5px;">(Development Note: Please configure Giscus Repo ID and Category ID in GuestbookTab.vue to enable comments)</small>
+      <div class="setup-hint">
+        <small style="color: #666; display: block; margin-top: 5px; direction: ltr;">
+          <strong>Developer Note:</strong> To enable comments, go to <a href="https://giscus.app" target="_blank" style="color: var(--neon)">giscus.app</a>, configure it for your repo, and update <code>data-repo-id</code> and <code>data-category-id</code> in <code>src/components/dashboard/tabs/GuestbookTab.vue</code>.
+        </small>
+      </div>
     </div>
 
     <div ref="giscusContainer" class="giscus-wrapper"></div>
