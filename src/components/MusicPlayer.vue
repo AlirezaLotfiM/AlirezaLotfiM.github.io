@@ -19,14 +19,9 @@ const dragPos = ref({ x: 0, y: 0 });
 
 const tracks = [
   {
-    title: "Neon Dreams",
-    artist: "Synthwave Mix",
-    url: "/music/neon-dreams.mp3", // Placeholder
-  },
-  {
-    title: "Cyber City",
-    artist: "Lo-Fi Beats",
-    url: "/music/cyber-city.mp3", // Placeholder
+    title: "Neon Nights",
+    artist: "Turntable at Warm",
+    url: "/music/Neon Nights - Turntable at Warm.mp3",
   }
 ];
 
