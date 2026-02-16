@@ -28,7 +28,7 @@ const {
 const { currentThemeColor } = useTheme();
 
 // --- App State ---
-const appVersion = "1.3.0"; // Bumped version
+const appVersion = "1.3.1"; // Bumped version
 const showBoot = ref(true);
 const isBooted = ref(false);
 const isMatrixMode = ref(false);
