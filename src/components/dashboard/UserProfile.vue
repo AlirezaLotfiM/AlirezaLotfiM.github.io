@@ -107,9 +107,9 @@ onUnmounted(() => {
   <aside class="col-profile">
     <div class="glass-panel profile-box spotlight-card" @mousemove="handleCardTilt" @mouseleave="resetCard">
       <div class="spotlight-bg"></div>
-      <div class="profile-header">
+      <header class="profile-header">
         <div class="avatar-glow">
-          <img :src="`https://github.com/${userGithub}.png`" alt="Avatar" />
+          <img :src="`https://github.com/${userGithub}.png`" alt="Alireza Lotfi Avatar" />
         </div>
         <div class="profile-texts">
           <h1>علیرضا لطفی‌مقدم</h1>
@@ -118,7 +118,7 @@ onUnmounted(() => {
           </p>
           <p class="role-sub">Software Expert</p>
         </div>
-      </div>
+      </header>
 
       <div class="action-buttons">
         <button class="terminal-toggle" @click="emit('open-terminal')" title="Ctrl + K">

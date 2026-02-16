@@ -1,5 +1,6 @@
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useTheme } from './useTheme.js';
+import { useSEO } from './useSEO.js';
 
 // Shared state
 const userGithub = "AlirezaLotfiM";
@@ -81,6 +82,45 @@ const toPersianDigits = (num) => {
 };
 
 const { currentThemeColor } = useTheme();
+const { setPageTitle, setMetaDescription, resetSEO } = useSEO();
+
+// Watch activeTab to update title
+watch(activeTab, (newTab) => {
+  if (selectedNote.value) return; // Note overrides tab title
+
+  const titles = {
+    projects: "پروژه‌ها",
+    interests: "علاقه‌مندی‌ها",
+    roadmap: "مسیر من",
+    history: "سوابق شغلی",
+    notes: "یادداشت‌ها"
+  };
+  setPageTitle(titles[newTab] || "Software Engineer");
+
+  if (newTab === 'projects') setMetaDescription("نمونه کارهای علیرضا لطفی‌مقدم شامل پروژه‌های دسکتاپ و وب.");
+  if (newTab === 'history') setMetaDescription("سوابق شغلی و تجربه کاری من در شرکت‌های مختلف نرم‌افزاری.");
+}, { immediate: true });
+
+// Watch selectedNote to update title
+watch(selectedNote, (newNote) => {
+  if (newNote) {
+    setPageTitle(newNote.title);
+    // Use first 150 chars of body or a default desc
+    const desc = newNote.body ? newNote.body.substring(0, 150).replace(/[\r\n]+/g, ' ') + "..." : "یادداشتی از علیرضا لطفی‌مقدم";
+    setMetaDescription(desc);
+  } else {
+    // Reset to active tab
+    const titles = {
+      projects: "پروژه‌ها",
+      interests: "علاقه‌مندی‌ها",
+      roadmap: "مسیر من",
+      history: "سوابق شغلی",
+      notes: "یادداشت‌ها"
+    };
+    setPageTitle(titles[activeTab.value]);
+    setMetaDescription(null); // Will fallback to default in useSEO logic
+  }
+});
 
 const getLangColor = (lang) => {
   if (!lang) return "#888";

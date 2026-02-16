@@ -36,8 +36,8 @@ const emit = defineEmits(['toggle-zen']);
 <template>
   <main class="col-main glass-panel main-box">
     <!-- Header: Tabs & Controls -->
-    <div class="tabs-header" :class="{ hidden: isZenMode }">
-      <div class="main-tabs">
+    <header class="tabs-header" :class="{ hidden: isZenMode }">
+      <nav class="main-tabs" aria-label="Main Navigation">
         <button @click="selectedNote ? closeNote() : (activeTab = 'projects')"
           :class="{ active: !selectedNote && activeTab === 'projects' }">
           پروژه‌ها
@@ -57,7 +57,7 @@ const emit = defineEmits(['toggle-zen']);
         <button @click="activeTab = 'notes'" :class="{ active: activeTab === 'notes' || selectedNote }">
           یادداشت
         </button>
-      </div>
+      </nav>
 
       <div class="header-controls">
         <div v-if="activeTab === 'projects' && !selectedNote" class="project-controls">
@@ -76,7 +76,7 @@ const emit = defineEmits(['toggle-zen']);
           </div>
         </div>
       </div>
-    </div>
+    </header>
 
     <!-- Content Body -->
     <div class="content-body">

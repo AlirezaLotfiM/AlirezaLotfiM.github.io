@@ -34,8 +34,8 @@ const shareNote = () => {
 <template>
   <div class="notes-container">
     <!-- Detail View -->
-    <div v-if="selectedNote" class="thread-view">
-      <div class="thread-header">
+    <article v-if="selectedNote" class="thread-view">
+      <header class="thread-header">
         <div class="note-meta">
           <h3>{{ selectedNote.title }}</h3>
           <div class="meta-row">
@@ -65,7 +65,7 @@ const shareNote = () => {
             ➜ بازگشت
           </button>
         </div>
-      </div>
+      </header>
       <div class="thread-content scroll-area">
         <div class="content-block main-post">
           <div class="block-body" v-html="parseMarkdown(selectedNote.body)"></div>
@@ -85,11 +85,11 @@ const shareNote = () => {
           <div class="block-body" v-html="parseMarkdown(comment.body)"></div>
         </div>
       </div>
-    </div>
+    </article>
 
     <!-- List View -->
-    <div v-else class="notes-list">
-      <div v-for="n in notes" :key="n.id" class="note-row spotlight-card" @click="openNote(n)"
+    <ul v-else class="notes-list">
+      <li v-for="n in notes" :key="n.id" class="note-row spotlight-card" @click="openNote(n)"
         @mousemove="handleCardTilt" @mouseleave="resetCard" style="cursor: pointer">
         <div class="spotlight-bg"></div>
         <div class="note-inner">
@@ -117,11 +117,11 @@ const shareNote = () => {
             }}</span><span class="read-btn">بخوانید &larr;</span>
           </div>
         </div>
-      </div>
-      <div v-if="notes.length === 0" class="empty-state">
+      </li>
+      <li v-if="notes.length === 0" class="empty-state">
         <p>هنوز یادداشتی منتشر نشده است.</p>
-      </div>
-    </div>
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -134,6 +134,9 @@ const shareNote = () => {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .note-row {

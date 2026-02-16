@@ -7,8 +7,8 @@ const { handleCardTilt, resetCard } = useTilt();
 </script>
 
 <template>
-  <div class="history-list">
-    <div v-for="(job, index) in workExperiences" :key="job.id" class="history-item spotlight-card"
+  <ul class="history-list">
+    <li v-for="(job, index) in workExperiences" :key="job.id" class="history-item spotlight-card"
       @mousemove="handleCardTilt" @mouseleave="resetCard">
       <div class="spotlight-bg"></div>
 
@@ -36,8 +36,8 @@ const { handleCardTilt, resetCard } = useTilt();
           <span v-for="tech in job.technologies" :key="tech" class="tech-pill">{{ tech }}</span>
         </div>
       </div>
-    </div>
-  </div>
+    </li>
+  </ul>
 </template>
 
 <style scoped>
@@ -46,6 +46,8 @@ const { handleCardTilt, resetCard } = useTilt();
   flex-direction: column;
   gap: 20px;
   padding: 10px;
+  margin: 0;
+  list-style: none;
 }
 
 .history-item {

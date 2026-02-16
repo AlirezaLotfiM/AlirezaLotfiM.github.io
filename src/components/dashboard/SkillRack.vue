@@ -6,11 +6,11 @@ const { mySkills, toPersianDigits } = usePortfolio();
 
 <template>
   <aside class="col-skills glass-panel skills-box">
-    <div class="panel-header">
+    <header class="panel-header">
       <h3>ماژول‌های تخصص</h3>
-    </div>
-    <div class="rack-container scroll-area">
-      <div v-for="skill in mySkills" :key="skill.name" class="skill-module" dir="ltr">
+    </header>
+    <ul class="rack-container scroll-area">
+      <li v-for="skill in mySkills" :key="skill.name" class="skill-module" dir="ltr">
         <div class="module-header">
           <div class="module-title">
             <span class="status-dot"></span>
@@ -24,8 +24,8 @@ const { mySkills, toPersianDigits } = usePortfolio();
             <div class="bar-glow"></div>
           </div>
         </div>
-      </div>
-    </div>
+      </li>
+    </ul>
   </aside>
 </template>
 
@@ -56,6 +56,8 @@ const { mySkills, toPersianDigits } = usePortfolio();
 
 .rack-container {
   padding: 20px;
+  margin: 0;
+  list-style: none;
   height: 100%;
   overflow-y: auto;
   display: flex;
