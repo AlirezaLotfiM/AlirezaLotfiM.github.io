@@ -17,7 +17,7 @@ onMounted(() => {
   script.setAttribute('data-reactions-enabled', "1");
   script.setAttribute('data-emit-metadata', "0");
   script.setAttribute('data-input-position', "bottom");
-  script.setAttribute('data-theme', "https://alirezalotfim.github.io/giscus-theme.css"); // Use Custom CSS
+  script.setAttribute('data-theme', "https://alirezalotfimoghaddam.s3.ir-thr-at1.arvanstorage.ir/giscus-theme.css?versionId="); // Use Custom CSS
   script.setAttribute('data-lang', "fa");
   script.setAttribute('data-loading', "lazy");
   script.setAttribute('crossorigin', "anonymous");
