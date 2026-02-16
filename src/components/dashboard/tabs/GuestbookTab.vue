@@ -9,20 +9,17 @@ onMounted(() => {
   const script = document.createElement('script');
   script.src = "https://giscus.app/client.js";
   script.setAttribute('data-repo', "AlirezaLotfiM/AlirezaLotfiM.github.io");
-  script.setAttribute('data-repo-id', "R_kgDONn5R6A"); // Placeholder - User needs to update this! I found this repo ID from a public search or just put a guess? No, I must use a valid one or user must update. I will put a placeholder comment.
-  // Actually, without correct repo-id, it might fail. But user can fix it.
-  // Wait, I can try to find the repo ID if I can access the repo URL.
-  // https://github.com/AlirezaLotfiM/AlirezaLotfiM.github.io
-  // I can't easily get the ID without API. I will put a placeholder.
-  script.setAttribute('data-category', "General");
-  script.setAttribute('data-category-id', "DIC_kwDONn5R6M4Cl2v_"); // Placeholder
+  script.setAttribute('data-repo-id', "R_kgDOINh7ow");
+  script.setAttribute('data-category', "Announcements");
+  script.setAttribute('data-category-id', "DIC_kwDOINh7o84C2k3T");
   script.setAttribute('data-mapping', "pathname");
   script.setAttribute('data-strict', "0");
   script.setAttribute('data-reactions-enabled', "1");
   script.setAttribute('data-emit-metadata', "0");
   script.setAttribute('data-input-position', "bottom");
-  script.setAttribute('data-theme', "dark");
+  script.setAttribute('data-theme', "dark_tritanopia");
   script.setAttribute('data-lang', "fa");
+  script.setAttribute('data-loading', "lazy");
   script.setAttribute('crossorigin', "anonymous");
   script.async = true;
 
@@ -35,11 +32,6 @@ onMounted(() => {
     <div class="guestbook-header">
       <h2>دفترچه یادگاری</h2>
       <p>خوشحال می‌شم نظرتون رو راجع به سایت بدونم! 👇</p>
-      <div class="setup-hint">
-        <small style="color: #666; display: block; margin-top: 5px; direction: ltr;">
-          <strong>Developer Note:</strong> To enable comments, go to <a href="https://giscus.app" target="_blank" style="color: var(--neon)">giscus.app</a>, configure it for your repo, and update <code>data-repo-id</code> and <code>data-category-id</code> in <code>src/components/dashboard/tabs/GuestbookTab.vue</code>.
-        </small>
-      </div>
     </div>
 
     <div ref="giscusContainer" class="giscus-wrapper"></div>
@@ -47,6 +39,9 @@ onMounted(() => {
 </template>
 
 <style scoped>
+:deep(.giscus), :deep(.giscus-frame) {
+  width: 100% !important;
+}
 .guestbook-tab {
   animation: fadeIn 0.5s ease-in-out;
 }
