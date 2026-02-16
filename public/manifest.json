@@ -1,0 +1,26 @@
+{
+  "name": "Alireza Lotfi | Software Engineer",
+  "short_name": "Damoon",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#67FF64",
+  "description": "Portfolio of Alireza Lotfi, a Senior .NET Developer specializing in distributed systems.",
+  "icons": [
+    {
+      "src": "Damoon-d.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "Damoon-d.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "vite.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

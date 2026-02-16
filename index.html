@@ -6,10 +6,21 @@
     <meta name="theme-color" content="#0a0a0a" />
     <meta name="description" content="Portfolio of Alireza Lotfi, a Senior .NET Developer specializing in distributed systems, WPF, and high-performance backend architecture." />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="apple-touch-icon" href="/Damoon-d.png">
+    <link rel="manifest" href="/manifest.json" />
     <title>Alireza Lotfi | Software Engineer</title>
   </head>
   <body>
     <div id="app"></div>
     <script type="module" src="/src/main.js"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then(reg => console.log('SW registered!', reg))
+            .catch(err => console.log('SW registration failed!', err));
+        });
+      }
+    </script>
   </body>
 </html>

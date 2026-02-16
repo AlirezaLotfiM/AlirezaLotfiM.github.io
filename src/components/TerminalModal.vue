@@ -1,5 +1,6 @@
 <script setup>
 import { ref, nextTick, watch, onMounted } from 'vue';
+import TerminalSnake from './terminal/TerminalSnake.vue';
 
 // دریافت اطلاعات از والد (App.vue)
 const props = defineProps({
@@ -17,6 +18,7 @@ const emit = defineEmits(['close']);
 const inputRef = ref(null);
 const inputValue = ref('');
 const history = ref([]);
+const isGameMode = ref(false);
 
 // تابع اولیه برای پر کردن تاریخچه با اطلاعات دینامیک
 const initTerminal = () => {
@@ -46,6 +48,7 @@ const focusInput = () => {
 watch(() => props.visible, (val) => {
   if (val) {
     initTerminal(); // ریست کردن ترمینال موقع باز شدن
+    isGameMode.value = false; // خروج از بازی در صورت باز کردن مجدد
     focusInput();
   }
 });
@@ -64,10 +67,14 @@ const handleCommand = () => {
     addLog('  whoami    - Display user profile');
     addLog('  skills    - List technical skills');
     addLog('  projects  - List projects (ls)');
+    addLog('  snake     - Play Snake Game');
     addLog('  contact   - Show contact info');
     addLog('  cls       - Clear terminal');
     addLog('  exit      - Close terminal');
   } 
+  else if (cmd === 'snake' || cmd === 'game') {
+    isGameMode.value = true;
+  }
   else if (cmd === 'ls' || cmd === 'projects') {
     addLog('Scanning projects directory...', 'os-dim');
     addLog('');
@@ -151,7 +158,7 @@ onMounted(() => {
           </div>
         </div>
         
-        <div class="terminal-body" @click="focusInput">
+        <div class="terminal-body" @click="focusInput" v-if="!isGameMode">
           <div v-for="(line, index) in history" :key="index">
             <div v-if="line.type === 'empty'" class="empty-line"></div>
             <pre v-else-if="line.type === 'ascii'" class="ascii-art">{{ line.content }}</pre>
@@ -173,6 +180,10 @@ onMounted(() => {
               autocomplete="off" 
             />
           </div>
+        </div>
+
+        <div v-else class="game-container">
+          <TerminalSnake @exit="isGameMode = false; focusInput()" />
         </div>
 
       </div>
@@ -218,9 +229,13 @@ onMounted(() => {
 .win-btn:hover { background: #e5e5e5; }
 .win-btn.close:hover { background: #e81123; color: white; }
 
-.terminal-body {
+.terminal-body, .game-container {
   flex: 1; padding: 5px; overflow-y: auto; color: #ccc; font-size: 1rem;
   border-top: 1px solid #333;
+}
+.game-container {
+  padding: 0;
+  overflow: hidden;
 }
 
 .empty-line { height: 1.2rem; }
