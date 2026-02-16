@@ -3,95 +3,77 @@
  * Matches the site's neon/dark aesthetic
  */
 
+/* Force global text color */
 main {
-  --color-prettylights-syntax-comment: #8b949e;
-  --color-prettylights-syntax-constant: #79c0ff;
-  --color-prettylights-syntax-entity: #d2a8ff;
-  --color-prettylights-syntax-storage-modifier-import: #c9d1d9;
-  --color-prettylights-syntax-entity-tag: #7ee787;
-  --color-prettylights-syntax-keyword: #ff7b72;
-  --color-prettylights-syntax-string: #a5d6ff;
-  --color-prettylights-syntax-variable: #ffa657;
-  --color-prettylights-syntax-brackethighlighter-unmatched: #f85149;
-  --color-prettylights-syntax-invalid-illegal-text: #f0f6fc;
-  --color-prettylights-syntax-invalid-illegal-bg: #8b949e;
-  --color-prettylights-syntax-carriage-return-text: #f0f6fc;
-  --color-prettylights-syntax-carriage-return-bg: #b62324;
-  --color-prettylights-syntax-string-regexp: #7ee787;
-  --color-prettylights-syntax-markup-list: #f2cc60;
-  --color-prettylights-syntax-markup-heading: #1f6feb;
-  --color-prettylights-syntax-markup-italic: #c9d1d9;
-  --color-prettylights-syntax-markup-bold: #c9d1d9;
-  --color-prettylights-syntax-markup-deleted-text: #ffdcd7;
-  --color-prettylights-syntax-markup-deleted-bg: #67060c;
-  --color-prettylights-syntax-markup-inserted-text: #aff5b4;
-  --color-prettylights-syntax-markup-inserted-bg: #033a16;
-  --color-prettylights-syntax-markup-changed-text: #ffdf5d;
-  --color-prettylights-syntax-markup-changed-bg: #5a1e02;
-  --color-prettylights-syntax-markup-ignored-text: #c9d1d9;
-  --color-prettylights-syntax-markup-ignored-bg: #1158c7;
-  --color-prettylights-syntax-meta-diff-range: #d2a8ff;
-  --color-prettylights-syntax-brackethighlighter-angle: #8b949e;
-  --color-prettylights-syntax-sublimelinter-gutter-mark: #484f58;
-  --color-prettylights-syntax-constant-other-reference-link: #a5d6ff;
-  --color-btn-text: #c9d1d9;
-  --color-btn-bg: #21262d;
-  --color-btn-border: #30363d;
-  --color-btn-shadow: 0 0 transparent;
-  --color-btn-inset-shadow: 0 0 transparent;
-  --color-btn-hover-bg: #30363d;
-  --color-btn-hover-border: #8b949e;
-  --color-btn-active-bg: #282e33;
-  --color-btn-active-border: #6e7681;
-  --color-btn-selected-bg: #161b22;
-  --color-btn-primary-text: #ffffff;
-  --color-btn-primary-bg: #67FF64; /* Theme Neon */
-  --color-btn-primary-border: #67FF64;
-  --color-btn-primary-shadow: 0 0 transparent;
-  --color-btn-primary-inset-shadow: 0 0 transparent;
-  --color-btn-primary-hover-bg: #54cc52;
-  --color-btn-primary-hover-border: #54cc52;
-  --color-btn-primary-selected-bg: #45a843;
-  --color-btn-primary-selected-shadow: 0 0 transparent;
-  --color-btn-primary-disabled-text: rgba(255, 255, 255, 0.5);
-  --color-btn-primary-disabled-bg: rgba(103, 255, 100, 0.4);
-  --color-btn-primary-disabled-border: transparent;
-  --color-fg-default: #ffffff; /* Brighter white for main text */
-  --color-fg-muted: #b0b0b0;   /* Lighter gray for muted text */
-  --color-fg-subtle: #8b949e;
-  --color-canvas-default: transparent; /* Transparent background */
-  --color-canvas-overlay: #161b22;
-  --color-canvas-inset: #0d1117;
-  --color-canvas-subtle: #161b22;
-  --color-border-default: #30363d;
-  --color-border-muted: #21262d;
-  --color-neutral-muted: rgba(110, 118, 129, 0.4);
-  --color-accent-fg: #67FF64; /* Theme Neon */
-  --color-accent-emphasis: #67FF64;
-  --color-accent-muted: rgba(103, 255, 100, 0.4);
-  --color-accent-subtle: rgba(103, 255, 100, 0.1);
-  --color-success-fg: #67FF64;
-  --color-attention-fg: #d29922;
-  --color-danger-fg: #f85149;
-  --color-primer-shadow-focus: 0 0 0 3px rgba(103, 255, 100, 0.3);
-  --color-primer-shadow-inset: 0 0 transparent;
+  --color-fg-default: #ffffff !important;
+  --color-fg-muted: #b0b0b0 !important;
+  --color-fg-subtle: #8b949e !important;
+  --color-canvas-default: transparent !important;
+  --color-canvas-overlay: #161b22 !important;
+  --color-canvas-inset: #0d1117 !important;
+  --color-canvas-subtle: #161b22 !important;
+  --color-border-default: #30363d !important;
+  --color-border-muted: #21262d !important;
+  --color-accent-fg: #67FF64 !important;
+  --color-accent-emphasis: #67FF64 !important;
+
+  /* Buttons */
+  --color-btn-text: #c9d1d9 !important;
+  --color-btn-bg: #21262d !important;
+  --color-btn-border: #30363d !important;
+  --color-btn-primary-text: #000000 !important;
+  --color-btn-primary-bg: #67FF64 !important;
+  --color-btn-primary-border: #67FF64 !important;
 }
 
-main .pagination-loader-container {
-  background-image: url("https://github.com/images/modules/pulls/progressive-disclosure-line-dark.svg");
-}
-
-/* Ensure buttons have black text for contrast on neon bg */
-main .btn-primary {
-  color: #000 !important;
-  font-weight: bold;
-}
-
-/* Force text colors just in case */
-main, .gsc-comment-content, .gsc-header, .gsc-reply-content {
+/* Aggressively target Giscus Tailwind classes */
+.color-text-primary {
   color: #ffffff !important;
 }
 
-.gsc-comment-author {
-  color: var(--color-accent-fg) !important;
+.color-text-secondary {
+  color: #b0b0b0 !important;
+}
+
+.color-text-tertiary {
+  color: #8b949e !important;
+}
+
+/* Comment Box / Textarea */
+.gsc-comment-box-textarea,
+.form-control,
+textarea {
+  background-color: #0d1117 !important;
+  color: #ffffff !important;
+  border-color: #30363d !important;
+}
+
+.gsc-comment-box-textarea::placeholder {
+  color: #6e7681 !important;
+}
+
+/* Reaction Menu & Popovers */
+.gsc-reactions-popover {
+  background-color: #161b22 !important;
+  border-color: #30363d !important;
+}
+
+/* Links */
+a, .color-text-link {
+  color: #67FF64 !important; /* Neon Green */
+}
+
+/* Headers */
+h1, h2, h3, h4, h5, h6 {
+  color: #ffffff !important;
+}
+
+/* Ensure main wrapper is visible */
+main {
+  color: #ffffff !important;
+}
+
+/* Fix for specific Giscus elements mentioned in user screenshot */
+.gsc-main, .gsc-header, .gsc-comments, .gsc-timeline {
+  color: #ffffff !important;
 }
