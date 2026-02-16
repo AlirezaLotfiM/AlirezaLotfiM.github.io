@@ -9,7 +9,7 @@ import ContextMenu from "./components/ContextMenu.vue";
 import BootSequence from "./components/BootSequence.vue";
 
 // --- تنظیمات نسخه ---
-const appVersion = "1.2.5";
+const appVersion = "1.2.8";
 
 const showBoot = ref(true);
 const isBooted = ref(false);
@@ -117,64 +117,64 @@ const copiedTooltip = ref(null);
 const shareTooltip = ref("کپی لینک");
 
 const mySkills = ref([
-  { name: "C# .NET", level: 85 },
-  { name: "WPF & WinForms", level: 80 },
-  { name: "SQL Server", level: 65 },
-  { name: "ASP.NET Core", level: 70 },
-  { name: "Entity Framework", level: 75 },
-  { name: "Vue.js", level: 35 },
-  { name: "System Design", level: 30 },
-  { name: "Git", level: 60 },
+  { name: "C# (.NET Ecosystem)", level: 80 }, 
+  { name: "WPF & Win32 Integration", level: 70 }, 
+  { name: "ASP.NET Core WebAPI", level: 75 }, 
+  { name: "SQL Server & Data Design", level: 65 }, 
+  { name: "SignalR (Real-time Communication)", level: 50 }, 
+  { name: "Vue.js 3", level: 45 }, 
+  { name: "Messaging (RabbitMQ)", level: 30 }, 
+  { name: "System Design Concepts", level: 40 }, 
 ]);
 
 const interests = ref([
   {
-    title: "Distributed Systems",
+    title: "Exploring Distributed Systems",
     icon: "🌐",
-    desc: "شیفته‌ی چالش‌های همگام‌سازی، معماری میکروسرویس و الگوهای Event-Driven.",
+    desc: "علاقه‌مند به یادگیری و پیاده‌سازی چالش‌های همگام‌سازی و الگوهای Event-Driven.",
   },
   {
-    title: "High-Performance DB",
-    icon: "⚡",
-    desc: "لذت بردن از Tuning کوئری‌های SQL و طراحی ساختارهای داده‌ای بهینه در Redis.",
-  },
-  {
-    title: "OS Internals & Memory",
+    title: "System Architecture",
     icon: "🧠",
-    desc: "علاقه به درک عمیق مدیریت حافظه، Threading و نحوه کارکرد سیستم‌عامل (Windows).",
+    desc: "اشتیاق به درک عمیق‌تر طراحی سیستم‌های مقیاس‌پذیر و تبدیل طرح‌های تئوری به کد.",
   },
   {
-    title: "Automated DevOps",
+    title: "Hardware-Software Interaction",
+    icon: "🔌",
+    desc: "لذت بردن از چالش‌های فنی در کنترل دیوایس‌های جانبی از طریق کدنویسی سطح پایین.",
+  },
+  {
+    title: "Modern Web Technologies",
     icon: "🚀",
-    desc: "ساخت پایپ‌لاین‌های CI/CD و کانتینرایز کردن سرویس‌ها برای استقرار بی‌دردسر.",
+    desc: "دنبال کردن دنیای Vue.js و SignalR برای خلق رابط‌های کاربری بلادرنگ و تعاملی.",
   },
 ]);
 
 const roadmapItems = ref([
   {
-    title: "Desktop Mastery (WPF/WinForms)",
+    title: "Practical Desktop Dev (WPF)",
     status: "done",
-    desc: "توسعه نرم‌افزارهای دسکتاپ پیچیده و سازمانی با C# و تسلط بر چرخه حیات ویندوز.",
+    desc: "توسعه نرم‌افزارهای دسکتاپ و مدیریت تعامل با سخت‌افزار در پروژه‌های عملیاتی.",
   },
   {
-    title: "Advanced ASP.NET Core",
+    title: "ASP.NET Core Deep Dive",
     status: "progress",
-    desc: "عمیق شدن در تزریق وابستگی (DI)، میدل‌ورها و تست‌نویسی (xUnit) برای استانداردسازی بکند.",
+    desc: "ارتقای دانش در میدل‌ورها، تزریق وابستگی و استانداردسازی APIها برای سیستم‌های توزیع‌شده.",
   },
   {
-    title: "Microservices & RabbitMQ",
+    title: "NeuroFlow: Distributed Logic",
     status: "progress",
-    desc: "پیاده‌سازی الگوهای توزیع‌شده (CQRS, Saga) و مدیریت صف‌ها در پروژه NexusQueue.",
+    desc: "پیاده‌سازی گام‌به‌گام معماری رویداد-محور (Event-Driven) و استفاده عملی از RabbitMQ در پروژه نوروفلو.",
   },
   {
-    title: "High Performance Database",
+    title: "High Performance Data Storage",
     status: "todo",
-    desc: "بهینه‌سازی پیشرفته SQL، ایندکس‌گذاری، مدیریت تراکنش‌ها و استفاده از Redis برای کشینگ.",
+    desc: "یادگیری ایندکس‌گذاری پیشرفته در SQL و شروع کار با Redis برای مدیریت کشینگ.",
   },
   {
-    title: "DevOps & CI/CD",
+    title: "AI Integration (ML.NET)",
     status: "todo",
-    desc: "کانتینرسازی سرویس‌ها با Docker، پایپ‌لاین‌های GitHub Actions و مقدمات Kubernetes.",
+    desc: "آشنایی با مدل‌های پیش‌بینی ترافیک جهت پیاده‌سازی ماژول هوشمند در فازهای نهایی پلتفرم.",
   },
 ]);
 
@@ -236,41 +236,38 @@ const fetchData = async () => {
     const manualProjects = [
       {
         id: 101,
-        name: "سیستم نوبت‌دهی نرم‌افزاری",
-        language: "C#",
-        description: "سیستم نوبت‌دهی نرم‌افزاری ویندوزی (WPF + .NET Core + SQL Server)",
+        name: "NeuroFlow Platform",
+        language: "Concept",
+        description: "طراحی و پیاده‌سازی اولیه پلتفرم مدیریت جریان کار با تمرکز بر معماری توزیع‌شده و اتصال سخت‌افزار به وب.",
         html_url: "#",
         isPrivate: true,
       },
       {
         id: 102,
         name: "سامانه آموزش بیودارو",
-        language: "Vue",
-        description: "فول‌استک (NET Core + SQL + Vue). پنل آزمون پرسنل.",
+        language: "C# / Vue",
+        description: "سامانه فول‌استک مدیریت آزمون و آموزش پرسنل مبتنی بر پنل‌های داینامیک.",
         html_url: "#",
         isPrivate: true,
       },
       {
         id: 103,
         name: "سامانه مانیتورینگ بانک ملت",
-        language: "Vue",
-        description: "مانیتورینگ نوبت‌دهی آنلاین (Web).",
-        html_url: "#",
-        isPrivate: true,
+        language: "Vue.js",
+        description: "داشبورد مدیریتی و مانیتورینگ آنلاین وضعیت صف‌ها و عملکرد شعب در بستر وب.",
       },
       {
         id: 104,
-        name: "Nexus Queue System",
-        language: "Concept",
-        description:
-          "ایده‌پردازی و طراحی اولیه معماری سیستم نوبت‌دهی توزیع‌شده.",
+        name: "Legacy Queue Systems",
+        language: "WPF",
+        description: "توسعه سیستم‌های نوبت‌دهی ویندوزی متمرکز با قابلیت کنترل سخت‌افزارهای جانبی.",
         html_url: "#",
         isPrivate: true,
       },
     ];
     projects.value = [...manualProjects, ...githubProjects];
     notes.value = Array.isArray(issues) ? issues : [];
-  } catch (e) {}
+  } catch (e) { }
   loading.value = false;
 };
 
@@ -283,7 +280,7 @@ const openNote = async (note) => {
       const res = await fetch(note.comments_url);
       if (res.ok) noteComments.value = await res.json();
     }
-  } catch (e) {}
+  } catch (e) { }
   loadingComments.value = false;
 };
 const closeNote = () => {
@@ -324,7 +321,6 @@ const handleKeydown = (e) => {
   }
 };
 
-// --- FIX: اصلاح تابع چرخش سه بعدی ---
 const handleMouseMove = (e) => {
   if (window.innerWidth < 768) return;
   const cards = document.querySelectorAll(".spotlight-card");
@@ -366,18 +362,10 @@ onMounted(() => {
     "background: #0a0a0a; color: #67FF64; font-size: 14px; padding: 15px; border-radius: 5px; border: 2px solid #67FF64; font-family: monospace;",
   );
 
-  // Konami Code
   const konamiCode = [
-    "ArrowUp",
-    "ArrowUp",
-    "ArrowDown",
-    "ArrowDown",
-    "ArrowLeft",
-    "ArrowRight",
-    "ArrowLeft",
-    "ArrowRight",
-    "b",
-    "a",
+    "ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown",
+    "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight",
+    "b", "a",
   ];
   let konamiIndex = 0;
   window.addEventListener("keydown", (e) => {
@@ -402,91 +390,47 @@ onUnmounted(() => {
 
 <template>
   <CustomCursor />
-  <Transition name="fade"
-    ><BootSequence v-if="showBoot" @completed="handleBootComplete"
-  /></Transition>
+  <Transition name="fade">
+    <BootSequence v-if="showBoot" @completed="handleBootComplete" />
+  </Transition>
 
-  <div
-    v-show="!showBoot"
-    class="main-wrapper"
-    :class="{ 'fade-in-enter': isBooted }"
-  >
+  <div v-show="!showBoot" class="main-wrapper" :class="{ 'fade-in-enter': isBooted }">
     <Transition name="fade">
-      <component
-        :is="isMatrixMode ? MatrixRain : CyberParticles"
-        :color="currentThemeColor"
-        :key="currentThemeColor"
-      />
+      <component :is="isMatrixMode ? MatrixRain : CyberParticles" :color="currentThemeColor" :key="currentThemeColor" />
     </Transition>
 
-    <TerminalModal
-      :visible="showTerminal"
-      :projects="projects"
-      :skills="mySkills"
-      :contact="{
-        email: myEmail,
-        linkedin: myLinkedin,
-        github: userGithub,
-        telegram: myTelegramID,
-      }"
-      :version="appVersion"
-      username="Damoon"
-      role="Software Engineer"
-      @close="showTerminal = false"
-    />
-    <ContextMenu
-      :visible="contextMenu.visible"
-      :x="contextMenu.x"
-      :y="contextMenu.y"
-      @action="handleMenuAction"
-      @close="contextMenu.visible = false"
-    />
+    <TerminalModal :visible="showTerminal" :projects="projects" :skills="mySkills" :contact="{
+      email: myEmail,
+      linkedin: myLinkedin,
+      github: userGithub,
+      telegram: myTelegramID,
+    }" :version="appVersion" username="Damoon" role="Software Engineer" @close="showTerminal = false" />
+    <ContextMenu :visible="contextMenu.visible" :x="contextMenu.x" :y="contextMenu.y" @action="handleMenuAction"
+      @close="contextMenu.visible = false" />
 
-    <div
-      class="dashboard"
-      @mousemove="handleMouseMove"
-      :class="{ 'zen-mode': isZenMode }"
-    >
+    <div class="dashboard" @mousemove="handleMouseMove" :class="{ 'zen-mode': isZenMode }">
       <div class="layout-grid" :class="{ 'zen-active': isZenMode }">
         <aside class="col-profile">
-          <div
-            class="glass-panel profile-box spotlight-card"
-            @mousemove="handleCardTilt"
-            @mouseleave="resetCard"
-          >
+          <div class="glass-panel profile-box spotlight-card" @mousemove="handleCardTilt" @mouseleave="resetCard">
             <div class="spotlight-bg"></div>
             <div class="profile-header">
               <div class="avatar-glow">
-                <img
-                  :src="`https://github.com/${userGithub}.png`"
-                  alt="Avatar"
-                />
+                <img :src="`https://github.com/${userGithub}.png`" alt="Avatar" />
               </div>
               <div class="profile-texts">
                 <h1>علیرضا لطفی‌مقدم</h1>
                 <p class="role" dir="ltr">
-                  <span class="typewriter">{{ typeText }}</span
-                  ><span class="cursor">|</span>
+                  <span class="typewriter">{{ typeText }}</span><span class="cursor">|</span>
                 </p>
                 <p class="role-sub">Software Expert</p>
               </div>
             </div>
 
             <div class="action-buttons">
-              <button
-                class="terminal-toggle"
-                @click="showTerminal = true"
-                title="Ctrl + K"
-              >
+              <button class="terminal-toggle" @click="showTerminal = true" title="Ctrl + K">
                 damoon@root:~$
               </button>
-              <a
-                href="/MyResume.pdf"
-                download
-                class="resume-btn"
-                title="دانلود رزومه"
-                >📄 PDF</a
-              >
+              <a href="/MyResume.pdf" download class="resume-btn" title="دانلود رزومه">📄 PDF</a>
             </div>
 
             <div class="bio-short">
@@ -495,75 +439,41 @@ onUnmounted(() => {
             </div>
             <div class="stats-row">
               <div class="stat">
-                <strong>{{ experienceYears }}</strong
-                ><span>سال تجربه</span>
+                <strong>{{ experienceYears }}</strong><span>سال تجربه</span>
               </div>
               <div class="sep"></div>
               <div class="stat">
-                <strong>{{ toPersianDigits(`+${projects.length}`) }}</strong
-                ><span>پروژه</span>
+                <strong>{{ toPersianDigits(`+${projects.length}`) }}</strong><span>پروژه</span>
               </div>
             </div>
 
             <div class="contact-grid">
               <div class="contact-wrapper">
-                <button
-                  class="contact-btn email"
-                  @click="handleCopy(myEmail, $event, 'کپی ایمیل')"
-                  aria-label="Email"
-                >
-                  <svg
-                    viewBox="0 0 24 24"
-                    width="24"
-                    height="24"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    fill="none"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
+                <button class="contact-btn email" @click="handleCopy(myEmail, $event, 'کپی ایمیل')" aria-label="Email">
+                  <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"
+                    stroke-linecap="round" stroke-linejoin="round">
                     <rect width="20" height="16" x="2" y="4" rx="2" />
                     <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
                   </svg>
                 </button>
                 <div class="tooltip-box">
-                  <span class="label">ایمیل</span
-                  ><button
-                    class="copy-btn"
-                    @click.prevent="copyToClipboard(myEmail, 'email')"
-                  >
+                  <span class="label">ایمیل</span><button class="copy-btn"
+                    @click.prevent="copyToClipboard(myEmail, 'email')">
                     {{ copiedTooltip === "email" ? "کپی شد! ✅" : "کپی آدرس" }}
                   </button>
                 </div>
               </div>
               <div class="contact-wrapper">
-                <a
-                  :href="myLinkedin"
-                  target="_blank"
-                  class="contact-btn linkedin"
-                  aria-label="LinkedIn"
-                  ><svg
-                    viewBox="0 0 24 24"
-                    width="24"
-                    height="24"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    fill="none"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <path
-                      d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"
-                    />
+                <a :href="myLinkedin" target="_blank" class="contact-btn linkedin" aria-label="LinkedIn"><svg
+                    viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
                     <rect width="4" height="12" x="2" y="9" />
-                    <circle cx="4" cy="4" r="2" /></svg
-                ></a>
+                    <circle cx="4" cy="4" r="2" />
+                  </svg></a>
                 <div class="tooltip-box">
-                  <span class="label">لینکدین</span
-                  ><button
-                    class="copy-btn"
-                    @click.prevent="copyToClipboard(myLinkedin, 'linkedin')"
-                  >
+                  <span class="label">لینکدین</span><button class="copy-btn"
+                    @click.prevent="copyToClipboard(myLinkedin, 'linkedin')">
                     {{
                       copiedTooltip === "linkedin" ? "کپی لینک! ✅" : "کپی لینک"
                     }}
@@ -571,55 +481,27 @@ onUnmounted(() => {
                 </div>
               </div>
               <div class="contact-wrapper">
-                <a
-                  :href="myTelegram"
-                  target="_blank"
-                  class="contact-btn telegram"
-                  aria-label="Telegram"
-                  ><svg
-                    viewBox="0 0 24 24"
-                    width="24"
-                    height="24"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    fill="none"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
+                <a :href="myTelegram" target="_blank" class="contact-btn telegram" aria-label="Telegram"><svg
+                    viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"
+                    stroke-linecap="round" stroke-linejoin="round">
                     <path d="m22 2-7 20-4-9-9-4Z" />
-                    <path d="M22 2 11 13" /></svg
-                ></a>
+                    <path d="M22 2 11 13" />
+                  </svg></a>
                 <div class="tooltip-box">
-                  <span class="label">تلگرام</span
-                  ><button
-                    class="copy-btn"
-                    @click.prevent="copyToClipboard(myTelegramID, 'telegram')"
-                  >
+                  <span class="label">تلگرام</span><button class="copy-btn"
+                    @click.prevent="copyToClipboard(myTelegramID, 'telegram')">
                     {{ copiedTooltip === "telegram" ? "کپی شد! ✅" : "کپی ID" }}
                   </button>
                 </div>
               </div>
               <div class="contact-wrapper">
-                <a
-                  :href="`https://github.com/${userGithub}`"
-                  target="_blank"
-                  class="contact-btn github"
-                  aria-label="GitHub"
-                  ><svg
-                    viewBox="0 0 24 24"
-                    width="24"
-                    height="24"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    fill="none"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
+                <a :href="`https://github.com/${userGithub}`" target="_blank" class="contact-btn github"
+                  aria-label="GitHub"><svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor"
+                    stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path
-                      d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"
-                    />
-                    <path d="M9 18c-4.51 2-5-2-7-2" /></svg
-                ></a>
+                      d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+                    <path d="M9 18c-4.51 2-5-2-7-2" />
+                  </svg></a>
                 <div class="tooltip-box">
                   <span class="label">گیت‌هاب</span>
                 </div>
@@ -631,56 +513,35 @@ onUnmounted(() => {
         <main class="col-main glass-panel main-box">
           <div class="tabs-header" :class="{ hidden: isZenMode }">
             <div class="main-tabs">
-              <button
-                @click="selectedNote ? closeNote() : (activeTab = 'projects')"
-                :class="{ active: !selectedNote && activeTab === 'projects' }"
-              >
+              <button @click="selectedNote ? closeNote() : (activeTab = 'projects')"
+                :class="{ active: !selectedNote && activeTab === 'projects' }">
                 پروژه‌ها
               </button>
-              <button
-                @click="selectedNote ? closeNote() : (activeTab = 'interests')"
-                :class="{ active: !selectedNote && activeTab === 'interests' }"
-              >
+              <button @click="selectedNote ? closeNote() : (activeTab = 'interests')"
+                :class="{ active: !selectedNote && activeTab === 'interests' }">
                 علاقه‌مندی
               </button>
-              <button
-                @click="selectedNote ? closeNote() : (activeTab = 'roadmap')"
-                :class="{ active: !selectedNote && activeTab === 'roadmap' }"
-              >
+              <button @click="selectedNote ? closeNote() : (activeTab = 'roadmap')"
+                :class="{ active: !selectedNote && activeTab === 'roadmap' }">
                 مسیر من
               </button>
-              <button
-                @click="activeTab = 'notes'"
-                :class="{ active: activeTab === 'notes' || selectedNote }"
-              >
+              <button @click="activeTab = 'notes'" :class="{ active: activeTab === 'notes' || selectedNote }">
                 یادداشت
               </button>
             </div>
 
             <div class="header-controls">
-              <div
-                v-if="activeTab === 'projects' && !selectedNote"
-                class="project-controls"
-              >
+              <div v-if="activeTab === 'projects' && !selectedNote" class="project-controls">
                 <div class="controls-left">
                   <div class="filter-chips">
-                    <button
-                      v-for="lang in availableLanguages"
-                      :key="lang"
-                      @click="activeFilter = lang"
-                      :class="{ 'active-filter': activeFilter === lang }"
-                      class="filter-btn"
-                    >
+                    <button v-for="lang in availableLanguages" :key="lang" @click="activeFilter = lang"
+                      :class="{ 'active-filter': activeFilter === lang }" class="filter-btn">
                       {{ lang === "All" ? "همه" : lang }}
                     </button>
                   </div>
                 </div>
                 <div class="controls-right">
-                  <button
-                    @click="toggleTheme"
-                    class="icon-btn theme-btn"
-                    title="تغییر رنگ تم"
-                  >
+                  <button @click="toggleTheme" class="icon-btn theme-btn" title="تغییر رنگ تم">
                     🎨
                   </button>
                 </div>
@@ -703,38 +564,21 @@ onUnmounted(() => {
                           "fa-IR",
                         )
                       }}</span>
-                      <div
-                        class="tag-container inline"
-                        v-if="selectedNote.labels && selectedNote.labels.length"
-                      >
-                        <span
-                          v-for="label in selectedNote.labels"
-                          :key="label.id"
-                          class="tag-pill"
-                          :style="{
-                            borderColor: '#' + label.color,
-                            color: '#' + label.color,
-                            backgroundColor: '#' + label.color + '15',
-                          }"
-                          >{{ label.name }}</span
-                        >
+                      <div class="tag-container inline" v-if="selectedNote.labels && selectedNote.labels.length">
+                        <span v-for="label in selectedNote.labels" :key="label.id" class="tag-pill" :style="{
+                          borderColor: '#' + label.color,
+                          color: '#' + label.color,
+                          backgroundColor: '#' + label.color + '15',
+                        }">{{ label.name }}</span>
                       </div>
                     </div>
                   </div>
                   <div class="header-left">
-                    <button
-                      @click="shareNote"
-                      class="icon-btn share-btn"
-                      :title="shareTooltip"
-                    >
+                    <button @click="shareNote" class="icon-btn share-btn" :title="shareTooltip">
                       🔗
                     </button>
-                    <button
-                      @click="isZenMode = !isZenMode"
-                      class="icon-btn zen-btn"
-                      :class="{ active: isZenMode }"
-                      :title="isZenMode ? 'خروج از تمرکز' : 'حالت تمرکز'"
-                    >
+                    <button @click="isZenMode = !isZenMode" class="icon-btn zen-btn" :class="{ active: isZenMode }"
+                      :title="isZenMode ? 'خروج از تمرکز' : 'حالت تمرکز'">
                       {{ isZenMode ? "✕" : "👁️" }}
                     </button>
                     <button @click="closeNote" class="back-btn">
@@ -744,10 +588,7 @@ onUnmounted(() => {
                 </div>
                 <div class="thread-content scroll-area">
                   <div class="content-block main-post">
-                    <div
-                      class="block-body"
-                      v-html="parseMarkdown(selectedNote.body)"
-                    ></div>
+                    <div class="block-body" v-html="parseMarkdown(selectedNote.body)"></div>
                   </div>
                   <div v-if="noteComments.length > 0" class="update-separator">
                     <span>بروزرسانی‌ها</span>
@@ -755,104 +596,57 @@ onUnmounted(() => {
                   <div v-if="loadingComments" class="loading-bubble">
                     در حال دریافت...
                   </div>
-                  <div
-                    v-for="comment in noteComments"
-                    :key="comment.id"
-                    class="content-block update-post"
-                  >
+                  <div v-for="comment in noteComments" :key="comment.id" class="content-block update-post">
                     <div class="update-header">
-                      <span class="update-badge">UPDATE</span
-                      ><span class="update-date">{{
+                      <span class="update-badge">UPDATE</span><span class="update-date">{{
                         new Date(comment.created_at).toLocaleDateString("fa-IR")
                       }}</span>
                     </div>
-                    <div
-                      class="block-body"
-                      v-html="parseMarkdown(comment.body)"
-                    ></div>
+                    <div class="block-body" v-html="parseMarkdown(comment.body)"></div>
                   </div>
                 </div>
               </div>
 
-              <div
-                v-else-if="!loading && activeTab === 'projects'"
-                class="grid-list"
-                key="projects"
-              >
-                <a
-                  v-for="p in filteredProjects"
-                  :key="p.id"
-                  :href="p.html_url"
-                  :target="p.html_url === '#' ? '' : '_blank'"
-                  class="grid-item spotlight-card"
-                  @mousemove="handleCardTilt"
-                  @mouseleave="resetCard"
-                  ><div class="spotlight-bg"></div>
+              <div v-else-if="!loading && activeTab === 'projects'" class="grid-list" key="projects">
+                <a v-for="p in filteredProjects" :key="p.id" :href="p.html_url"
+                  :target="p.html_url === '#' ? '' : '_blank'" class="grid-item spotlight-card"
+                  @mousemove="handleCardTilt" @mouseleave="resetCard">
+                  <div class="spotlight-bg"></div>
                   <div class="card-head">
                     <span class="folder-icon">{{
                       p.isPrivate ? "🔒" : "📂"
-                    }}</span
-                    ><span
-                      class="lang-capsule"
-                      v-if="p.language"
-                      :style="{
+                    }}</span><span class="lang-capsule" v-if="p.language" :style="{
                         borderColor: getLangColor(p.language),
                         color: getLangColor(p.language),
                         background: getLangColor(p.language) + '15',
-                      }"
-                      ><span
-                        class="dot"
-                        :style="{ background: getLangColor(p.language) }"
-                      ></span
-                      >{{ p.language }}</span
-                    >
+                      }"><span class="dot" :style="{ background: getLangColor(p.language) }"></span>{{ p.language
+                      }}</span>
                   </div>
                   <h4>{{ p.name }}</h4>
                   <p>{{ p.description }}</p>
                   <div class="card-footer">
-                    <span class="arrow-link"
-                      >{{
-                        p.isPrivate ? "پروژه سازمانی" : "مشاهده سورس"
+                    <span class="arrow-link">{{
+                      p.isPrivate ? "پروژه سازمانی" : "مشاهده سورس"
                       }}
-                      &larr;</span
-                    >
-                  </div></a
-                >
+                      &larr;</span>
+                  </div>
+                </a>
                 <div v-if="filteredProjects.length === 0" class="empty-state">
                   پروژه‌ای یافت نشد.
                 </div>
               </div>
-              <div
-                v-else-if="!loading && activeTab === 'interests'"
-                class="interests-grid"
-                key="interests"
-              >
-                <div
-                  v-for="(item, index) in interests"
-                  :key="index"
-                  class="interest-card spotlight-card"
-                  @mousemove="handleCardTilt"
-                  @mouseleave="resetCard"
-                >
+              <div v-else-if="!loading && activeTab === 'interests'" class="interests-grid" key="interests">
+                <div v-for="(item, index) in interests" :key="index" class="interest-card spotlight-card"
+                  @mousemove="handleCardTilt" @mouseleave="resetCard">
                   <div class="spotlight-bg"></div>
                   <div class="interest-icon">{{ item.icon }}</div>
                   <h4>{{ item.title }}</h4>
                   <p>{{ item.desc }}</p>
                 </div>
               </div>
-              <div
-                v-else-if="!loading && activeTab === 'roadmap'"
-                class="roadmap-list"
-                key="roadmap"
-              >
-                <div
-                  v-for="(step, index) in roadmapItems"
-                  :key="index"
-                  class="roadmap-item spotlight-card"
-                  :class="step.status"
-                  @mousemove="handleCardTilt"
-                  @mouseleave="resetCard"
-                >
+              <div v-else-if="!loading && activeTab === 'roadmap'" class="roadmap-list" key="roadmap">
+                <div v-for="(step, index) in roadmapItems" :key="index" class="roadmap-item spotlight-card"
+                  :class="step.status" @mousemove="handleCardTilt" @mouseleave="resetCard">
                   <div class="spotlight-bg"></div>
                   <div class="step-line"></div>
                   <div class="step-dot"></div>
@@ -869,54 +663,33 @@ onUnmounted(() => {
                   </div>
                 </div>
               </div>
-              <div
-                v-else-if="!loading && activeTab === 'notes'"
-                class="notes-list"
-                key="notes"
-              >
-                <div
-                  v-for="n in notes"
-                  :key="n.id"
-                  class="note-row spotlight-card"
-                  @click="openNote(n)"
-                  @mousemove="handleCardTilt"
-                  @mouseleave="resetCard"
-                  style="cursor: pointer"
-                >
+              <div v-else-if="!loading && activeTab === 'notes'" class="notes-list" key="notes">
+                <div v-for="n in notes" :key="n.id" class="note-row spotlight-card" @click="openNote(n)"
+                  @mousemove="handleCardTilt" @mouseleave="resetCard" style="cursor: pointer">
                   <div class="spotlight-bg"></div>
                   <div class="note-inner">
                     <div class="note-head">
                       <h4><span class="note-icon">📝</span> {{ n.title }}</h4>
                     </div>
-                    <div
-                      class="tag-container"
-                      v-if="n.labels && n.labels.length"
-                    >
-                      <span
-                        v-for="label in n.labels"
-                        :key="label.id"
-                        class="tag-pill"
-                        :style="{
-                          borderColor: '#' + label.color,
-                          color: '#' + label.color,
-                          backgroundColor: '#' + label.color + '15',
-                        }"
-                        >{{ label.name }}</span
-                      >
+                    <div class="tag-container" v-if="n.labels && n.labels.length">
+                      <span v-for="label in n.labels" :key="label.id" class="tag-pill" :style="{
+                        borderColor: '#' + label.color,
+                        color: '#' + label.color,
+                        backgroundColor: '#' + label.color + '15',
+                      }">{{ label.name }}</span>
                     </div>
                     <p class="note-preview">
                       {{
                         n.body
                           ? n.body.substring(0, 140) +
-                            (n.body.length > 140 ? "..." : "")
+                          (n.body.length > 140 ? "..." : "")
                           : "بدون توضیحات..."
                       }}
                     </p>
                     <div class="note-footer">
                       <span class="date">{{
                         new Date(n.created_at).toLocaleDateString("fa-IR")
-                      }}</span
-                      ><span class="read-btn">بخوانید &larr;</span>
+                      }}</span><span class="read-btn">بخوانید &larr;</span>
                     </div>
                   </div>
                 </div>
@@ -929,28 +702,21 @@ onUnmounted(() => {
         </main>
 
         <aside class="col-skills glass-panel skills-box">
-          <div class="panel-header"><h3>ماژول‌های تخصص</h3></div>
+          <div class="panel-header">
+            <h3>ماژول‌های تخصص</h3>
+          </div>
           <div class="rack-container scroll-area">
-            <div
-              v-for="skill in mySkills"
-              :key="skill.name"
-              class="skill-module"
-            >
+            <div v-for="skill in mySkills" :key="skill.name" class="skill-module" dir="ltr">
               <div class="module-header">
                 <div class="module-title">
                   <span class="status-dot"></span>
                   <span class="skill-name">{{ skill.name }}</span>
                 </div>
-                <span class="skill-percent"
-                  >{{ toPersianDigits(skill.level) }}٪</span
-                >
+                <span class="skill-percent" dir="rtl">{{ toPersianDigits(skill.level) }}٪</span>
               </div>
 
               <div class="module-bar-bg">
-                <div
-                  class="module-bar-fill"
-                  :style="{ width: skill.level + '%' }"
-                >
+                <div class="module-bar-fill" :style="{ width: skill.level + '%' }">
                   <div class="bar-glow"></div>
                 </div>
               </div>
@@ -959,18 +725,12 @@ onUnmounted(() => {
         </aside>
       </div>
       <footer class="app-footer" dir="ltr">
-        <span class="made-by"
-          >Handcrafted by
-          <strong class="brand-signature" style="color: var(--neon)"
-            >Damoon</strong
-          ></span
-        >
+        <span class="made-by">Handcrafted by
+          <strong class="brand-signature" style="color: var(--neon)">Damoon</strong></span>
         <span class="divider">|</span>
         <span class="version-tag">v{{ appVersion }}</span>
         <span class="divider">|</span>
-        <span class="ai-credit"
-          >Co-piloted by <span class="gemini-text">Gemini</span></span
-        >
+        <span class="ai-credit">Co-piloted by <span class="gemini-text">Gemini</span></span>
       </footer>
     </div>
   </div>
@@ -984,6 +744,7 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
 }
+
 .panel-header h3 {
   margin: 0;
   padding: 20px;
@@ -995,6 +756,7 @@ onUnmounted(() => {
   letter-spacing: 2px;
   text-shadow: 0 0 10px rgba(103, 255, 100, 0.3);
 }
+
 .rack-container {
   padding: 20px;
   height: 100%;
@@ -1003,44 +765,63 @@ onUnmounted(() => {
   flex-direction: column;
   gap: 15px;
 }
+
 .skill-module {
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 10px;
-  padding: 12px 15px;
+  /* پدینگ بیشتر برای راحتی خواندن */
+  padding: 15px; 
   transition: all 0.3s ease;
   position: relative;
-  overflow: hidden;
+  /* overflow: hidden; */
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* جدا کردن هدر از نوار پیشرفت */
 }
+
 .skill-module:hover {
   background: rgba(255, 255, 255, 0.05);
   border-color: rgba(255, 255, 255, 0.2);
-  transform: translateX(-5px);
+  transform: translateX(5px); /* چون LTR شده حرکت به راست منطقی‌تره */
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
+
+/* رفع مشکل فلکس باکس دو خطی شدن */
 .module-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
+  align-items: center; /* تراز کردن در وسط اگر چند خطی شد */
+  gap: 15px; /* جلوگیری از قاطی شدن متن و درصد */
 }
+
 .module-title {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  flex: 1; /* گرفتن کل فضای باقی مانده */
+  min-width: 0; /* ✨ این خط کلید حل مشکل بیرون زدن متن‌های طولانی است */
 }
+
 .skill-name {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: #ddd;
   font-weight: 500;
+  line-height: 1.4;
+  white-space: normal; /* اجازه شکستن متن */
+  word-break: break-word; /* جلوگیری از خروج کلمات خیلی طولانی */
+  text-align: left;
 }
+
 .skill-percent {
   font-family: "Vazirmatn", sans-serif;
   font-weight: bold;
   font-size: 0.85rem;
   color: var(--neon);
   opacity: 0.8;
+  flex-shrink: 0; /* ✨ جلوگیری از له شدن درصد وقتی متن طولانی است */
 }
+
 .status-dot {
   width: 6px;
   height: 6px;
@@ -1048,21 +829,26 @@ onUnmounted(() => {
   border-radius: 50%;
   box-shadow: 0 0 5px var(--neon);
   animation: pulse-dot 2s infinite;
+  flex-shrink: 0; /* ✨ جلوگیری از له شدن نقطه */
 }
+
 @keyframes pulse-dot {
   0% {
     opacity: 0.4;
     box-shadow: 0 0 0 var(--neon);
   }
+
   50% {
     opacity: 1;
     box-shadow: 0 0 8px var(--neon);
   }
+
   100% {
     opacity: 0.4;
     box-shadow: 0 0 0 var(--neon);
   }
 }
+
 .module-bar-bg {
   width: 100%;
   height: 6px;
@@ -1071,15 +857,26 @@ onUnmounted(() => {
   overflow: hidden;
   position: relative;
 }
+
 .module-bar-fill {
   height: 100%;
   background: linear-gradient(90deg, transparent, var(--neon));
   border-radius: 3px;
   position: relative;
   box-shadow: 0 0 10px var(--neon);
+  /* به جای width از max-width برای انیمیشن استفاده می‌کنیم تا تداخل نکنه */
   animation: fill-bar 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  width: 0;
 }
+
+@keyframes fill-bar {
+  0% {
+    max-width: 0;
+  }
+  100% {
+    max-width: 100%;
+  }
+}
+
 .bar-glow {
   position: absolute;
   top: 0;
@@ -1091,6 +888,7 @@ onUnmounted(() => {
   filter: blur(2px);
   box-shadow: 0 0 5px #fff;
 }
+
 @keyframes fill-bar {
   from {
     width: 0;
@@ -1108,6 +906,7 @@ onUnmounted(() => {
   display: inline-block;
   cursor: default;
 }
+
 .brand-signature:hover {
   text-shadow:
     0 0 10px var(--neon),
@@ -1115,6 +914,7 @@ onUnmounted(() => {
     0 0 30px var(--neon);
   transform: scale(1.1);
 }
+
 .version-tag {
   font-family: monospace;
   background: rgba(255, 255, 255, 0.05);
@@ -1131,12 +931,14 @@ onUnmounted(() => {
 :global(textarea) {
   font-family: "Vazirmatn", sans-serif !important;
 }
+
 :global(::selection),
 :global(::-moz-selection) {
   background: var(--neon);
   color: #000;
   text-shadow: none;
 }
+
 .dashboard {
   height: 100vh;
   width: 100vw;
@@ -1147,9 +949,11 @@ onUnmounted(() => {
   box-sizing: border-box;
   transition: 0.3s;
 }
+
 .dashboard.zen-mode {
   padding: 0 !important;
 }
+
 .layout-grid {
   display: grid;
   grid-template-columns: 280px 1fr 260px;
@@ -1161,12 +965,14 @@ onUnmounted(() => {
   min-height: 0;
   transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
+
 .layout-grid.zen-active {
   grid-template-columns: 0px 1fr 0px;
   gap: 0;
   width: 100%;
   max-width: none;
 }
+
 .layout-grid.zen-active .col-profile,
 .layout-grid.zen-active .col-skills {
   opacity: 0;
@@ -1174,19 +980,23 @@ onUnmounted(() => {
   padding: 0;
   overflow: hidden;
 }
+
 .layout-grid.zen-active .col-main.glass-panel {
   border-radius: 0;
   border: none;
 }
+
 .col-profile,
 .col-main {
   height: 100%;
   min-height: 0;
   transition: 0.3s;
 }
+
 .dashboard.zen-mode .app-footer {
   display: none !important;
 }
+
 .app-footer {
   width: 100%;
   max-width: 1600px;
@@ -1203,18 +1013,22 @@ onUnmounted(() => {
   transition: 0.3s;
   flex-shrink: 0;
 }
+
 .app-footer:hover {
   opacity: 1;
 }
+
 .divider {
   color: #333;
 }
+
 .gemini-text {
   background: linear-gradient(90deg, #4285f4, #9b72cb, #d96570);
   -webkit-background-clip: text;
   color: transparent;
   font-weight: bold;
 }
+
 .glass-panel {
   background: var(--glass-panel);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -1228,27 +1042,33 @@ onUnmounted(() => {
   height: 100%;
   transition: 0.3s;
 }
+
 .glass-panel:hover {
   border-color: rgba(255, 255, 255, 0.2);
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
 }
+
 .profile-box {
   padding: 30px 25px;
 }
+
 .content-body {
   padding: 25px;
   overflow-y: auto;
   height: 100%;
 }
+
 .content-body::-webkit-scrollbar,
 .rack-container::-webkit-scrollbar {
   width: 6px;
 }
+
 .content-body::-webkit-scrollbar-thumb,
 .rack-container::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 10px;
 }
+
 .contact-grid {
   display: flex;
   justify-content: center;
@@ -1258,9 +1078,11 @@ onUnmounted(() => {
   position: relative;
   padding-top: 15px;
 }
+
 .contact-wrapper {
   position: relative;
 }
+
 .contact-btn {
   width: 45px;
   height: 45px;
@@ -1275,34 +1097,41 @@ onUnmounted(() => {
   cursor: pointer;
   text-decoration: none;
 }
+
 .contact-btn svg {
   transition: transform 0.3s ease;
 }
+
 .contact-btn:hover {
   transform: translateY(-3px);
   color: white;
   border-color: transparent;
 }
+
 .contact-btn.email:hover {
   background: rgba(234, 67, 53, 0.15);
   color: #ea4335;
   box-shadow: 0 5px 15px rgba(234, 67, 53, 0.3);
 }
+
 .contact-btn.linkedin:hover {
   background: rgba(10, 102, 194, 0.15);
   color: #0a66c2;
   box-shadow: 0 5px 15px rgba(10, 102, 194, 0.3);
 }
+
 .contact-btn.telegram:hover {
   background: rgba(36, 129, 204, 0.15);
   color: #2481cc;
   box-shadow: 0 5px 15px rgba(36, 129, 204, 0.3);
 }
+
 .contact-btn.github:hover {
   background: rgba(255, 255, 255, 0.1);
   color: #ffffff;
   box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
 }
+
 .header-controls {
   border-top: 1px solid rgba(255, 255, 255, 0.05);
   padding-top: 10px;
@@ -1310,26 +1139,31 @@ onUnmounted(() => {
   padding-left: 30px;
   padding-right: 30px;
 }
+
 .project-controls {
   display: flex;
   width: 100%;
   align-items: center;
   justify-content: space-between;
 }
+
 .controls-left {
   display: flex;
   justify-content: flex-start;
 }
+
 .controls-right {
   display: flex;
   flex-grow: 1;
   justify-content: flex-end;
 }
+
 .filter-chips {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
 }
+
 .icon-btn {
   background: transparent;
   border: 1px solid var(--neon);
@@ -1344,12 +1178,14 @@ onUnmounted(() => {
   font-size: 1.1rem;
   transition: 0.3s;
 }
+
 .icon-btn:hover,
 .icon-btn.active {
   background: var(--neon);
   color: black;
   box-shadow: 0 0 10px var(--neon);
 }
+
 .filter-btn {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -1360,19 +1196,23 @@ onUnmounted(() => {
   cursor: pointer;
   transition: 0.2s;
 }
+
 .filter-btn:hover {
   background: rgba(255, 255, 255, 0.1);
   color: white;
 }
+
 .filter-btn.active-filter {
   background: var(--neon);
   color: black;
   border-color: var(--neon);
   font-weight: bold;
 }
+
 .tabs-header.hidden {
   display: none !important;
 }
+
 .main-tabs {
   display: flex;
   width: 100%;
@@ -1380,9 +1220,11 @@ onUnmounted(() => {
   overflow-x: auto;
   scrollbar-width: none;
 }
+
 .main-tabs::-webkit-scrollbar {
   display: none;
 }
+
 .main-tabs button {
   flex: 1;
   padding: 12px 10px;
@@ -1399,15 +1241,18 @@ onUnmounted(() => {
   text-align: center;
   min-width: fit-content;
 }
+
 .main-tabs button:hover {
   color: #fff;
   background: rgba(255, 255, 255, 0.03);
 }
+
 .main-tabs button.active {
   color: white;
   border-bottom: 2px solid var(--neon);
   background: linear-gradient(to top, rgba(255, 255, 255, 0.05), transparent);
 }
+
 .thread-header {
   display: flex;
   align-items: center;
@@ -1417,11 +1262,13 @@ onUnmounted(() => {
   margin-bottom: 20px;
   direction: rtl;
 }
+
 .header-left {
   display: flex;
   gap: 10px;
   align-items: center;
 }
+
 :deep(.md-image),
 :deep(.block-body img),
 :deep(.note-inner img) {
@@ -1432,6 +1279,7 @@ onUnmounted(() => {
   border: 1px solid rgba(255, 255, 255, 0.1);
   display: block;
 }
+
 :deep(.inline-code) {
   font-family: monospace;
   background: #333;
@@ -1439,10 +1287,12 @@ onUnmounted(() => {
   border-radius: 4px;
   color: var(--neon);
 }
+
 :deep(a) {
   color: var(--neon);
   text-decoration: underline;
 }
+
 :deep(h1),
 :deep(h2),
 :deep(h3) {
@@ -1450,18 +1300,22 @@ onUnmounted(() => {
   margin-top: 1.5em;
   margin-bottom: 0.5em;
 }
+
 :deep(h1) {
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   padding-bottom: 10px;
 }
+
 :deep(ul),
 :deep(ol) {
   padding-right: 20px;
   color: #ddd;
 }
+
 :deep(li) {
   margin-bottom: 5px;
 }
+
 :deep(blockquote) {
   border-right: 3px solid var(--neon);
   padding-right: 15px;
@@ -1471,6 +1325,7 @@ onUnmounted(() => {
   padding: 10px;
   border-radius: 4px;
 }
+
 :deep(pre.code-block) {
   background: #1e1e1e;
   padding: 15px;
@@ -1481,12 +1336,14 @@ onUnmounted(() => {
   direction: ltr;
   text-align: left;
 }
+
 :deep(pre.code-block code) {
   font-family: "Consolas", "Monaco", "Courier New", monospace;
   font-size: 0.9rem;
   color: #d4d4d4;
   white-space: pre-wrap;
 }
+
 .tag-container {
   display: flex;
   gap: 6px;
@@ -1494,11 +1351,13 @@ onUnmounted(() => {
   margin-bottom: 8px;
   margin-top: 4px;
 }
+
 .tag-container.inline {
   display: inline-flex;
   margin: 0 10px 0 0;
   vertical-align: middle;
 }
+
 .tag-pill {
   font-size: 0.7rem;
   padding: 2px 8px;
@@ -1509,10 +1368,12 @@ onUnmounted(() => {
   letter-spacing: 0.5px;
   transition: 0.3s;
 }
+
 .tag-pill:hover {
   filter: brightness(1.2);
   transform: translateY(-1px);
 }
+
 .meta-row {
   display: flex;
   align-items: center;
@@ -1520,9 +1381,12 @@ onUnmounted(() => {
   margin-top: 5px;
   flex-wrap: wrap;
 }
+
 .scroll-area {
   overflow-y: auto;
-} /* اصلاح پدینگ */
+}
+
+/* اصلاح پدینگ */
 .avatar-glow {
   position: relative;
   overflow: hidden;
@@ -1533,15 +1397,18 @@ onUnmounted(() => {
   padding: 4px;
   background: linear-gradient(135deg, var(--neon), transparent);
 }
+
 .avatar-glow img {
   width: 100%;
   height: 100%;
   border-radius: 50%;
   background: #000;
 }
+
 .avatar-glow:hover img {
   animation: glitch-anim 0.3s infinite;
 }
+
 .avatar-glow:hover::before {
   content: "";
   position: absolute;
@@ -1556,59 +1423,74 @@ onUnmounted(() => {
   animation: glitch-flash 0.3s infinite;
   border-radius: 50%;
 }
+
 @keyframes glitch-anim {
   0% {
     transform: translate(0);
   }
+
   20% {
     transform: translate(-2px, 2px);
     filter: hue-rotate(90deg);
   }
+
   40% {
     transform: translate(-2px, -2px);
     filter: hue-rotate(0deg);
   }
+
   60% {
     transform: translate(2px, 2px);
     filter: hue-rotate(180deg);
   }
+
   80% {
     transform: translate(2px, -2px);
     filter: hue-rotate(0deg);
   }
+
   100% {
     transform: translate(0);
   }
 }
+
 @keyframes glitch-flash {
   0% {
     opacity: 0;
   }
+
   50% {
     opacity: 0.2;
   }
+
   100% {
     opacity: 0;
   }
 }
+
 .typewriter {
   color: var(--neon);
   font-weight: bold;
 }
+
 .cursor {
   animation: blink 1s infinite;
   display: inline-block;
   color: var(--neon);
 }
+
 @keyframes blink {
+
   0%,
   100% {
     opacity: 1;
   }
+
   50% {
     opacity: 0;
   }
 }
+
 .tooltip-box {
   position: absolute;
   bottom: 125%;
@@ -1630,11 +1512,13 @@ onUnmounted(() => {
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.8);
   z-index: 20;
 }
+
 .contact-wrapper:hover .tooltip-box {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
   pointer-events: auto;
 }
+
 .tooltip-box::after {
   content: "";
   position: absolute;
@@ -1645,11 +1529,13 @@ onUnmounted(() => {
   border-style: solid;
   border-color: var(--neon) transparent transparent transparent;
 }
+
 .tooltip-box .label {
   font-size: 0.75rem;
   color: #fff;
   margin-bottom: 2px;
 }
+
 .tooltip-box .copy-btn {
   background: rgba(103, 255, 100, 0.15);
   color: var(--neon);
@@ -1662,16 +1548,19 @@ onUnmounted(() => {
   transition: 0.2s;
   font-family: "Vazirmatn";
 }
+
 .tooltip-box .copy-btn:hover {
   background: var(--neon);
   color: #000;
 }
+
 .thread-view {
   display: flex;
   flex-direction: column;
   height: 100%;
   animation: fadeIn 0.3s;
 }
+
 .back-btn {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -1682,20 +1571,24 @@ onUnmounted(() => {
   transition: 0.2s;
   font-family: inherit;
 }
+
 .back-btn:hover {
   background: var(--neon);
   color: #000;
   border-color: var(--neon);
 }
+
 .note-meta h3 {
   margin: 0;
   font-size: 1.1rem;
   color: white;
 }
+
 .post-date {
   font-size: 0.75rem;
   color: var(--text-muted);
 }
+
 .thread-content {
   flex: 1;
   overflow-y: auto;
@@ -1704,16 +1597,19 @@ onUnmounted(() => {
   flex-direction: column;
   gap: 20px;
 }
+
 .content-block {
   padding: 20px;
   border-radius: 12px;
   line-height: 1.7;
   font-size: 0.95rem;
 }
+
 .main-post {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
+
 .update-separator {
   display: flex;
   align-items: center;
@@ -1721,6 +1617,7 @@ onUnmounted(() => {
   font-size: 0.8rem;
   margin: 10px 0;
 }
+
 .update-separator::before,
 .update-separator::after {
   content: "";
@@ -1729,17 +1626,20 @@ onUnmounted(() => {
   background: rgba(103, 255, 100, 0.3);
   margin: 0 10px;
 }
+
 .update-post {
   background: rgba(103, 255, 100, 0.05);
   border-left: 3px solid var(--neon);
   border-radius: 4px;
 }
+
 .update-header {
   display: flex;
   justify-content: space-between;
   margin-bottom: 10px;
   font-size: 0.75rem;
 }
+
 .update-badge {
   background: var(--neon);
   color: #000;
@@ -1747,17 +1647,21 @@ onUnmounted(() => {
   border-radius: 4px;
   font-weight: bold;
 }
+
 .update-date {
   color: var(--text-muted);
 }
+
 .block-body {
   color: #eee;
 }
+
 .loading-bubble {
   text-align: center;
   color: var(--neon);
   font-style: italic;
 }
+
 .profile-header {
   margin-top: 10px;
   display: flex;
@@ -1765,28 +1669,33 @@ onUnmounted(() => {
   align-items: center;
   text-align: center;
 }
+
 .profile-texts h1 {
   font-size: 1.3rem;
   margin: 5px 0 2px;
   color: white;
 }
+
 .role {
   font-size: 0.85rem;
   margin-bottom: 2px;
   color: var(--neon);
   opacity: 0.9;
 }
+
 .role-sub {
   font-size: 0.75rem;
   margin-bottom: 15px;
   color: var(--text-muted);
 }
+
 .bio-short {
   margin: 15px 0;
   font-size: 0.85rem;
   line-height: 1.5;
   color: var(--text-muted);
 }
+
 .stats-row {
   margin-bottom: 15px;
   padding: 10px 0;
@@ -1796,25 +1705,30 @@ onUnmounted(() => {
   border-top: 1px solid rgba(255, 255, 255, 0.05);
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
+
 .stat {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
+
 .stat strong {
   font-size: 1.4rem;
   color: white;
 }
+
 .stat span {
   font-size: 0.8rem;
   color: var(--text-muted);
 }
+
 .action-buttons {
   display: flex;
   gap: 10px;
   width: 100%;
   margin-bottom: 10px;
 }
+
 .terminal-toggle,
 .resume-btn {
   flex: 1;
@@ -1829,34 +1743,40 @@ onUnmounted(() => {
   font-weight: bold;
   transition: 0.3s;
 }
+
 .terminal-toggle {
   background: rgba(0, 0, 0, 0.5);
   color: var(--neon);
   border: 1px solid var(--neon);
   cursor: pointer;
 }
+
 .terminal-toggle:hover {
   background: var(--neon);
   color: #000;
   box-shadow: 0 0 15px var(--neon);
 }
+
 .resume-btn {
   background: rgba(103, 255, 100, 0.1);
   border: 1px dashed var(--neon);
   color: var(--neon);
   text-decoration: none;
 }
+
 .resume-btn:hover {
   background: var(--neon);
   color: black;
   border-style: solid;
 }
+
 .interests-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 15px;
   padding: 5px;
 }
+
 .interest-card {
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -1866,27 +1786,32 @@ onUnmounted(() => {
   overflow: hidden;
   position: relative;
 }
+
 .interest-icon {
   font-size: 2.5rem;
   margin-bottom: 10px;
 }
+
 .interest-card h4 {
   margin: 0 0 8px;
   color: white;
   font-size: 1.1rem;
 }
+
 .interest-card p {
   margin: 0;
   color: var(--text-muted);
   font-size: 0.85rem;
   line-height: 1.5;
 }
+
 .roadmap-list {
   display: flex;
   flex-direction: column;
   gap: 20px;
   padding: 10px;
 }
+
 .roadmap-item {
   position: relative;
   padding: 20px 60px 20px 20px;
@@ -1895,6 +1820,7 @@ onUnmounted(() => {
   border-radius: 15px;
   overflow: hidden;
 }
+
 .step-line {
   position: absolute;
   right: 30px;
@@ -1903,6 +1829,7 @@ onUnmounted(() => {
   width: 2px;
   background: rgba(255, 255, 255, 0.1);
 }
+
 .step-dot {
   position: absolute;
   right: 24px;
@@ -1914,30 +1841,36 @@ onUnmounted(() => {
   background: #000;
   z-index: 2;
 }
+
 .roadmap-item.done .step-dot {
   border-color: var(--neon);
   background: var(--neon);
   box-shadow: 0 0 10px var(--neon);
 }
+
 .roadmap-item.progress .step-dot {
   border-color: #f1c40f;
   background: #f1c40f;
   box-shadow: 0 0 10px #f1c40f;
 }
+
 .roadmap-item.todo .step-dot {
   border-color: #555;
 }
+
 .step-content h4 {
   margin: 0 0 5px;
   color: white;
   font-size: 1.1rem;
 }
+
 .step-content p {
   margin: 0 0 10px;
   color: var(--text-muted);
   font-size: 0.9rem;
   line-height: 1.6;
 }
+
 .status-badge {
   font-size: 0.75rem;
   padding: 3px 8px;
@@ -1945,11 +1878,13 @@ onUnmounted(() => {
   background: rgba(255, 255, 255, 0.05);
   color: #ccc;
 }
+
 .grid-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 15px;
 }
+
 .grid-item {
   position: relative;
   text-decoration: none;
@@ -1964,6 +1899,7 @@ onUnmounted(() => {
   flex-direction: column;
   min-height: 180px;
 }
+
 .card-head {
   display: flex;
   justify-content: space-between;
@@ -1972,10 +1908,12 @@ onUnmounted(() => {
   z-index: 2;
   position: relative;
 }
+
 .folder-icon {
   font-size: 1.2rem;
   opacity: 0.7;
 }
+
 .lang-capsule {
   font-size: 0.75rem;
   padding: 4px 10px;
@@ -1986,18 +1924,21 @@ onUnmounted(() => {
   gap: 6px;
   font-weight: 500;
 }
+
 .dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
   display: inline-block;
 }
+
 .grid-item h4 {
   margin: 0 0 10px;
   font-size: 1.1rem;
   z-index: 2;
   position: relative;
 }
+
 .grid-item p {
   font-size: 0.9rem;
   color: var(--text-muted);
@@ -2007,6 +1948,7 @@ onUnmounted(() => {
   z-index: 2;
   position: relative;
 }
+
 .card-footer {
   margin-top: 15px;
   text-align: left;
@@ -2017,21 +1959,25 @@ onUnmounted(() => {
   border-top: 1px solid rgba(255, 255, 255, 0.05);
   padding-top: 10px;
 }
+
 .arrow-link {
   color: var(--neon);
   opacity: 0;
   transition: 0.3s;
   transform: translateX(5px);
 }
+
 .grid-item:hover .arrow-link {
   opacity: 1;
   transform: translateX(0);
 }
+
 .notes-list {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
+
 .note-row {
   padding: 20px 25px;
   border-radius: 16px;
@@ -2044,6 +1990,7 @@ onUnmounted(() => {
   color: white;
   transition: transform 0.1s;
 }
+
 .note-inner {
   position: relative;
   z-index: 2;
@@ -2051,6 +1998,7 @@ onUnmounted(() => {
   flex-direction: column;
   gap: 10px;
 }
+
 .note-head h4 {
   margin: 0;
   font-size: 1.1rem;
@@ -2059,9 +2007,11 @@ onUnmounted(() => {
   align-items: center;
   gap: 8px;
 }
+
 .note-icon {
   font-size: 1.2rem;
 }
+
 .note-preview {
   font-size: 0.9rem;
   color: var(--text-muted);
@@ -2072,6 +2022,7 @@ onUnmounted(() => {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
 .note-footer {
   display: flex;
   justify-content: space-between;
@@ -2080,25 +2031,30 @@ onUnmounted(() => {
   padding-top: 10px;
   border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
+
 .date {
   font-size: 0.8rem;
   color: #666;
   font-family: "Vazirmatn";
 }
+
 .read-btn {
   font-size: 0.85rem;
   color: var(--neon);
   opacity: 0.8;
   transition: 0.3s;
 }
+
 .note-row:hover .read-btn {
   opacity: 1;
   transform: translateX(-5px);
 }
+
 .col-skills {
   height: 100%;
   padding: 0;
 }
+
 .panel-header h3 {
   margin: 0;
   padding: 20px;
@@ -2107,6 +2063,7 @@ onUnmounted(() => {
   color: white;
   text-align: center;
 }
+
 .rack-container {
   padding: 20px;
   height: 100%;
@@ -2115,22 +2072,26 @@ onUnmounted(() => {
   flex-direction: column;
   gap: 20px;
 }
+
 .rack-slot {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
+
 .rack-info {
   display: flex;
   justify-content: space-between;
   font-size: 0.9rem;
   color: #ddd;
 }
+
 .rack-percent {
   color: var(--neon);
   font-family: "Vazirmatn";
   font-weight: bold;
 }
+
 .rack-bar-bg {
   width: 100%;
   height: 12px;
@@ -2140,6 +2101,7 @@ onUnmounted(() => {
   position: relative;
   overflow: hidden;
 }
+
 .rack-bar-fill {
   height: 100%;
   background: var(--neon);
@@ -2147,6 +2109,7 @@ onUnmounted(() => {
   position: relative;
   overflow: hidden;
 }
+
 .scan-line {
   position: absolute;
   top: 0;
@@ -2156,17 +2119,17 @@ onUnmounted(() => {
   filter: blur(5px);
   animation: scan 2s infinite linear;
 }
+
 .rack-grid-lines {
   position: absolute;
   inset: 0;
-  background-image: linear-gradient(
-    90deg,
-    rgba(0, 0, 0, 0.8) 1px,
-    transparent 1px
-  );
+  background-image: linear-gradient(90deg,
+      rgba(0, 0, 0, 0.8) 1px,
+      transparent 1px);
   background-size: 10px 100%;
   pointer-events: none;
 }
+
 .spotlight-card {
   --x: -1000px;
   --y: -1000px;
@@ -2177,38 +2140,43 @@ onUnmounted(() => {
   transform-style: preserve-3d;
   transition: transform 0.1s cubic-bezier(0.2, 0.4, 0.6, 1);
 }
+
 .spotlight-bg {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: radial-gradient(
-    500px circle at var(--x) var(--y),
-    rgba(103, 255, 100, 0.08),
-    transparent 50%
-  );
+  background: radial-gradient(500px circle at var(--x) var(--y),
+      rgba(103, 255, 100, 0.08),
+      transparent 50%);
   z-index: 1;
 }
-.spotlight-card > * {
+
+.spotlight-card>* {
   transform: translateZ(10px);
 }
+
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.5s ease;
 }
+
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
 }
+
 .fade-slide-enter-active,
 .fade-slide-leave-active {
   transition:
     opacity 0.3s ease,
     transform 0.3s ease;
 }
+
 .fade-slide-enter-from {
   opacity: 0;
   transform: translateY(10px);
 }
+
 .fade-slide-leave-to {
   opacity: 0;
   transform: translateY(-10px);
@@ -2219,12 +2187,14 @@ onUnmounted(() => {
   body {
     overflow-y: auto;
   }
+
   .dashboard {
     display: block;
     padding: 15px;
     height: auto;
     overflow: auto;
   }
+
   .layout-grid {
     display: flex;
     flex-direction: column;
@@ -2277,19 +2247,23 @@ onUnmounted(() => {
     order: 1;
     height: auto;
   }
+
   .col-main {
     order: 2;
     height: auto;
     min-height: 500px;
   }
+
   .col-skills {
     order: 3;
     height: auto;
   }
+
   .profile-box {
     padding: 20px;
     flex-direction: column;
   }
+
   .profile-header {
     display: flex;
     align-items: center;
@@ -2297,42 +2271,51 @@ onUnmounted(() => {
     margin-bottom: 15px;
     text-align: right;
   }
+
   .avatar-glow {
     margin: 0;
     width: 70px;
     height: 70px;
   }
+
   .profile-texts h1 {
     font-size: 1.3rem;
     margin: 0;
   }
+
   .bio-short {
     text-align: right;
     margin: 10px 0;
     font-size: 0.85rem;
   }
+
   .content-body,
   .rack-container {
     overflow: visible;
     height: auto;
   }
+
   .grid-list {
     grid-template-columns: 1fr;
   }
+
   .contact-grid {
     grid-template-columns: 1fr 1fr;
     gap: 10px;
     width: 100%;
     margin-top: 20px;
   }
+
   .spotlight-card {
     transform: none !important;
   }
 }
+
 @keyframes fadeIn {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
