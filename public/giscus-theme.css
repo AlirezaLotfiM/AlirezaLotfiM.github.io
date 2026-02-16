@@ -56,9 +56,9 @@ main {
   --color-btn-primary-disabled-text: rgba(255, 255, 255, 0.5);
   --color-btn-primary-disabled-bg: rgba(103, 255, 100, 0.4);
   --color-btn-primary-disabled-border: transparent;
-  --color-fg-default: #e6edf3;
-  --color-fg-muted: #8b949e;
-  --color-fg-subtle: #484f58;
+  --color-fg-default: #ffffff; /* Brighter white for main text */
+  --color-fg-muted: #b0b0b0;   /* Lighter gray for muted text */
+  --color-fg-subtle: #8b949e;
   --color-canvas-default: transparent; /* Transparent background */
   --color-canvas-overlay: #161b22;
   --color-canvas-inset: #0d1117;
@@ -85,4 +85,13 @@ main .pagination-loader-container {
 main .btn-primary {
   color: #000 !important;
   font-weight: bold;
+}
+
+/* Force text colors just in case */
+main, .gsc-comment-content, .gsc-header, .gsc-reply-content {
+  color: #ffffff !important;
+}
+
+.gsc-comment-author {
+  color: var(--color-accent-fg) !important;
 }
