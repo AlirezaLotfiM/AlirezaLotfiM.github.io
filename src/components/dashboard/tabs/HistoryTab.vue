@@ -25,7 +25,12 @@ const { handleCardTilt, resetCard } = useTilt();
 
         <span class="job-period">{{ job.period }}</span>
 
-        <p class="job-desc">{{ job.description }}</p>
+        <div v-if="Array.isArray(job.description)" class="job-desc-list">
+          <ul>
+            <li v-for="(item, i) in job.description" :key="i">{{ item }}</li>
+          </ul>
+        </div>
+        <p v-else class="job-desc">{{ job.description }}</p>
 
         <div class="tech-stack" v-if="job.technologies">
           <span v-for="tech in job.technologies" :key="tech" class="tech-pill">{{ tech }}</span>
@@ -119,6 +124,18 @@ const { handleCardTilt, resetCard } = useTilt();
   font-size: 0.9rem;
   line-height: 1.6;
   margin: 0;
+}
+
+.job-desc-list ul {
+  margin: 0;
+  padding-right: 20px;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.job-desc-list li {
+  margin-bottom: 5px;
 }
 
 .tech-stack {
