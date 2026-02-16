@@ -6,6 +6,7 @@ import MatrixRain from "./components/MatrixRain.vue";
 import TerminalModal from "./components/TerminalModal.vue";
 import ContextMenu from "./components/ContextMenu.vue";
 import BootSequence from "./components/BootSequence.vue";
+import MusicPlayer from "./components/MusicPlayer.vue";
 
 import UserProfile from "./components/dashboard/UserProfile.vue";
 import MainContent from "./components/dashboard/MainContent.vue";
@@ -27,7 +28,7 @@ const {
 const { currentThemeColor } = useTheme();
 
 // --- App State ---
-const appVersion = "1.3.0"; // Bumped version
+const appVersion = "1.3.1"; // Bumped version
 const showBoot = ref(true);
 const isBooted = ref(false);
 const isMatrixMode = ref(false);
@@ -145,6 +146,8 @@ onUnmounted(() => {
       github: userGithub,
       telegram: myTelegramID,
     }" :version="appVersion" username="Damoon" role="Software Engineer" @close="showTerminal = false" />
+
+    <MusicPlayer />
 
     <ContextMenu :visible="contextMenu.visible" :x="contextMenu.x" :y="contextMenu.y" @action="handleMenuAction"
       @close="contextMenu.visible = false" />

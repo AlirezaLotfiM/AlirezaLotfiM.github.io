@@ -11,7 +11,8 @@ let animationFrameId;
 
 const init = () => {
   particlesArray = [];
-  let numberOfParticles = (window.innerWidth * window.innerHeight) / 10000;
+  const density = window.innerWidth < 768 ? 25000 : 10000; // Reduce density on mobile
+  let numberOfParticles = (window.innerWidth * window.innerHeight) / density;
   for (let i = 0; i < numberOfParticles; i++) {
     let size = (Math.random() * 2) + 1;
     let x = (Math.random() * (window.innerWidth - size * 2) + size * 2);

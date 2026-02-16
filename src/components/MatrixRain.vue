@@ -38,7 +38,8 @@ onMounted(() => {
   };
 
   // سرعت بیشتر (عدد کمتر = سریعتر)
-  intervalId = setInterval(draw, 45); 
+  const isMobile = window.innerWidth < 768;
+  intervalId = setInterval(draw, isMobile ? 80 : 45); // Slower on mobile to save battery
 
   window.addEventListener('resize', () => {
     canvas.width = window.innerWidth;

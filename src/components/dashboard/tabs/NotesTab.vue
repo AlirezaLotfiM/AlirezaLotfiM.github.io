@@ -37,7 +37,7 @@ const shareNote = () => {
     <article v-if="selectedNote" class="thread-view">
       <header class="thread-header">
         <div class="note-meta">
-          <h3>{{ selectedNote.title }}</h3>
+          <h1>{{ selectedNote.title }}</h1>
           <div class="meta-row">
             <span class="post-date">{{
               new Date(selectedNote.created_at).toLocaleDateString(
@@ -252,10 +252,12 @@ const shareNote = () => {
   border-color: var(--neon);
 }
 
-.note-meta h3 {
+.note-meta h1 {
   margin: 0;
-  font-size: 1.1rem;
+  font-size: 1.3rem; /* Slightly larger for H1 */
   color: white;
+  border-bottom: none; /* Reset if global H1 has border */
+  padding-bottom: 0;
 }
 
 .post-date {

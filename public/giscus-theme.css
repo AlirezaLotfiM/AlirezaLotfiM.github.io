@@ -1,0 +1,79 @@
+/*!
+ * Giscus Custom Theme for Alireza Lotfi Portfolio
+ * Matches the site's neon/dark aesthetic
+ */
+
+/* Force global text color */
+main {
+  --color-fg-default: #ffffff !important;
+  --color-fg-muted: #b0b0b0 !important;
+  --color-fg-subtle: #8b949e !important;
+  --color-canvas-default: transparent !important;
+  --color-canvas-overlay: #161b22 !important;
+  --color-canvas-inset: #0d1117 !important;
+  --color-canvas-subtle: #161b22 !important;
+  --color-border-default: #30363d !important;
+  --color-border-muted: #21262d !important;
+  --color-accent-fg: #67FF64 !important;
+  --color-accent-emphasis: #67FF64 !important;
+
+  /* Buttons */
+  --color-btn-text: #c9d1d9 !important;
+  --color-btn-bg: #21262d !important;
+  --color-btn-border: #30363d !important;
+  --color-btn-primary-text: #000000 !important;
+  --color-btn-primary-bg: #67FF64 !important;
+  --color-btn-primary-border: #67FF64 !important;
+}
+
+/* Aggressively target Giscus Tailwind classes */
+.color-text-primary {
+  color: #ffffff !important;
+}
+
+.color-text-secondary {
+  color: #b0b0b0 !important;
+}
+
+.color-text-tertiary {
+  color: #8b949e !important;
+}
+
+/* Comment Box / Textarea */
+.gsc-comment-box-textarea,
+.form-control,
+textarea {
+  background-color: #0d1117 !important;
+  color: #ffffff !important;
+  border-color: #30363d !important;
+}
+
+.gsc-comment-box-textarea::placeholder {
+  color: #6e7681 !important;
+}
+
+/* Reaction Menu & Popovers */
+.gsc-reactions-popover {
+  background-color: #161b22 !important;
+  border-color: #30363d !important;
+}
+
+/* Links */
+a, .color-text-link {
+  color: #67FF64 !important; /* Neon Green */
+}
+
+/* Headers */
+h1, h2, h3, h4, h5, h6 {
+  color: #ffffff !important;
+}
+
+/* Ensure main wrapper is visible */
+main {
+  color: #ffffff !important;
+}
+
+/* Fix for specific Giscus elements mentioned in user screenshot */
+.gsc-main, .gsc-header, .gsc-comments, .gsc-timeline {
+  color: #ffffff !important;
+}

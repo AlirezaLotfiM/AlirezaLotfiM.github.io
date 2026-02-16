@@ -8,6 +8,7 @@ import InterestsTab from './tabs/InterestsTab.vue';
 import RoadmapTab from './tabs/RoadmapTab.vue';
 import NotesTab from './tabs/NotesTab.vue';
 import HistoryTab from './tabs/HistoryTab.vue';
+import GuestbookTab from './tabs/GuestbookTab.vue';
 
 const {
   activeTab,
@@ -53,6 +54,10 @@ const emit = defineEmits(['toggle-zen']);
         <button @click="selectedNote ? closeNote() : (activeTab = 'history')"
           :class="{ active: !selectedNote && activeTab === 'history' }">
           سوابق
+        </button>
+        <button @click="selectedNote ? closeNote() : (activeTab = 'guestbook')"
+          :class="{ active: !selectedNote && activeTab === 'guestbook' }">
+          یادگاری
         </button>
         <button @click="activeTab = 'notes'" :class="{ active: activeTab === 'notes' || selectedNote }">
           یادداشت
@@ -112,6 +117,7 @@ const emit = defineEmits(['toggle-zen']);
         <InterestsTab v-else-if="!loading && activeTab === 'interests'" key="interests" />
         <RoadmapTab v-else-if="!loading && activeTab === 'roadmap'" key="roadmap" />
         <HistoryTab v-else-if="!loading && activeTab === 'history'" key="history" />
+        <GuestbookTab v-else-if="!loading && activeTab === 'guestbook'" key="guestbook" />
         <NotesTab v-else-if="!loading && activeTab === 'notes'" key="notes" />
 
       </Transition>
