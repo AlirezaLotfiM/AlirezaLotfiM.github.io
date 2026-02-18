@@ -26,6 +26,26 @@ const { mySkills, toPersianDigits } = usePortfolio();
         </div>
       </li>
     </ul>
+
+    <!-- Currently Learning Section -->
+    <div class="learning-wrapper">
+      <div class="learning-box">
+        <div class="learning-header">
+          <span class="pulse-dot-large"></span>
+          <span class="title">Currently Learning</span>
+        </div>
+        <div class="learning-content">
+          <div class="learning-item">
+            <span class="icon">🎯</span>
+            <span class="text">Focus: <strong class="highlight">Dapr & K8s</strong></span>
+          </div>
+          <div class="learning-item">
+            <span class="icon">📚</span>
+            <span class="text">Reading: <strong class="highlight">DDIA</strong></span>
+          </div>
+        </div>
+      </div>
+    </div>
   </aside>
 </template>
 
@@ -58,11 +78,76 @@ const { mySkills, toPersianDigits } = usePortfolio();
   padding: 20px;
   margin: 0;
   list-style: none;
-  height: 100%;
+  flex: 1;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 15px;
+  min-height: 0; /* Important for flex child scroll */
+}
+
+/* Learning Section Styles */
+.learning-wrapper {
+  padding: 15px 20px 20px;
+  border-top: 1px solid var(--panel-border);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.learning-box {
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  width: 100%;
+}
+
+.learning-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.pulse-dot-large {
+  width: 8px;
+  height: 8px;
+  background: var(--neon);
+  border-radius: 50%;
+  box-shadow: 0 0 5px var(--neon);
+  animation: pulse-dot-large 2s infinite;
+}
+
+@keyframes pulse-dot-large {
+  0% { transform: scale(0.95); opacity: 0.7; }
+  50% { transform: scale(1.1); opacity: 1; box-shadow: 0 0 10px var(--neon); }
+  100% { transform: scale(0.95); opacity: 0.7; }
+}
+
+.learning-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.learning-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--text-main);
+}
+
+.learning-item .icon {
+  font-size: 1rem;
+}
+
+.learning-item .highlight {
+  color: var(--neon);
+  font-weight: normal;
 }
 
 .skill-module {

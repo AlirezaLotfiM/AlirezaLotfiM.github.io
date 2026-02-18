@@ -1,13 +1,32 @@
 <script setup>
+import { ref } from 'vue';
 import { usePortfolio } from '../../../composables/usePortfolio';
 import { useTilt } from '../../../composables/useTilt';
+import ArchitectureModal from '../../ArchitectureModal.vue';
 
 const { filteredProjects, getLangColor } = usePortfolio();
 const { handleCardTilt, resetCard } = useTilt();
+
+const showArchModal = ref(false);
+const currentArchDiagram = ref('');
+const currentArchTitle = ref('');
+
+const openArchitecture = (p) => {
+  currentArchTitle.value = p.name;
+  currentArchDiagram.value = p.architecture;
+  showArchModal.value = true;
+};
 </script>
 
 <template>
   <div class="grid-list">
+    <ArchitectureModal
+      :visible="showArchModal"
+      :diagram="currentArchDiagram"
+      :title="currentArchTitle"
+      @close="showArchModal = false"
+    />
+
     <a v-for="p in filteredProjects" :key="p.id" :href="p.html_url"
       :target="p.html_url === '#' ? '' : '_blank'" class="grid-item spotlight-card"
       @mousemove="handleCardTilt" @mouseleave="resetCard">
@@ -25,10 +44,16 @@ const { handleCardTilt, resetCard } = useTilt();
       <h4>{{ p.name }}</h4>
       <p>{{ p.description }}</p>
       <div class="card-footer">
-        <span class="arrow-link">{{
-          p.isPrivate ? "پروژه سازمانی" : "مشاهده سورس"
-          }}
-          &larr;</span>
+        <div class="footer-row">
+          <span class="arrow-link">{{
+            p.isPrivate ? "پروژه سازمانی" : "مشاهده سورس"
+            }}
+            &larr;</span>
+
+          <button v-if="p.architecture" class="arch-btn" @click.prevent="openArchitecture(p)">
+            View Architecture 🏗️
+          </button>
+        </div>
       </div>
     </a>
     <div v-if="filteredProjects.length === 0" class="empty-state">
@@ -110,13 +135,18 @@ const { handleCardTilt, resetCard } = useTilt();
 
 .card-footer {
   margin-top: 15px;
-  text-align: left;
   font-size: 0.8rem;
   color: var(--neon);
   z-index: 2;
   position: relative;
   border-top: 1px solid var(--panel-border);
   padding-top: 10px;
+}
+
+.footer-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .arrow-link {
@@ -129,6 +159,24 @@ const { handleCardTilt, resetCard } = useTilt();
 .grid-item:hover .arrow-link {
   opacity: 1;
   transform: translateX(0);
+}
+
+.arch-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--panel-border);
+  color: var(--text-main);
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: 0.2s;
+  z-index: 5;
+}
+
+.arch-btn:hover {
+  background: var(--neon);
+  color: black;
+  border-color: var(--neon);
 }
 
 .empty-state {

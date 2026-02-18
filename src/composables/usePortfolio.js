@@ -168,6 +168,25 @@ const fetchData = async () => {
         description: "طراحی و پیاده‌سازی اولیه پلتفرم مدیریت جریان کار با تمرکز بر معماری توزیع‌شده و اتصال سخت‌افزار به وب.",
         html_url: "#",
         isPrivate: true,
+        architecture: `graph TD
+    Client[Client App] -->|HTTP| API[API Gateway]
+    API -->|gRPC| Auth[Auth Service]
+    API -->|AMQP| MQ[RabbitMQ]
+    MQ -->|Consume| Worker[Background Worker]
+    Worker -->|Write| DB[(PostgreSQL)]
+    Worker -->|Cache| Redis[(Redis)]
+    subgraph Core Services
+    API
+    Auth
+    end
+    subgraph Async Processing
+    MQ
+    Worker
+    end
+    style Client fill:#333,stroke:#fff
+    style API fill:#1e3a8a,stroke:#60a5fa
+    style MQ fill:#f97316,stroke:#fff
+    style DB fill:#16a34a,stroke:#fff`
       },
       {
         id: 102,
@@ -176,11 +195,25 @@ const fetchData = async () => {
         description: "سامانه فول‌استک مدیریت آزمون و آموزش پرسنل مبتنی بر پنل‌های داینامیک.",
         html_url: "#",
         isPrivate: true,
+        architecture: `graph LR
+    User((User)) -->|HTTPS| CF[Cloudflare]
+    CF -->|Load Balance| Web[Vue.js Frontend]
+    Web -->|REST| API[.NET Core API]
+    API -->|Read/Write| SQL[(SQL Server)]
+    API -->|Logs| ES{ElasticSearch}
+    subgraph On-Premise
+    Web
+    API
+    SQL
+    end
+    style User fill:#fff,stroke:#333,color:#000
+    style Web fill:#41b883,stroke:#35495e
+    style API fill:#512bd4,stroke:#fff`
       },
       {
         id: 103,
         name: "سامانه مانیتورینگ بانک ملت",
-        language: "Vue.js",
+        language: "Vue",
         description: "داشبورد مدیریتی و مانیتورینگ آنلاین وضعیت صف‌ها و عملکرد شعب در بستر وب.",
       },
       {
