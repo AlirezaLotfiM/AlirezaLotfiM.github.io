@@ -213,7 +213,7 @@ const fetchData = async () => {
       {
         id: 103,
         name: "سامانه مانیتورینگ بانک ملت",
-        language: "Vue.js",
+        language: "Vue",
         description: "داشبورد مدیریتی و مانیتورینگ آنلاین وضعیت صف‌ها و عملکرد شعب در بستر وب.",
       },
       {
