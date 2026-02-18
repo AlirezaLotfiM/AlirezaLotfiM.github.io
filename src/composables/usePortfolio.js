@@ -1,6 +1,6 @@
-import { ref, computed, watch } from 'vue';
-import { useTheme } from './useTheme.js';
-import { useSEO } from './useSEO.js';
+import { ref, computed, watch } from "vue";
+import { useTheme } from "./useTheme.js";
+import { useSEO } from "./useSEO.js";
 
 // Shared state
 const userGithub = "AlirezaLotfiM";
@@ -85,28 +85,40 @@ const { currentThemeColor } = useTheme();
 const { setPageTitle, setMetaDescription, resetSEO } = useSEO();
 
 // Watch activeTab to update title
-watch(activeTab, (newTab) => {
-  if (selectedNote.value) return; // Note overrides tab title
+watch(
+  activeTab,
+  (newTab) => {
+    if (selectedNote.value) return; // Note overrides tab title
 
-  const titles = {
-    projects: "پروژه‌ها",
-    interests: "علاقه‌مندی‌ها",
-    roadmap: "مسیر من",
-    history: "سوابق شغلی",
-    notes: "یادداشت‌ها"
-  };
-  setPageTitle(titles[newTab] || "Software Engineer");
+    const titles = {
+      projects: "پروژه‌ها",
+      interests: "علاقه‌مندی‌ها",
+      roadmap: "مسیر من",
+      history: "سوابق شغلی",
+      notes: "یادداشت‌ها",
+    };
+    setPageTitle(titles[newTab] || "Software Engineer");
 
-  if (newTab === 'projects') setMetaDescription("نمونه کارهای علیرضا لطفی‌مقدم شامل پروژه‌های دسکتاپ و وب.");
-  if (newTab === 'history') setMetaDescription("سوابق شغلی و تجربه کاری من در شرکت‌های مختلف نرم‌افزاری.");
-}, { immediate: true });
+    if (newTab === "projects")
+      setMetaDescription(
+        "نمونه کارهای علیرضا لطفی‌مقدم شامل پروژه‌های دسکتاپ و وب.",
+      );
+    if (newTab === "history")
+      setMetaDescription(
+        "سوابق شغلی و تجربه کاری من در شرکت‌های مختلف نرم‌افزاری.",
+      );
+  },
+  { immediate: true },
+);
 
 // Watch selectedNote to update title
 watch(selectedNote, (newNote) => {
   if (newNote) {
     setPageTitle(newNote.title);
     // Use first 150 chars of body or a default desc
-    const desc = newNote.body ? newNote.body.substring(0, 150).replace(/[\r\n]+/g, ' ') + "..." : "یادداشتی از علیرضا لطفی‌مقدم";
+    const desc = newNote.body
+      ? newNote.body.substring(0, 150).replace(/[\r\n]+/g, " ") + "..."
+      : "یادداشتی از علیرضا لطفی‌مقدم";
     setMetaDescription(desc);
   } else {
     // Reset to active tab
@@ -115,7 +127,7 @@ watch(selectedNote, (newNote) => {
       interests: "علاقه‌مندی‌ها",
       roadmap: "مسیر من",
       history: "سوابق شغلی",
-      notes: "یادداشت‌ها"
+      notes: "یادداشت‌ها",
     };
     setPageTitle(titles[activeTab.value]);
     setMetaDescription(null); // Will fallback to default in useSEO logic
@@ -164,43 +176,62 @@ const fetchData = async () => {
       {
         id: 101,
         name: "NeuroFlow Platform",
-        language: "Concept",
-        description: "طراحی و پیاده‌سازی اولیه پلتفرم مدیریت جریان کار با تمرکز بر معماری توزیع‌شده و اتصال سخت‌افزار به وب.",
+        language: "C# / Vue",
+        description:
+          "طراحی و پیاده‌سازی پلتفرم توزیع‌شده مدیریت جریان کار؛ با تمرکز بر پایداری عملیاتی (Resilience) و یکپارچه‌سازی بیومتریک در وب.",
         html_url: "#",
         isPrivate: true,
-        architecture: `graph TD
-    Client[Client App] -->|HTTP| API[API Gateway]
-    API -->|gRPC| Auth[Auth Service]
-    API -->|AMQP| MQ[RabbitMQ]
-    MQ -->|Consume| Worker[Background Worker]
-    Worker -->|Write| DB[(PostgreSQL)]
-    Worker -->|Cache| Redis[(Redis)]
-    subgraph Core Services
-    API
-    Auth
+        architecture: `graph LR
+    %% لایه کلاینت
+    subgraph Clients
+      Web[Vue.js Web]
+      Agent[WPF Agent]
     end
-    subgraph Async Processing
-    MQ
-    Worker
+
+    %% لایه ارتباطی
+    subgraph Bridge
+      API[API Gateway]
+      Hub[SignalR Hub]
     end
-    style Client fill:#333,stroke:#fff
-    style API fill:#1e3a8a,stroke:#60a5fa
+
+    %% پردازش غیرهمزمان
+    MQ{RabbitMQ}
+
+    %% هسته و داده
+    subgraph Core_Backend
+      Svc[Core Service]
+      DB[(PostgreSQL)]
+      Cache[(Redis)]
+    end
+
+    %% جریان داده
+    Web --> API
+    Agent <--> Hub
+    API --> MQ
+    Hub --> MQ
+    MQ --> Svc
+    Svc --> DB
+    Svc --> Cache
+
+    %% استایل‌های مینیمال
+    style API fill:#1e3a8a,stroke:#fff
     style MQ fill:#f97316,stroke:#fff
-    style DB fill:#16a34a,stroke:#fff`
+    style DB fill:#16a34a,stroke:#fff
+    style Agent fill:#4b5563,stroke:#fff
+    style Cache fill:#dc2626,stroke:#fff`,
       },
       {
         id: 102,
         name: "سامانه آموزش بیودارو",
         language: "C# / Vue",
-        description: "سامانه فول‌استک مدیریت آزمون و آموزش پرسنل مبتنی بر پنل‌های داینامیک.",
+        description:
+          "سامانه فول‌استک مدیریت آزمون و آموزش پرسنل مبتنی بر پنل‌های داینامیک.",
         html_url: "#",
         isPrivate: true,
         architecture: `graph LR
-    User((User)) -->|HTTPS| CF[Cloudflare]
-    CF -->|Load Balance| Web[Vue.js Frontend]
+    User((User)) -->|HTTPS| Web[Vue.js Frontend]
     Web -->|REST| API[.NET Core API]
     API -->|Read/Write| SQL[(SQL Server)]
-    API -->|Logs| ES{ElasticSearch}
     subgraph On-Premise
     Web
     API
@@ -208,19 +239,23 @@ const fetchData = async () => {
     end
     style User fill:#fff,stroke:#333,color:#000
     style Web fill:#41b883,stroke:#35495e
-    style API fill:#512bd4,stroke:#fff`
+    style API fill:#512bd4,stroke:#fff`,
       },
       {
         id: 103,
         name: "سامانه مانیتورینگ بانک ملت",
         language: "Vue",
-        description: "داشبورد مدیریتی و مانیتورینگ آنلاین وضعیت صف‌ها و عملکرد شعب در بستر وب.",
+        description:
+          "داشبورد مدیریتی و مانیتورینگ آنلاین وضعیت صف‌ها و عملکرد شعب در بستر وب.",
+        html_url: "#",
+        isPrivate: true,
       },
       {
         id: 104,
         name: "Legacy Queue Systems",
         language: "WPF",
-        description: "توسعه سیستم‌های نوبت‌دهی ویندوزی متمرکز با قابلیت کنترل سخت‌افزارهای جانبی.",
+        description:
+          "توسعه سیستم‌های نوبت‌دهی ویندوزی متمرکز با قابلیت کنترل سخت‌افزارهای جانبی.",
         html_url: "#",
         isPrivate: true,
       },
@@ -242,7 +277,7 @@ const openNote = async (note) => {
       const res = await fetch(note.comments_url);
       if (res.ok) noteComments.value = await res.json();
     }
-  } catch (e) { }
+  } catch (e) {}
   loadingComments.value = false;
 };
 
@@ -271,6 +306,6 @@ export function usePortfolio() {
     filteredProjects,
     fetchData,
     openNote,
-    closeNote
+    closeNote,
   };
 }
