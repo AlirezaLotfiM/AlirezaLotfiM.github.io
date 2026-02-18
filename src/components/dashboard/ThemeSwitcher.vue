@@ -126,9 +126,10 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   gap: 5px;
-  max-height: 300px;
+  max-height: 50vh;
   overflow-y: auto;
   padding-right: 5px;
+  padding-bottom: 20px;
 }
 
 .theme-option {
