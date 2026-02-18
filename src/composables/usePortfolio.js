@@ -134,28 +134,57 @@ watch(selectedNote, (newNote) => {
   }
 });
 
-const getLangColor = (lang) => {
-  if (!lang) return "#888";
-  const colors = {
-    "C#": "#178600",
-    Vue: "#41b883",
-    JavaScript: "#f1e05a",
-    HTML: "#e34c26",
-    CSS: "#563d7c",
-    Python: "#3572A5",
+const techStack = {
+  "C#": { color: "#178600", short: "C#", name: "C# (.NET)" },
+  "Vue": { color: "#41b883", short: "Vue", name: "Vue.js" },
+  "JavaScript": { color: "#f1e05a", short: "JS", name: "JavaScript" },
+  "HTML": { color: "#e34c26", short: "HTML", name: "HTML5" },
+  "CSS": { color: "#563d7c", short: "CSS", name: "CSS3" },
+  "Python": { color: "#3572A5", short: "Py", name: "Python" },
+  "WPF": { color: "#512bd4", short: "WPF", name: "Windows Presentation Foundation" },
+  "TypeScript": { color: "#2b7489", short: "TS", name: "TypeScript" },
+  "Shell": { color: "#89e051", short: "Shell", name: "Shell Script" },
+};
+
+const getTechDetails = (techName) => {
+  if (!techName) return null;
+  // Check direct match
+  if (techStack[techName]) return techStack[techName];
+
+  // Default fallback
+  return {
+    color: currentThemeColor.value || "#888",
+    short: techName.length > 4 ? techName.substring(0, 3).toUpperCase() : techName,
+    name: techName
   };
-  return colors[lang] || currentThemeColor.value;
+};
+
+const getLangColor = (lang) => {
+  // Keep for compatibility if needed, but updated logic is preferred
+  const details = getTechDetails(lang);
+  return details ? details.color : "#888";
 };
 
 // Computed
 const availableLanguages = computed(() => {
-  const langs = new Set(projects.value.map((p) => p.language).filter(Boolean));
+  const langs = new Set();
+  projects.value.forEach((p) => {
+    if (p.language) {
+      // Split by " / " or just "/"
+      const parts = p.language.split(/\s*\/\s*/);
+      parts.forEach(l => langs.add(l));
+    }
+  });
   return ["All", ...langs];
 });
 
 const filteredProjects = computed(() => {
   if (activeFilter.value === "All") return projects.value;
-  return projects.value.filter((p) => p.language === activeFilter.value);
+  return projects.value.filter((p) => {
+    if (!p.language) return false;
+    const parts = p.language.split(/\s*\/\s*/);
+    return parts.includes(activeFilter.value);
+  });
 });
 
 // Actions
@@ -301,7 +330,8 @@ export function usePortfolio() {
     interests,
     roadmapItems,
     toPersianDigits,
-    getLangColor,
+    getLangColor, // Kept for backward compat
+    getTechDetails, // New function
     availableLanguages,
     filteredProjects,
     fetchData,

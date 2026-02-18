@@ -10,5 +10,16 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('mermaid')) {
+            return 'mermaid'; // تمام متعلقات نمودار را در یک فایل تجمیع کن
+          }
+        }
+      }
+    }
   }
 })

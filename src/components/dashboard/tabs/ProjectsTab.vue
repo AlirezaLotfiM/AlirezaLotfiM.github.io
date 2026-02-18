@@ -4,17 +4,45 @@ import { usePortfolio } from '../../../composables/usePortfolio';
 import { useTilt } from '../../../composables/useTilt';
 import ArchitectureModal from '../../ArchitectureModal.vue';
 
-const { filteredProjects, getLangColor } = usePortfolio();
+const { filteredProjects, getTechDetails } = usePortfolio();
 const { handleCardTilt, resetCard } = useTilt();
 
 const showArchModal = ref(false);
 const currentArchDiagram = ref('');
 const currentArchTitle = ref('');
 
+// Tooltip State
+const tooltip = ref({
+  visible: false,
+  text: '',
+  x: 0,
+  y: 0
+});
+
+const showTooltip = (event, text) => {
+  const rect = event.currentTarget.getBoundingClientRect();
+  tooltip.value = {
+    visible: true,
+    text,
+    // Center horizontally, place above target
+    x: rect.left + rect.width / 2,
+    y: rect.top - 8
+  };
+};
+
+const hideTooltip = () => {
+  tooltip.value.visible = false;
+};
+
 const openArchitecture = (p) => {
   currentArchTitle.value = p.name;
   currentArchDiagram.value = p.architecture;
   showArchModal.value = true;
+};
+
+const getTechList = (langString) => {
+  if (!langString) return [];
+  return langString.split(/\s*\/\s*/).map(l => getTechDetails(l));
 };
 </script>
 
@@ -27,6 +55,15 @@ const openArchitecture = (p) => {
       @close="showArchModal = false"
     />
 
+    <!-- Teleported Tooltip -->
+    <Teleport to="body">
+      <div v-if="tooltip.visible"
+           class="global-tech-tooltip"
+           :style="{ top: tooltip.y + 'px', left: tooltip.x + 'px' }">
+        {{ tooltip.text }}
+      </div>
+    </Teleport>
+
     <a v-for="p in filteredProjects" :key="p.id" :href="p.html_url"
       :target="p.html_url === '#' ? '' : '_blank'" class="grid-item spotlight-card"
       @mousemove="handleCardTilt" @mouseleave="resetCard">
@@ -34,12 +71,26 @@ const openArchitecture = (p) => {
       <div class="card-head">
         <span class="folder-icon">{{
           p.isPrivate ? "🔒" : "📂"
-        }}</span><span class="lang-capsule" v-if="p.language" :style="{
-            borderColor: getLangColor(p.language),
-            color: getLangColor(p.language),
-            background: getLangColor(p.language) + '15',
-          }"><span class="dot" :style="{ background: getLangColor(p.language) }"></span>{{ p.language
-          }}</span>
+        }}</span>
+
+        <div class="lang-container" v-if="p.language">
+          <span
+            v-for="tech in getTechList(p.language)"
+            :key="tech.name"
+            class="lang-badge"
+            :style="{
+              borderColor: tech.color,
+              color: tech.color,
+              background: tech.color + '15',
+            }"
+            @mouseenter="showTooltip($event, tech.name)"
+            @mouseleave="hideTooltip"
+          >
+            <span class="dot" :style="{ background: tech.color }"></span>
+            {{ tech.short }}
+          </span>
+        </div>
+
       </div>
       <h4>{{ p.name }}</h4>
       <p>{{ p.description }}</p>
@@ -78,7 +129,7 @@ const openArchitecture = (p) => {
   border-radius: 16px;
   overflow: hidden;
   transition: 0.2s;
-  padding: 20px;
+  padding: 25px 20px 20px;
   display: flex;
   flex-direction: column;
   min-height: 180px;
@@ -87,7 +138,7 @@ const openArchitecture = (p) => {
 .card-head {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start; /* Changed to handle multi-row badges nicely */
   margin-bottom: 15px;
   z-index: 2;
   position: relative;
@@ -98,15 +149,32 @@ const openArchitecture = (p) => {
   opacity: 0.7;
 }
 
-.lang-capsule {
+.lang-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: flex-end;
+  max-width: 70%;
+}
+
+.lang-badge {
   font-size: 0.75rem;
-  padding: 4px 10px;
+  padding: 4px 8px;
   border-radius: 50px;
   border: 1px solid;
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-weight: 500;
+  gap: 4px;
+  font-weight: 600;
+  position: relative;
+  cursor: help;
+  transition: transform 0.2s;
+}
+
+.lang-badge:hover {
+  transform: translateY(-2px);
+  /* Slight glow on hover */
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 
 .dot {
@@ -190,6 +258,38 @@ const openArchitecture = (p) => {
 @media (max-width: 1024px) {
   .grid-list {
     grid-template-columns: 1fr;
+  }
+}
+</style>
+
+<!-- Global Styles for Tooltip (outside scoped) -->
+<style>
+.global-tech-tooltip {
+  position: fixed;
+  transform: translateX(-50%) translateY(-100%);
+  background: var(--bg-main); /* Using main bg for contrast */
+  color: var(--text-main);
+  border: 1px solid var(--panel-border);
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 9999;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px);
+  /* Animation */
+  animation: tooltip-pop 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes tooltip-pop {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-90%) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-100%) scale(1);
   }
 }
 </style>
