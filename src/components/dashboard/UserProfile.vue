@@ -141,6 +141,24 @@ onUnmounted(() => {
         </div>
       </div>
 
+      <!-- Currently Learning Section -->
+      <div class="learning-box">
+        <div class="learning-header">
+          <span class="pulse-dot"></span>
+          <span class="title">Currently Learning</span>
+        </div>
+        <div class="learning-content">
+          <div class="learning-item">
+            <span class="icon">🎯</span>
+            <span class="text">Focus: <strong class="highlight">Dapr & K8s</strong></span>
+          </div>
+          <div class="learning-item">
+            <span class="icon">📚</span>
+            <span class="text">Reading: <strong class="highlight">DDIA</strong></span>
+          </div>
+        </div>
+      </div>
+
       <div class="contact-grid">
         <div class="contact-wrapper">
           <button class="contact-btn email" @click="copyToClipboard(myEmail, 'email')" aria-label="Email">
@@ -453,6 +471,64 @@ onUnmounted(() => {
 .tooltip-box .copy-btn:hover {
   background: var(--neon);
   color: #000;
+}
+
+.learning-box {
+  margin: 15px 0;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  width: 100%;
+}
+
+.learning-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--neon);
+  border-radius: 50%;
+  box-shadow: 0 0 5px var(--neon);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.95); opacity: 0.7; }
+  50% { transform: scale(1.1); opacity: 1; box-shadow: 0 0 10px var(--neon); }
+  100% { transform: scale(0.95); opacity: 0.7; }
+}
+
+.learning-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.learning-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--text-main);
+}
+
+.learning-item .icon {
+  font-size: 1rem;
+}
+
+.learning-item .highlight {
+  color: var(--neon);
+  font-weight: normal;
 }
 
 .contact-grid {

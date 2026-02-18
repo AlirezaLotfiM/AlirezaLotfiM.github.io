@@ -64,6 +64,7 @@ const handleCommand = () => {
     addLog('  whoami    - Display user profile');
     addLog('  skills    - List technical skills');
     addLog('  projects  - List projects (ls)');
+    addLog('  status    - Current focus & learning');
     addLog('  contact   - Show contact info');
     addLog('  cls       - Clear terminal');
     addLog('  exit      - Close terminal');
@@ -100,6 +101,12 @@ const handleCommand = () => {
       if (props.contact.github) addLog(`GitHub:   github.com/${props.contact.github}`);
       if (props.contact.telegram) addLog(`Telegram: ${props.contact.telegram}`);
     }
+  }
+  else if (cmd === 'status' || cmd === 'learning') {
+    addLog('--- CURRENT FOCUS ---', 'os-warn');
+    addLog('Focus:   Dapr & Kubernetes', 'os-ok');
+    addLog('Reading: Designing Data-Intensive Applications', 'os-ok');
+    addLog('Mood:    Productive 🚀', 'os-dim');
   }
   else if (cmd === 'whoami') {
     addLog(`User:  ${props.username || 'Unknown'}`, 'os-ok');
