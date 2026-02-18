@@ -22,7 +22,8 @@ const updatePosition = () => {
       top: `${rect.bottom + 5}px`,
       left: `${left}px`,
       width: '220px',
-      zIndex: 99999
+      zIndex: 99999,
+      maxHeight:'300px'
     };
   }
 };
