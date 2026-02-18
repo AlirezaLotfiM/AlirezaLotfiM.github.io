@@ -248,7 +248,7 @@ onUnmounted(() => {
   align-items: center;
   gap: 15px;
   padding-top: 15px;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   font-size: 0.8rem;
   font-family: monospace;
   opacity: 0.7;
@@ -261,7 +261,7 @@ onUnmounted(() => {
 }
 
 .divider {
-  color: #333;
+  color: var(--text-secondary);
 }
 
 .gemini-text {
@@ -287,12 +287,12 @@ onUnmounted(() => {
 
 .version-tag {
   font-family: monospace;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--item-bg);
   padding: 2px 6px;
   border-radius: 4px;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   font-size: 0.75rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--panel-border);
 }
 
 /* Mobile responsive */

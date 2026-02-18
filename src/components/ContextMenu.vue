@@ -29,19 +29,19 @@ defineEmits(['action', 'close']);
 
 <style scoped>
 .custom-context {
-  position: fixed; width: 180px; background: rgba(20, 20, 20, 0.9);
-  backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1);
+  position: fixed; width: 180px; background: var(--bg-main);
+  backdrop-filter: blur(10px); border: 1px solid var(--panel-border);
   border-radius: 12px; padding: 5px; z-index: 99999;
   box-shadow: 0 10px 30px rgba(0,0,0,0.5);
   animation: scaleIn 0.1s ease-out;
 }
 .menu-item {
-  padding: 10px; border-radius: 8px; color: #eee; cursor: pointer;
+  padding: 10px; border-radius: 8px; color: var(--text-main); cursor: pointer;
   display: flex; gap: 10px; align-items: center; font-size: 0.9rem;
   transition: 0.2s;
 }
-.menu-item:hover { background: #67FF64; color: #000; }
-.sep { height: 1px; background: rgba(255,255,255,0.1); margin: 5px 0; }
+.menu-item:hover { background: var(--neon); color: #000; }
+.sep { height: 1px; background: var(--panel-border); margin: 5px 0; }
 .overlay { position: fixed; inset: 0; z-index: 99998; }
 
 @keyframes scaleIn {

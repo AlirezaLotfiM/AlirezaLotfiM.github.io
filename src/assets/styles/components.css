@@ -7,17 +7,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--item-bg);
+  border: 1px solid var(--panel-border);
   border-radius: 12px;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   text-decoration: none;
 }
 .contact-btn:hover {
   transform: translateY(-3px);
-  color: white;
+  color: var(--text-main);
   border-color: transparent;
 }
 .contact-btn.email:hover {
@@ -36,8 +36,8 @@
   box-shadow: 0 5px 15px rgba(36, 129, 204, 0.3);
 }
 .contact-btn.github:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
+  background: var(--item-hover-bg);
+  color: var(--text-main);
   box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
 }
 
@@ -65,7 +65,7 @@
 /* --- Glass Panels --- */
 .glass-panel {
   background: var(--glass-panel);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--panel-border);
   border-top: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 20px;
   backdrop-filter: blur(25px) saturate(120%);
@@ -77,7 +77,7 @@
   transition: 0.3s;
 }
 .glass-panel:hover {
-  border-color: rgba(255, 255, 255, 0.2);
+  border-color: var(--text-secondary);
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
 }
 
@@ -96,7 +96,7 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: radial-gradient(500px circle at var(--x) var(--y), rgba(103, 255, 100, 0.08), transparent 50%);
+  background: radial-gradient(500px circle at var(--x) var(--y), var(--item-hover-bg), transparent 50%);
   z-index: 1;
 }
 .spotlight-card > * {
@@ -136,7 +136,7 @@
 .spinner {
   width: 40px;
   height: 40px;
-  border: 3px solid rgba(255, 255, 255, 0.1);
+  border: 3px solid var(--panel-border);
   border-top-color: var(--neon);
   border-radius: 50%;
   animation: spin 1s linear infinite;
@@ -153,7 +153,7 @@
   width: 6px;
 }
 .scroll-area::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--panel-border);
   border-radius: 10px;
 }
 

@@ -176,7 +176,7 @@ onMounted(() => {
   bottom: 20px;
   right: 20px; /* Initial position */
   width: 250px;
-  background: rgba(10, 10, 10, 0.95);
+  background: var(--bg-main);
   backdrop-filter: blur(10px);
   border: 1px solid var(--neon, #67FF64);
   border-radius: 8px;
@@ -231,7 +231,7 @@ onMounted(() => {
 }
 
 .track-title {
-  color: #fff;
+  color: var(--text-main);
   font-size: 0.85rem;
   font-weight: bold;
   white-space: nowrap;
@@ -240,7 +240,7 @@ onMounted(() => {
 }
 
 .track-artist {
-  color: var(--text-muted, #888);
+  color: var(--text-secondary);
   font-size: 0.7rem;
 }
 
@@ -294,7 +294,7 @@ onMounted(() => {
   width: 100%;
   height: 4px;
   -webkit-appearance: none;
-  background: #333;
+  background: var(--item-bg);
   border-radius: 2px;
   outline: none;
   direction: ltr; /* Force LTR for volume slider */

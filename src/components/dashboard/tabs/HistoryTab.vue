@@ -54,8 +54,8 @@ const { handleCardTilt, resetCard } = useTilt();
   position: relative;
   display: flex;
   padding: 20px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--item-bg);
+  border: 1px solid var(--panel-border);
   border-radius: 15px;
   overflow: hidden;
   gap: 20px;
@@ -80,7 +80,7 @@ const { handleCardTilt, resetCard } = useTilt();
 
 .marker-line {
   width: 2px;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--panel-border);
   flex-grow: 1;
   margin-top: 5px;
   margin-bottom: -25px; /* Extend to next item */
@@ -103,16 +103,16 @@ const { handleCardTilt, resetCard } = useTilt();
 
 .job-header h4 {
   margin: 0;
-  color: white;
+  color: var(--text-main);
   font-size: 1.1rem;
 }
 
 .company-badge {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--item-hover-bg);
   padding: 2px 8px;
   border-radius: 4px;
   font-size: 0.8rem;
-  color: #ddd;
+  color: var(--text-main);
 }
 
 .job-period {
@@ -150,9 +150,9 @@ const { handleCardTilt, resetCard } = useTilt();
 .tech-pill {
   font-size: 0.75rem;
   padding: 2px 8px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--panel-border);
   border-radius: 12px;
-  color: #ccc;
+  color: var(--text-secondary);
   transition: 0.2s;
 }
 

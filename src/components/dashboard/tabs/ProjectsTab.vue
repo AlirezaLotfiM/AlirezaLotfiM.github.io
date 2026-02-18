@@ -47,9 +47,9 @@ const { handleCardTilt, resetCard } = useTilt();
 .grid-item {
   position: relative;
   text-decoration: none;
-  color: white;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-main);
+  background: var(--item-bg);
+  border: 1px solid var(--panel-border);
   border-radius: 16px;
   overflow: hidden;
   transition: 0.2s;
@@ -115,7 +115,7 @@ const { handleCardTilt, resetCard } = useTilt();
   color: var(--neon);
   z-index: 2;
   position: relative;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 1px solid var(--panel-border);
   padding-top: 10px;
 }
 
