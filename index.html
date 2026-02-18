@@ -1,24 +1,29 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fa" dir="rtl">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0a0a0a" />
-    <meta name="description" content="Portfolio of Alireza Lotfi, a Senior .NET Developer specializing in distributed systems, WPF, and high-performance backend architecture." />
-    <link rel="icon" type="image/png" href="/Damoon-d.png" />
-    <link rel="apple-touch-icon" href="/Damoon-d.png">
-    <link rel="manifest" href="/manifest.json" />
+    <meta
+      name="description"
+      content="Portfolio of Alireza Lotfi, a Senior .NET Developer specializing in distributed systems, WPF, and high-performance backend architecture."
+    />
+    <link rel="icon" type="image/png" href="Damoon-d.png" />
+    <link rel="apple-touch-icon" href="Damoon-d.png" />
+    <link rel="manifest" href="manifest.json" />
     <title>Alireza Lotfi | Software Engineer</title>
   </head>
   <body>
     <div id="app"></div>
     <script type="module" src="/src/main.js"></script>
     <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js')
-            .then(reg => console.log('SW registered!', reg))
-            .catch(err => console.log('SW registration failed!', err));
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          // حذف اسلش اول برای سازگاری با گیت‌هاب پیج
+          navigator.serviceWorker
+            .register("sw.js")
+            .then((reg) => console.log("SW registered!"))
+            .catch((err) => console.log("SW failed", err));
         });
       }
     </script>
