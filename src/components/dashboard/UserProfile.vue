@@ -227,7 +227,7 @@ onUnmounted(() => {
 .profile-texts h1 {
   font-size: 1.3rem;
   margin: 5px 0 2px;
-  color: white;
+  color: var(--text-main);
 }
 
 .role {
@@ -256,8 +256,8 @@ onUnmounted(() => {
   display: flex;
   justify-content: center;
   gap: 30px;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 1px solid var(--panel-border);
+  border-bottom: 1px solid var(--panel-border);
 }
 
 .stat {
@@ -268,7 +268,7 @@ onUnmounted(() => {
 
 .stat strong {
   font-size: 1.4rem;
-  color: white;
+  color: var(--text-main);
 }
 
 .stat span {
@@ -339,7 +339,7 @@ onUnmounted(() => {
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  background: #000;
+  background: var(--bg-main);
 }
 
 .avatar-glow:hover img {
@@ -397,7 +397,7 @@ onUnmounted(() => {
   bottom: 125%;
   left: 50%;
   transform: translateX(-50%) translateY(10px);
-  background: #0a0a0a;
+  background: var(--bg-main);
   border: 1px solid var(--neon);
   border-radius: 8px;
   padding: 8px;
@@ -433,7 +433,7 @@ onUnmounted(() => {
 
 .tooltip-box .label {
   font-size: 0.75rem;
-  color: #fff;
+  color: var(--text-main);
   margin-bottom: 2px;
 }
 

@@ -142,13 +142,13 @@ const shareNote = () => {
 .note-row {
   padding: 20px 25px;
   border-radius: 16px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--item-bg);
+  border: 1px solid var(--panel-border);
   position: relative;
   overflow: hidden;
   display: block;
   text-decoration: none;
-  color: white;
+  color: var(--text-main);
   transition: transform 0.1s;
 }
 
@@ -163,7 +163,7 @@ const shareNote = () => {
 .note-head h4 {
   margin: 0;
   font-size: 1.1rem;
-  color: var(--text-white);
+  color: var(--text-main);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -190,12 +190,12 @@ const shareNote = () => {
   align-items: center;
   margin-top: 10px;
   padding-top: 10px;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 1px solid var(--panel-border);
 }
 
 .date {
   font-size: 0.8rem;
-  color: #666;
+  color: var(--text-secondary);
   font-family: "Vazirmatn";
 }
 
@@ -224,7 +224,7 @@ const shareNote = () => {
   align-items: center;
   justify-content: space-between;
   padding-bottom: 15px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--panel-border);
   margin-bottom: 20px;
   direction: rtl;
 }
@@ -236,9 +236,9 @@ const shareNote = () => {
 }
 
 .back-btn {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: var(--text-muted);
+  background: var(--item-bg);
+  border: 1px solid var(--panel-border);
+  color: var(--text-secondary);
   padding: 6px 12px;
   border-radius: 8px;
   cursor: pointer;
@@ -255,7 +255,7 @@ const shareNote = () => {
 .note-meta h1 {
   margin: 0;
   font-size: 1.3rem; /* Slightly larger for H1 */
-  color: white;
+  color: var(--text-main);
   border-bottom: none; /* Reset if global H1 has border */
   padding-bottom: 0;
 }
@@ -282,8 +282,8 @@ const shareNote = () => {
 }
 
 .main-post {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--item-bg);
+  border: 1px solid var(--panel-border);
 }
 
 .update-separator {
@@ -299,12 +299,13 @@ const shareNote = () => {
   content: "";
   flex: 1;
   height: 1px;
-  background: rgba(103, 255, 100, 0.3);
+  background: var(--neon);
+  opacity: 0.3;
   margin: 0 10px;
 }
 
 .update-post {
-  background: rgba(103, 255, 100, 0.05);
+  background: var(--item-bg);
   border-left: 3px solid var(--neon);
   border-radius: 4px;
 }
@@ -329,7 +330,7 @@ const shareNote = () => {
 }
 
 .block-body {
-  color: #eee;
+  color: var(--text-main);
 }
 
 .loading-bubble {
@@ -354,13 +355,13 @@ const shareNote = () => {
   height: auto !important;
   border-radius: 10px;
   margin: 10px 0;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--panel-border);
   display: block;
 }
 
 :deep(.inline-code) {
   font-family: monospace;
-  background: #333;
+  background: var(--item-hover-bg);
   padding: 2px 5px;
   border-radius: 4px;
   color: var(--neon);
@@ -374,20 +375,20 @@ const shareNote = () => {
 :deep(h1),
 :deep(h2),
 :deep(h3) {
-  color: var(--text-white);
+  color: var(--text-main);
   margin-top: 1.5em;
   margin-bottom: 0.5em;
 }
 
 :deep(h1) {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--panel-border);
   padding-bottom: 10px;
 }
 
 :deep(ul),
 :deep(ol) {
   padding-right: 20px;
-  color: #ddd;
+  color: var(--text-main);
 }
 
 :deep(li) {
@@ -398,18 +399,18 @@ const shareNote = () => {
   border-right: 3px solid var(--neon);
   padding-right: 15px;
   margin: 15px 0;
-  color: var(--text-muted);
-  background: rgba(255, 255, 255, 0.02);
+  color: var(--text-secondary);
+  background: var(--item-bg);
   padding: 10px;
   border-radius: 4px;
 }
 
 :deep(pre.code-block) {
-  background: #1e1e1e;
+  background: var(--bg-main);
   padding: 15px;
   border-radius: 8px;
   overflow-x: auto;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--panel-border);
   margin: 15px 0;
   direction: ltr;
   text-align: left;
@@ -418,7 +419,7 @@ const shareNote = () => {
 :deep(pre.code-block code) {
   font-family: "Consolas", "Monaco", "Courier New", monospace;
   font-size: 0.9rem;
-  color: #d4d4d4;
+  color: var(--text-main);
   white-space: pre-wrap;
 }
 

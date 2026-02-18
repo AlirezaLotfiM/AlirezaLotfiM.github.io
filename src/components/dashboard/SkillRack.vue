@@ -46,12 +46,12 @@ const { mySkills, toPersianDigits } = usePortfolio();
   margin: 0;
   padding: 20px;
   font-size: 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--panel-border);
   color: var(--neon);
   text-align: center;
   text-transform: uppercase;
   letter-spacing: 2px;
-  text-shadow: 0 0 10px rgba(103, 255, 100, 0.3);
+  text-shadow: 0 0 10px var(--neon);
 }
 
 .rack-container {
@@ -66,8 +66,8 @@ const { mySkills, toPersianDigits } = usePortfolio();
 }
 
 .skill-module {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--item-bg);
+  border: 1px solid var(--panel-border);
   border-radius: 10px;
   padding: 15px;
   transition: all 0.3s ease;
@@ -78,8 +78,8 @@ const { mySkills, toPersianDigits } = usePortfolio();
 }
 
 .skill-module:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.2);
+  background: var(--item-hover-bg);
+  border-color: var(--text-secondary);
   transform: translateX(5px);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
@@ -101,7 +101,7 @@ const { mySkills, toPersianDigits } = usePortfolio();
 
 .skill-name {
   font-size: 0.85rem;
-  color: #ddd;
+  color: var(--text-main);
   font-weight: 500;
   line-height: 1.4;
   white-space: normal;
@@ -137,7 +137,7 @@ const { mySkills, toPersianDigits } = usePortfolio();
 .module-bar-bg {
   width: 100%;
   height: 6px;
-  background: rgba(0, 0, 0, 0.4);
+  background: var(--bar-bg);
   border-radius: 3px;
   overflow: hidden;
   position: relative;
@@ -164,10 +164,10 @@ const { mySkills, toPersianDigits } = usePortfolio();
   right: 0;
   bottom: 0;
   width: 5px;
-  background: #fff;
+  background: var(--text-main);
   opacity: 0.6;
   filter: blur(2px);
-  box-shadow: 0 0 5px #fff;
+  box-shadow: 0 0 5px var(--text-main);
 }
 
 /* Mobile */

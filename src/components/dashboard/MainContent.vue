@@ -1,7 +1,7 @@
 <script setup>
 import { computed } from 'vue';
 import { usePortfolio } from '../../composables/usePortfolio';
-import { useTheme } from '../../composables/useTheme';
+import ThemeSwitcher from './ThemeSwitcher.vue';
 
 import ProjectsTab from './tabs/ProjectsTab.vue';
 import InterestsTab from './tabs/InterestsTab.vue';
@@ -18,8 +18,6 @@ const {
   availableLanguages,
   closeNote
 } = usePortfolio();
-
-const { toggleTheme } = useTheme();
 
 // Zen mode is handled in App.vue globally via class binding, but the button to toggle it is here.
 // We need to emit an event or use a shared state for Zen mode.
@@ -65,9 +63,9 @@ const emit = defineEmits(['toggle-zen']);
       </nav>
 
       <div class="header-controls">
-        <div v-if="activeTab === 'projects' && !selectedNote" class="project-controls">
+        <div class="project-controls">
           <div class="controls-left">
-            <div class="filter-chips">
+            <div v-if="activeTab === 'projects' && !selectedNote" class="filter-chips">
               <button v-for="lang in availableLanguages" :key="lang" @click="activeFilter = lang"
                 :class="{ 'active-filter': activeFilter === lang }" class="filter-btn">
                 {{ lang === "All" ? "همه" : lang }}
@@ -75,9 +73,7 @@ const emit = defineEmits(['toggle-zen']);
             </div>
           </div>
           <div class="controls-right">
-            <button @click="toggleTheme" class="icon-btn theme-btn" title="تغییر رنگ تم">
-              🎨
-            </button>
+            <ThemeSwitcher />
           </div>
         </div>
       </div>
@@ -144,7 +140,7 @@ const emit = defineEmits(['toggle-zen']);
 .main-tabs {
   display: flex;
   width: 100%;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--panel-border);
   overflow-x: auto;
   scrollbar-width: none;
 }
@@ -161,7 +157,7 @@ const emit = defineEmits(['toggle-zen']);
   background: transparent;
   border: none;
   border-bottom: 2px solid transparent;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   font-family: inherit;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -171,18 +167,18 @@ const emit = defineEmits(['toggle-zen']);
 }
 
 .main-tabs button:hover {
-  color: #fff;
-  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-main);
+  background: var(--item-bg);
 }
 
 .main-tabs button.active {
-  color: white;
+  color: var(--text-main);
   border-bottom: 2px solid var(--neon);
-  background: linear-gradient(to top, rgba(255, 255, 255, 0.05), transparent);
+  background: linear-gradient(to top, var(--item-hover-bg), transparent);
 }
 
 .header-controls {
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 1px solid var(--panel-border);
   padding-top: 10px;
   width: 100%;
   padding-left: 30px;
@@ -214,9 +210,9 @@ const emit = defineEmits(['toggle-zen']);
 }
 
 .filter-btn {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: var(--text-muted);
+  background: var(--item-bg);
+  border: 1px solid var(--panel-border);
+  color: var(--text-secondary);
   font-size: 0.8rem;
   padding: 4px 12px;
   border-radius: 20px;
@@ -225,8 +221,8 @@ const emit = defineEmits(['toggle-zen']);
 }
 
 .filter-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
+  background: var(--item-hover-bg);
+  color: var(--text-main);
 }
 
 .filter-btn.active-filter {

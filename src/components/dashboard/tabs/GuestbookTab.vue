@@ -57,12 +57,12 @@ onMounted(() => {
 }
 
 .guestbook-header p {
-  color: var(--text-muted);
+  color: var(--text-secondary);
 }
 
 .giscus-wrapper {
   margin-top: 20px;
-  background: rgba(0, 0, 0, 0.2);
+  background: var(--item-bg);
   padding: 15px;
   border-radius: 10px;
 }

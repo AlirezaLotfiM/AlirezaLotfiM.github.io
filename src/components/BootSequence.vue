@@ -50,12 +50,12 @@ onMounted(() => {
 }
 .boot-console {
   width: 90%; max-width: 600px;
-  color: #67FF64; font-size: 1rem;
+  color: var(--neon); font-size: 1rem;
   line-height: 1.5;
 }
-.prefix { color: #fff; font-weight: bold; margin-right: 10px; }
+.prefix { color: var(--text-main); font-weight: bold; margin-right: 10px; }
 .line { animation: fadeIn 0.1s; margin-bottom: 5px; }
-.cursor { animation: blink 1s infinite; display: inline-block; color: #67FF64; }
+.cursor { animation: blink 1s infinite; display: inline-block; color: var(--neon); }
 
 @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }

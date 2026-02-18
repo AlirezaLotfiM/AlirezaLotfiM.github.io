@@ -27,8 +27,8 @@ const { handleCardTilt, resetCard } = useTilt();
 }
 
 .interest-card {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--item-bg);
+  border: 1px solid var(--panel-border);
   border-radius: 15px;
   padding: 20px;
   text-align: center;
@@ -43,13 +43,13 @@ const { handleCardTilt, resetCard } = useTilt();
 
 .interest-card h4 {
   margin: 0 0 8px;
-  color: white;
+  color: var(--text-main);
   font-size: 1.1rem;
 }
 
 .interest-card p {
   margin: 0;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   font-size: 0.85rem;
   line-height: 1.5;
 }

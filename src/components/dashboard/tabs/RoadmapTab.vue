@@ -39,8 +39,8 @@ const { handleCardTilt, resetCard } = useTilt();
 .roadmap-item {
   position: relative;
   padding: 20px 60px 20px 20px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--item-bg);
+  border: 1px solid var(--panel-border);
   border-radius: 15px;
   overflow: hidden;
 }
@@ -51,7 +51,7 @@ const { handleCardTilt, resetCard } = useTilt();
   top: 0;
   bottom: 0;
   width: 2px;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--panel-border);
 }
 
 .step-dot {
@@ -61,8 +61,8 @@ const { handleCardTilt, resetCard } = useTilt();
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  border: 2px solid #555;
-  background: #000;
+  border: 2px solid var(--text-secondary);
+  background: var(--bg-main);
   z-index: 2;
 }
 
@@ -84,13 +84,13 @@ const { handleCardTilt, resetCard } = useTilt();
 
 .step-content h4 {
   margin: 0 0 5px;
-  color: white;
+  color: var(--text-main);
   font-size: 1.1rem;
 }
 
 .step-content p {
   margin: 0 0 10px;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   font-size: 0.9rem;
   line-height: 1.6;
 }
@@ -99,7 +99,7 @@ const { handleCardTilt, resetCard } = useTilt();
   font-size: 0.75rem;
   padding: 3px 8px;
   border-radius: 6px;
-  background: rgba(255, 255, 255, 0.05);
-  color: #ccc;
+  background: var(--item-hover-bg);
+  color: var(--text-secondary);
 }
 </style>

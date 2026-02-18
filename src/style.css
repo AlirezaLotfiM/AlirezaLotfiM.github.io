@@ -1,27 +1,42 @@
 @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100;300;500;700;900&display=swap');
 
 :root {
-  --neon: #67FF64;          /* سبز نئونی */
-  --bg-dark: #050505;       /* مشکی عمیق */
-  /* شفافیت 0.6 برای اینکه ذرات متحرک پشتش دیده بشن */
-  --glass-panel: rgba(20, 20, 20, 0.6); 
-  --border-color: rgba(255, 255, 255, 0.1);
-  --text-white: #ffffff;
-  --text-muted: #9ca3af;
+  /* Theme Base Variables */
+  --bg-main: #050505;          /* Main background color */
+  --text-main: #ffffff;        /* Main text color */
+  --text-secondary: #9ca3af;   /* Secondary/Muted text color */
+
+  --panel-bg: rgba(20, 20, 20, 0.6); /* Glass panel background base */
+  --panel-border: rgba(255, 255, 255, 0.1);
+  --item-bg: rgba(255, 255, 255, 0.02);
+  --item-hover-bg: rgba(255, 255, 255, 0.05);
+  --bar-bg: rgba(0, 0, 0, 0.4);
+
+  --neon: #67FF64;             /* Accent color */
+
+  /* Derived/Legacy Variables */
+  --bg-dark: var(--bg-main);
+  --text-white: var(--text-main);
+  --text-muted: var(--text-secondary);
+  --border-color: var(--panel-border);
+
+  /* Glass Panel Gradient (Dynamic) */
+  --glass-panel: linear-gradient(145deg, var(--panel-bg), rgba(103, 255, 100, 0.03));
 }
 
 body {
   margin: 0;
   padding: 0;
-  background-color: var(--bg-dark);
-  color: var(--text-white);
+  background-color: var(--bg-main);
+  color: var(--text-main);
   font-family: 'Vazirmatn', sans-serif;
   width: 100vw;
   overflow-x: hidden;
   direction: rtl;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* --- نکته حیاتی: این کلاس‌ها باعث میشن موس از روی انیمیشن‌ها رد بشه --- */
+/* --- Pointer Events Pass-through --- */
 .cyber-bg, canvas, .cursor-wrapper {
   pointer-events: none !important;
   position: fixed;
@@ -31,9 +46,9 @@ body {
   height: 100%;
 }
 
-/* استایل اسکرول بار */
+/* Scrollbar Styles */
 ::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #000; }
+::-webkit-scrollbar-track { background: var(--bg-main); }
 ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--neon); }
 
