@@ -1,0 +1,36 @@
+[
+  {
+    "id": 101,
+    "name": "NeuroFlow Platform",
+    "language": "C# / Vue",
+    "description": "طراحی و پیاده‌سازی پلتفرم توزیع‌شده مدیریت جریان کار؛ با تمرکز بر پایداری عملیاتی (Resilience) و یکپارچه‌سازی بیومتریک در وب.",
+    "html_url": "#",
+    "isPrivate": true,
+    "architecture": "graph LR\n    %% لایه کلاینت\n    subgraph Clients\n      Web[Vue.js Web]\n      Agent[WPF Agent]\n    end\n\n    %% لایه ارتباطی\n    subgraph Bridge\n      API[API Gateway]\n      Hub[SignalR Hub]\n    end\n\n    %% پردازش غیرهمزمان\n    MQ{RabbitMQ}\n\n    %% هسته و داده\n    subgraph Core_Backend\n      Svc[Core Service]\n      DB[(PostgreSQL)]\n      Cache[(Redis)]\n    end\n\n    %% جریان داده\n    Web --> API\n    Agent <--> Hub\n    API --> MQ\n    Hub --> MQ\n    MQ --> Svc\n    Svc --> DB\n    Svc --> Cache\n\n    %% استایل‌های مینیمال\n    style API fill:#1e3a8a,stroke:#fff\n    style MQ fill:#f97316,stroke:#fff\n    style DB fill:#16a34a,stroke:#fff\n    style Agent fill:#4b5563,stroke:#fff\n    style Cache fill:#dc2626,stroke:#fff"
+  },
+  {
+    "id": 102,
+    "name": "سامانه آموزش بیودارو",
+    "language": "C# / Vue",
+    "description": "سامانه فول‌استک مدیریت آزمون و آموزش پرسنل مبتنی بر پنل‌های داینامیک.",
+    "html_url": "#",
+    "isPrivate": true,
+    "architecture": "graph LR\n    User((User)) -->|HTTPS| Web[Vue.js Frontend]\n    Web -->|REST| API[.NET Core API]\n    API -->|Read/Write| SQL[(SQL Server)]\n    subgraph On-Premise\n    Web\n    API\n    SQL\n    end\n    style User fill:#fff,stroke:#333,color:#000\n    style Web fill:#41b883,stroke:#35495e\n    style API fill:#512bd4,stroke:#fff"
+  },
+  {
+    "id": 103,
+    "name": "سامانه مانیتورینگ بانک ملت",
+    "language": "Vue",
+    "description": "داشبورد مدیریتی و مانیتورینگ آنلاین وضعیت صف‌ها و عملکرد شعب در بستر وب.",
+    "html_url": "#",
+    "isPrivate": true
+  },
+  {
+    "id": 104,
+    "name": "Legacy Queue Systems",
+    "language": "WPF",
+    "description": "توسعه سیستم‌های نوبت‌دهی ویندوزی متمرکز با قابلیت کنترل سخت‌افزارهای جانبی.",
+    "html_url": "#",
+    "isPrivate": true
+  }
+]

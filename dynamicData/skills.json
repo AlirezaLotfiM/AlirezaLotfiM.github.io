@@ -1,0 +1,10 @@
+[
+  { "name": "C# (.NET Ecosystem)", "level": 80 },
+  { "name": "WPF & Win32 Integration", "level": 70 },
+  { "name": "ASP.NET Core WebAPI", "level": 75 },
+  { "name": "SQL Server & Data Design", "level": 65 },
+  { "name": "SignalR (Real-time Communication)", "level": 50 },
+  { "name": "Vue.js 3", "level": 45 },
+  { "name": "Messaging (RabbitMQ)", "level": 30 },
+  { "name": "System Design Concepts", "level": 40 }
+]

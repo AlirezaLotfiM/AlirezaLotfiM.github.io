@@ -1,0 +1,11 @@
+{
+  "urls": {
+    "profile": "https://alirezalotfimoghaddam.s3.ir-thr-at1.arvanstorage.ir/dynamicData%2Fprofile.json?versionId=",
+    "skills": "https://alirezalotfimoghaddam.s3.ir-thr-at1.arvanstorage.ir/dynamicData%2Fskills.json?versionId=",
+    "projects": "https://alirezalotfimoghaddam.s3.ir-thr-at1.arvanstorage.ir/dynamicData%2Fprojects.json?versionId=",
+    "roadmap": "https://alirezalotfimoghaddam.s3.ir-thr-at1.arvanstorage.ir/dynamicData%2Froadmap.json?versionId=",
+    "interests": "https://alirezalotfimoghaddam.s3.ir-thr-at1.arvanstorage.ir/dynamicData%2Finterests.json?versionId=",
+    "experience": "https://alirezalotfimoghaddam.s3.ir-thr-at1.arvanstorage.ir/dynamicData%2Fexperience.json?versionId=",
+    "techStack": "https://alirezalotfimoghaddam.s3.ir-thr-at1.arvanstorage.ir/dynamicData%2FtechStack.json?versionId="
+  }
+}

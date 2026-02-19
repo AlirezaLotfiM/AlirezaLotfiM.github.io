@@ -1,0 +1,22 @@
+[
+  {
+    "title": "Exploring Distributed Systems",
+    "icon": "🌐",
+    "desc": "علاقه‌مند به یادگیری و پیاده‌سازی چالش‌های همگام‌سازی و الگوهای Event-Driven."
+  },
+  {
+    "title": "System Architecture",
+    "icon": "🧠",
+    "desc": "اشتیاق به درک عمیق‌تر طراحی سیستم‌های مقیاس‌پذیر و تبدیل طرح‌های تئوری به کد."
+  },
+  {
+    "title": "Hardware-Software Interaction",
+    "icon": "🔌",
+    "desc": "لذت بردن از چالش‌های فنی در کنترل دیوایس‌های جانبی از طریق کدنویسی سطح پایین."
+  },
+  {
+    "title": "Modern Web Technologies",
+    "icon": "🚀",
+    "desc": "دنبال کردن دنیای Vue.js و SignalR برای خلق رابط‌های کاربری بلادرنگ و تعاملی."
+  }
+]
