@@ -10,6 +10,9 @@ import NotesTab from './tabs/NotesTab.vue';
 import HistoryTab from './tabs/HistoryTab.vue';
 import GuestbookTab from './tabs/GuestbookTab.vue';
 
+import SkeletonGrid from '../skeletons/SkeletonGrid.vue';
+import SkeletonList from '../skeletons/SkeletonList.vue';
+
 const {
   activeTab,
   selectedNote,
@@ -81,13 +84,14 @@ const emit = defineEmits(['toggle-zen']);
 
     <!-- Content Body -->
     <div class="content-body">
-      <div v-if="loading" class="loading">
-        <div class="spinner"></div>
+      <div v-if="loading" class="loading-skeletons">
+        <SkeletonGrid v-if="activeTab === 'projects' || activeTab === 'interests'" />
+        <SkeletonList v-else />
       </div>
 
       <Transition name="fade-slide" mode="out-in">
         <!-- Notes Detail View (overrides tabs) -->
-        <div v-if="selectedNote" class="thread-view-wrapper" key="thread">
+        <div v-if="!loading && selectedNote" class="thread-view-wrapper" key="thread">
            <!-- We can pass the selectedNote handling to NotesTab or keep it here.
                 Since the UI structure in App.vue had the detail view *replacing* the grid,
                 it's easier to let NotesTab handle both list and detail, OR handle detail here.

@@ -127,6 +127,13 @@ onUnmounted(() => {
             <span class="typewriter">{{ typeText }}</span><span class="cursor">|</span>
           </p>
           <p class="role-sub">{{ profile.role }}</p>
+          <div class="availability-badge">
+            <span class="pulse-dot"></span>
+            <span>Open to New Opportunities</span>
+            <div class="tooltip-custom">
+              آماده همکاری در پروژه‌های توزیع‌شده و توسعه بک‌اند
+            </div>
+          </div>
         </div>
       </header>
 
@@ -134,7 +141,14 @@ onUnmounted(() => {
         <button class="terminal-toggle" @click="emit('open-terminal')" title="Ctrl + K">
           damoon@root:~$
         </button>
-        <a :href="profile.resumeUrl" download class="resume-btn" title="دانلود رزومه">📄 PDF</a>
+        <a class="resume-btn" href="/MyResume.pdf" download="MyResume.pdf" title="دانلود رزومه">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          دانلود رزومه
+        </a>
       </div>
 
       <div class="bio-short">
@@ -252,6 +266,93 @@ onUnmounted(() => {
   color: var(--text-muted);
 }
 
+.availability-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  color: var(--text-main);
+  background: rgba(103, 255, 100, 0.1);
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid rgba(103, 255, 100, 0.3);
+  position: relative;
+  cursor: help;
+  margin-bottom: 15px;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.availability-badge:hover {
+  background: rgba(103, 255, 100, 0.2);
+  border-color: var(--neon);
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  background-color: var(--neon);
+  border-radius: 50%;
+  position: relative;
+}
+
+.pulse-dot::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  background-color: var(--neon);
+  border-radius: 50%;
+  animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+
+@keyframes pulse-ring {
+  0% { width: 100%; height: 100%; opacity: 0.8; }
+  100% { width: 300%; height: 300%; opacity: 0; }
+}
+
+.tooltip-custom {
+  position: absolute;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: var(--bg-main);
+  border: 1px solid var(--neon);
+  padding: 8px 12px;
+  border-radius: 8px;
+  max-width: 220px;
+  width: max-content;
+  font-size: 0.75rem;
+  text-align: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: 0.3s;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  z-index: 10;
+  line-height: 1.5;
+  white-space: normal;
+  word-wrap: break-word;
+}
+
+.tooltip-custom::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 6px;
+  border-style: solid;
+  border-color: var(--neon) transparent transparent transparent;
+}
+
+.availability-badge:hover .tooltip-custom {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
 .bio-short {
   margin: 15px 0;
   font-size: 0.85rem;
@@ -322,15 +423,24 @@ onUnmounted(() => {
 
 .resume-btn {
   background: rgba(103, 255, 100, 0.1);
-  border: 1px dashed var(--neon);
+  border: 1px solid var(--neon);
   color: var(--neon);
   text-decoration: none;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 5px rgba(103, 255, 100, 0.2);
 }
 
 .resume-btn:hover {
   background: var(--neon);
-  color: black;
-  border-style: solid;
+  color: #000;
+  box-shadow: 0 0 20px var(--neon);
+  transform: translateY(-2px);
+}
+
+.resume-btn:active {
+  transform: translateY(0);
 }
 
 .avatar-glow {
