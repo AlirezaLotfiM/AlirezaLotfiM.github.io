@@ -1,0 +1,11 @@
+{
+  "C#": { "color": "#178600", "short": "C#", "name": "C# (.NET)" },
+  "Vue": { "color": "#41b883", "short": "Vue", "name": "Vue.js" },
+  "JavaScript": { "color": "#f1e05a", "short": "JS", "name": "JavaScript" },
+  "HTML": { "color": "#e34c26", "short": "HTML", "name": "HTML5" },
+  "CSS": { "color": "#563d7c", "short": "CSS", "name": "CSS3" },
+  "Python": { "color": "#3572A5", "short": "Py", "name": "Python" },
+  "WPF": { "color": "#512bd4", "short": "WPF", "name": "Windows Presentation Foundation" },
+  "TypeScript": { "color": "#2b7489", "short": "TS", "name": "TypeScript" },
+  "Shell": { "color": "#89e051", "short": "Shell", "name": "Shell Script" }
+}

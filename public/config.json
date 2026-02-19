@@ -1,0 +1,11 @@
+{
+  "urls": {
+    "profile": "/dynamicData/profile.json",
+    "skills": "/dynamicData/skills.json",
+    "projects": "/dynamicData/projects.json",
+    "roadmap": "/dynamicData/roadmap.json",
+    "interests": "/dynamicData/interests.json",
+    "experience": "/dynamicData/experience.json",
+    "techStack": "/dynamicData/techStack.json"
+  }
+}

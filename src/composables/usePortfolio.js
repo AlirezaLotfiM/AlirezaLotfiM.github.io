@@ -3,7 +3,7 @@ import { useTheme } from "./useTheme.js";
 import { useSEO } from "./useSEO.js";
 
 // Shared state
-const userGithub = "AlirezaLotfiM";
+const userGithub = ref("AlirezaLotfiM");
 const projects = ref([]);
 const notes = ref([]);
 const loading = ref(true);
@@ -13,70 +13,25 @@ const selectedNote = ref(null);
 const noteComments = ref([]);
 const loadingComments = ref(false);
 
-const mySkills = ref([
-  { name: "C# (.NET Ecosystem)", level: 80 },
-  { name: "WPF & Win32 Integration", level: 70 },
-  { name: "ASP.NET Core WebAPI", level: 75 },
-  { name: "SQL Server & Data Design", level: 65 },
-  { name: "SignalR (Real-time Communication)", level: 50 },
-  { name: "Vue.js 3", level: 45 },
-  { name: "Messaging (RabbitMQ)", level: 30 },
-  { name: "System Design Concepts", level: 40 },
-]);
-
-const interests = ref([
-  {
-    title: "Exploring Distributed Systems",
-    icon: "🌐",
-    desc: "علاقه‌مند به یادگیری و پیاده‌سازی چالش‌های همگام‌سازی و الگوهای Event-Driven.",
-  },
-  {
-    title: "System Architecture",
-    icon: "🧠",
-    desc: "اشتیاق به درک عمیق‌تر طراحی سیستم‌های مقیاس‌پذیر و تبدیل طرح‌های تئوری به کد.",
-  },
-  {
-    title: "Hardware-Software Interaction",
-    icon: "🔌",
-    desc: "لذت بردن از چالش‌های فنی در کنترل دیوایس‌های جانبی از طریق کدنویسی سطح پایین.",
-  },
-  {
-    title: "Modern Web Technologies",
-    icon: "🚀",
-    desc: "دنبال کردن دنیای Vue.js و SignalR برای خلق رابط‌های کاربری بلادرنگ و تعاملی.",
-  },
-]);
-
-const roadmapItems = ref([
-  {
-    title: "Practical Desktop Dev (WPF)",
-    status: "done",
-    desc: "توسعه نرم‌افزارهای دسکتاپ و مدیریت تعامل با سخت‌افزار در پروژه‌های عملیاتی.",
-  },
-  {
-    title: "ASP.NET Core Deep Dive",
-    status: "progress",
-    desc: "ارتقای دانش در میدل‌ورها، تزریق وابستگی و استانداردسازی APIها برای سیستم‌های توزیع‌شده.",
-  },
-  {
-    title: "NeuroFlow: Distributed Logic",
-    status: "progress",
-    desc: "پیاده‌سازی گام‌به‌گام معماری رویداد-محور (Event-Driven) و استفاده عملی از RabbitMQ در پروژه نوروفلو.",
-  },
-  {
-    title: "High Performance Data Storage",
-    status: "todo",
-    desc: "یادگیری ایندکس‌گذاری پیشرفته در SQL و شروع کار با Redis برای مدیریت کشینگ.",
-  },
-  {
-    title: "AI Integration (ML.NET)",
-    status: "todo",
-    desc: "آشنایی با مدل‌های پیش‌بینی ترافیک جهت پیاده‌سازی ماژول هوشمند در فازهای نهایی پلتفرم.",
-  },
-]);
+// New dynamic state
+const mySkills = ref([]);
+const interests = ref([]);
+const roadmapItems = ref([]);
+const workExperience = ref([]);
+const profile = ref({
+  name: "",
+  role: "",
+  titles: [],
+  bio: "",
+  contact: {},
+  learning: {},
+  resumeUrl: ""
+});
+const techStack = ref({});
 
 // Helper Functions
 const toPersianDigits = (num) => {
+  if (num === null || num === undefined) return "";
   const id = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
   return num.toString().replace(/[0-9]/g, (w) => id[+w]);
 };
@@ -134,22 +89,10 @@ watch(selectedNote, (newNote) => {
   }
 });
 
-const techStack = {
-  "C#": { color: "#178600", short: "C#", name: "C# (.NET)" },
-  "Vue": { color: "#41b883", short: "Vue", name: "Vue.js" },
-  "JavaScript": { color: "#f1e05a", short: "JS", name: "JavaScript" },
-  "HTML": { color: "#e34c26", short: "HTML", name: "HTML5" },
-  "CSS": { color: "#563d7c", short: "CSS", name: "CSS3" },
-  "Python": { color: "#3572A5", short: "Py", name: "Python" },
-  "WPF": { color: "#512bd4", short: "WPF", name: "Windows Presentation Foundation" },
-  "TypeScript": { color: "#2b7489", short: "TS", name: "TypeScript" },
-  "Shell": { color: "#89e051", short: "Shell", name: "Shell Script" },
-};
-
 const getTechDetails = (techName) => {
   if (!techName) return null;
   // Check direct match
-  if (techStack[techName]) return techStack[techName];
+  if (techStack.value[techName]) return techStack.value[techName];
 
   // Default fallback
   return {
@@ -188,109 +131,91 @@ const filteredProjects = computed(() => {
 });
 
 // Actions
-const fetchData = async () => {
+const fetchDynamicData = async () => {
   try {
+    // 1. Fetch Config
+    const configRes = await fetch("/config.json");
+    if (!configRes.ok) throw new Error("Failed to load config.json");
+    const config = await configRes.json();
+    const urls = config.urls;
+
+    // 2. Fetch all dynamic data in parallel
+    const [
+      profileRes,
+      skillsRes,
+      projectsRes,
+      roadmapRes,
+      interestsRes,
+      experienceRes,
+      techStackRes
+    ] = await Promise.all([
+      fetch(urls.profile),
+      fetch(urls.skills),
+      fetch(urls.projects),
+      fetch(urls.roadmap),
+      fetch(urls.interests),
+      fetch(urls.experience),
+      fetch(urls.techStack)
+    ]);
+
+    const profileData = await profileRes.json();
+    profile.value = profileData;
+    // Update github user from profile
+    if (profileData.githubUser) {
+        userGithub.value = profileData.githubUser;
+    }
+
+    mySkills.value = await skillsRes.json();
+    const manualProjects = await projectsRes.json();
+    roadmapItems.value = await roadmapRes.json();
+    interests.value = await interestsRes.json();
+    workExperience.value = await experienceRes.json();
+    techStack.value = await techStackRes.json();
+
+    return manualProjects;
+  } catch (e) {
+    console.error("Error fetching dynamic data:", e);
+    // Return empty projects array in case of error
+    return [];
+  }
+};
+
+const fetchData = async () => {
+  loading.value = true;
+  try {
+    // Fetch dynamic data first
+    const manualProjects = await fetchDynamicData();
+
+    // Now fetch GitHub data using the username from profile (or default)
+    const username = userGithub.value;
+
     const [repoRes, noteRes] = await Promise.all([
-      fetch(`https://api.github.com/users/${userGithub}/repos?sort=updated`),
+      fetch(`https://api.github.com/users/${username}/repos?sort=updated`),
       fetch(
-        `https://api.github.com/repos/${userGithub}/${userGithub}.github.io/issues?state=open&creator=${userGithub}`,
+        `https://api.github.com/repos/${username}/${username}.github.io/issues?state=open&creator=${username}`,
       ),
     ]);
-    const repos = await repoRes.json();
-    const issues = await noteRes.json();
-    let githubProjects = Array.isArray(repos)
-      ? repos.filter((r) => !r.fork).slice(0, 6)
-      : [];
-    const manualProjects = [
-      {
-        id: 101,
-        name: "NeuroFlow Platform",
-        language: "C# / Vue",
-        description:
-          "طراحی و پیاده‌سازی پلتفرم توزیع‌شده مدیریت جریان کار؛ با تمرکز بر پایداری عملیاتی (Resilience) و یکپارچه‌سازی بیومتریک در وب.",
-        html_url: "#",
-        isPrivate: true,
-        architecture: `graph LR
-    %% لایه کلاینت
-    subgraph Clients
-      Web[Vue.js Web]
-      Agent[WPF Agent]
-    end
 
-    %% لایه ارتباطی
-    subgraph Bridge
-      API[API Gateway]
-      Hub[SignalR Hub]
-    end
+    // Handle Repos
+    let githubProjects = [];
+    if (repoRes.ok) {
+        const repos = await repoRes.json();
+        githubProjects = Array.isArray(repos)
+        ? repos.filter((r) => !r.fork).slice(0, 6)
+        : [];
+    } else {
+        console.warn("Failed to fetch GitHub repos");
+    }
 
-    %% پردازش غیرهمزمان
-    MQ{RabbitMQ}
+    // Handle Notes (Issues)
+    if (noteRes.ok) {
+        const issues = await noteRes.json();
+        notes.value = Array.isArray(issues) ? issues : [];
+    } else {
+        console.warn("Failed to fetch GitHub issues");
+    }
 
-    %% هسته و داده
-    subgraph Core_Backend
-      Svc[Core Service]
-      DB[(PostgreSQL)]
-      Cache[(Redis)]
-    end
-
-    %% جریان داده
-    Web --> API
-    Agent <--> Hub
-    API --> MQ
-    Hub --> MQ
-    MQ --> Svc
-    Svc --> DB
-    Svc --> Cache
-
-    %% استایل‌های مینیمال
-    style API fill:#1e3a8a,stroke:#fff
-    style MQ fill:#f97316,stroke:#fff
-    style DB fill:#16a34a,stroke:#fff
-    style Agent fill:#4b5563,stroke:#fff
-    style Cache fill:#dc2626,stroke:#fff`,
-      },
-      {
-        id: 102,
-        name: "سامانه آموزش بیودارو",
-        language: "C# / Vue",
-        description:
-          "سامانه فول‌استک مدیریت آزمون و آموزش پرسنل مبتنی بر پنل‌های داینامیک.",
-        html_url: "#",
-        isPrivate: true,
-        architecture: `graph LR
-    User((User)) -->|HTTPS| Web[Vue.js Frontend]
-    Web -->|REST| API[.NET Core API]
-    API -->|Read/Write| SQL[(SQL Server)]
-    subgraph On-Premise
-    Web
-    API
-    SQL
-    end
-    style User fill:#fff,stroke:#333,color:#000
-    style Web fill:#41b883,stroke:#35495e
-    style API fill:#512bd4,stroke:#fff`,
-      },
-      {
-        id: 103,
-        name: "سامانه مانیتورینگ بانک ملت",
-        language: "Vue",
-        description:
-          "داشبورد مدیریتی و مانیتورینگ آنلاین وضعیت صف‌ها و عملکرد شعب در بستر وب.",
-        html_url: "#",
-        isPrivate: true,
-      },
-      {
-        id: 104,
-        name: "Legacy Queue Systems",
-        language: "WPF",
-        description:
-          "توسعه سیستم‌های نوبت‌دهی ویندوزی متمرکز با قابلیت کنترل سخت‌افزارهای جانبی.",
-        html_url: "#",
-        isPrivate: true,
-      },
-    ];
     projects.value = [...manualProjects, ...githubProjects];
-    notes.value = Array.isArray(issues) ? issues : [];
   } catch (e) {
     console.error("Error fetching data:", e);
   }
@@ -329,6 +254,9 @@ export function usePortfolio() {
     mySkills,
     interests,
     roadmapItems,
+    workExperience,
+    profile,
+    techStack,
     toPersianDigits,
     getLangColor, // Kept for backward compat
     getTechDetails, // New function

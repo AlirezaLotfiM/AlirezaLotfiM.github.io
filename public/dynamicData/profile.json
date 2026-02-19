@@ -1,0 +1,23 @@
+{
+  "name": "علیرضا لطفی‌مقدم",
+  "role": "Software Expert",
+  "githubUser": "AlirezaLotfiM",
+  "titles": [
+    "Software Engineer",
+    ".NET & Desktop Developer",
+    "Database Enthusiast",
+    "Backend Developer"
+  ],
+  "bio": "توسعه‌دهنده با تجربه در C#، دیتابیس و سیستم‌های سازمانی. در حال یادگیری معماری‌های توزیع‌شده.",
+  "contact": {
+    "email": "Lotfi.moghaddam.alireza@gmail.com",
+    "linkedin": "https://linkedin.com/in/alireza-lotfi-moghaddam-378a8018a",
+    "telegramUrl": "https://t.me/YourTelegramID",
+    "telegramId": "@YourID"
+  },
+  "learning": {
+    "focus": "Dapr & K8s",
+    "reading": "DDIA"
+  },
+  "resumeUrl": "/MyResume.pdf"
+}

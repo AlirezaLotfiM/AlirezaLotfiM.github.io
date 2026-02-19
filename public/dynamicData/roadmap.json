@@ -1,0 +1,27 @@
+[
+  {
+    "title": "Practical Desktop Dev (WPF)",
+    "status": "done",
+    "desc": "توسعه نرم‌افزارهای دسکتاپ و مدیریت تعامل با سخت‌افزار در پروژه‌های عملیاتی."
+  },
+  {
+    "title": "ASP.NET Core Deep Dive",
+    "status": "progress",
+    "desc": "ارتقای دانش در میدل‌ورها، تزریق وابستگی و استانداردسازی APIها برای سیستم‌های توزیع‌شده."
+  },
+  {
+    "title": "NeuroFlow: Distributed Logic",
+    "status": "progress",
+    "desc": "پیاده‌سازی گام‌به‌گام معماری رویداد-محور (Event-Driven) و استفاده عملی از RabbitMQ در پروژه نوروفلو."
+  },
+  {
+    "title": "High Performance Data Storage",
+    "status": "todo",
+    "desc": "یادگیری ایندکس‌گذاری پیشرفته در SQL و شروع کار با Redis برای مدیریت کشینگ."
+  },
+  {
+    "title": "AI Integration (ML.NET)",
+    "status": "todo",
+    "desc": "آشنایی با مدل‌های پیش‌بینی ترافیک جهت پیاده‌سازی ماژول هوشمند در فازهای نهایی پلتفرم."
+  }
+]

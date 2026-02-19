@@ -1,35 +1,31 @@
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import { usePortfolio } from '../../composables/usePortfolio';
 
-const { userGithub, projects } = usePortfolio();
+const { userGithub, projects, profile } = usePortfolio();
 
 // --- Props & Emits ---
 const emit = defineEmits(['open-terminal']);
 
 // --- Local State ---
-const myEmail = "Lotfi.moghaddam.alireza@gmail.com";
-const myLinkedin = "https://linkedin.com/in/alireza-lotfi-moghaddam-378a8018a";
-const myTelegram = "https://t.me/YourTelegramID";
-const myTelegramID = "@YourID";
-
 const copiedTooltip = ref(null);
 const typeText = ref("");
 
 // --- Typewriter Logic ---
-const titles = [
-  "Software Engineer",
-  ".NET & Desktop Developer",
-  "Database Enthusiast",
-  "Backend Developer",
-];
+const titles = computed(() => profile.value.titles || []);
+
 let typeIndex = 0;
 let charIndex = 0;
 let isDeleting = false;
 let typeTimeout = null;
 
 const typeWriter = () => {
-  const currentWord = titles[typeIndex];
+  const currentTitles = titles.value;
+  if (!currentTitles || currentTitles.length === 0) return;
+
+  const currentWord = currentTitles[typeIndex % currentTitles.length];
+  if (!currentWord) return;
+
   if (isDeleting) {
     typeText.value = currentWord.substring(0, charIndex - 1);
     charIndex--;
@@ -43,11 +39,22 @@ const typeWriter = () => {
     isDeleting = true;
   } else if (isDeleting && charIndex === 0) {
     isDeleting = false;
-    typeIndex = (typeIndex + 1) % titles.length;
+    typeIndex = (typeIndex + 1) % currentTitles.length;
     typeSpeed = 500;
   }
   typeTimeout = setTimeout(typeWriter, typeSpeed);
 };
+
+// Restart typewriter when titles change (loaded)
+watch(titles, (newTitles) => {
+  if (newTitles && newTitles.length > 0) {
+    clearTimeout(typeTimeout);
+    typeIndex = 0;
+    charIndex = 0;
+    isDeleting = false;
+    typeWriter();
+  }
+}, { immediate: true });
 
 // --- Helpers ---
 const toPersianDigits = (num) => {
@@ -64,6 +71,7 @@ const experienceYears = computed(() => {
 });
 
 const copyToClipboard = (text, type) => {
+  if (!text) return;
   navigator.clipboard.writeText(text);
   copiedTooltip.value = type;
   setTimeout(() => {
@@ -95,7 +103,9 @@ const resetCard = (e) => {
 };
 
 onMounted(() => {
-  typeWriter();
+  if (titles.value.length > 0) {
+    typeWriter();
+  }
 });
 
 onUnmounted(() => {
@@ -109,14 +119,14 @@ onUnmounted(() => {
       <div class="spotlight-bg"></div>
       <header class="profile-header">
         <div class="avatar-glow">
-          <img :src="`https://github.com/${userGithub}.png`" alt="Alireza Lotfi Avatar" />
+          <img :src="`https://github.com/${userGithub}.png`" alt="Avatar" />
         </div>
         <div class="profile-texts">
-          <h1>علیرضا لطفی‌مقدم</h1>
+          <h1>{{ profile.name || '...' }}</h1>
           <p class="role" dir="ltr">
             <span class="typewriter">{{ typeText }}</span><span class="cursor">|</span>
           </p>
-          <p class="role-sub">Software Expert</p>
+          <p class="role-sub">{{ profile.role }}</p>
         </div>
       </header>
 
@@ -124,12 +134,11 @@ onUnmounted(() => {
         <button class="terminal-toggle" @click="emit('open-terminal')" title="Ctrl + K">
           damoon@root:~$
         </button>
-        <a href="/MyResume.pdf" download class="resume-btn" title="دانلود رزومه">📄 PDF</a>
+        <a :href="profile.resumeUrl" download class="resume-btn" title="دانلود رزومه">📄 PDF</a>
       </div>
 
       <div class="bio-short">
-        توسعه‌دهنده با تجربه در C#، دیتابیس و سیستم‌های سازمانی. در حال
-        یادگیری معماری‌های توزیع‌شده.
+        {{ profile.bio }}
       </div>
       <div class="stats-row">
         <div class="stat">
@@ -143,7 +152,7 @@ onUnmounted(() => {
 
       <div class="contact-grid">
         <div class="contact-wrapper">
-          <button class="contact-btn email" @click="copyToClipboard(myEmail, 'email')" aria-label="Email">
+          <button class="contact-btn email" @click="copyToClipboard(profile.contact?.email, 'email')" aria-label="Email">
             <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"
               stroke-linecap="round" stroke-linejoin="round">
               <rect width="20" height="16" x="2" y="4" rx="2" />
@@ -152,13 +161,13 @@ onUnmounted(() => {
           </button>
           <div class="tooltip-box">
             <span class="label">ایمیل</span><button class="copy-btn"
-              @click.prevent="copyToClipboard(myEmail, 'email')">
+              @click.prevent="copyToClipboard(profile.contact?.email, 'email')">
               {{ copiedTooltip === "email" ? "کپی شد! ✅" : "کپی آدرس" }}
             </button>
           </div>
         </div>
         <div class="contact-wrapper">
-          <a :href="myLinkedin" target="_blank" class="contact-btn linkedin" aria-label="LinkedIn"><svg
+          <a :href="profile.contact?.linkedin" target="_blank" class="contact-btn linkedin" aria-label="LinkedIn"><svg
               viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"
               stroke-linecap="round" stroke-linejoin="round">
               <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
@@ -167,7 +176,7 @@ onUnmounted(() => {
             </svg></a>
           <div class="tooltip-box">
             <span class="label">لینکدین</span><button class="copy-btn"
-              @click.prevent="copyToClipboard(myLinkedin, 'linkedin')">
+              @click.prevent="copyToClipboard(profile.contact?.linkedin, 'linkedin')">
               {{
                 copiedTooltip === "linkedin" ? "کپی لینک! ✅" : "کپی لینک"
               }}
@@ -175,7 +184,7 @@ onUnmounted(() => {
           </div>
         </div>
         <div class="contact-wrapper">
-          <a :href="myTelegram" target="_blank" class="contact-btn telegram" aria-label="Telegram"><svg
+          <a :href="profile.contact?.telegramUrl" target="_blank" class="contact-btn telegram" aria-label="Telegram"><svg
               viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"
               stroke-linecap="round" stroke-linejoin="round">
               <path d="m22 2-7 20-4-9-9-4Z" />
@@ -183,7 +192,7 @@ onUnmounted(() => {
             </svg></a>
           <div class="tooltip-box">
             <span class="label">تلگرام</span><button class="copy-btn"
-              @click.prevent="copyToClipboard(myTelegramID, 'telegram')">
+              @click.prevent="copyToClipboard(profile.contact?.telegramId, 'telegram')">
               {{ copiedTooltip === "telegram" ? "کپی شد! ✅" : "کپی ID" }}
             </button>
           </div>

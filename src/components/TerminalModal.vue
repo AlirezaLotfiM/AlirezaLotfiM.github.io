@@ -7,6 +7,7 @@ const props = defineProps({
   projects: Array,
   skills: Array,      // لیست مهارت‌ها
   contact: Object,    // آبجکت اطلاعات تماس
+  learning: Object,   // وضعیت یادگیری
   version: String,    // ورژن اپلیکیشن
   username: String,   // نام کاربر (Damoon)
   role: String        // عنوان شغلی
@@ -104,8 +105,12 @@ const handleCommand = () => {
   }
   else if (cmd === 'status' || cmd === 'learning') {
     addLog('--- CURRENT FOCUS ---', 'os-warn');
-    addLog('Focus:   Dapr & Kubernetes', 'os-ok');
-    addLog('Reading: Designing Data-Intensive Applications', 'os-ok');
+    if (props.learning) {
+      if (props.learning.focus) addLog(`Focus:   ${props.learning.focus}`, 'os-ok');
+      if (props.learning.reading) addLog(`Reading: ${props.learning.reading}`, 'os-ok');
+    } else {
+      addLog('No status data.', 'os-dim');
+    }
     addLog('Mood:    Productive 🚀', 'os-dim');
   }
   else if (cmd === 'whoami') {

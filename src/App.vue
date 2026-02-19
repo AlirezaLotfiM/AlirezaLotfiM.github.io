@@ -22,24 +22,20 @@ const {
   userGithub,
   fetchData,
   selectedNote,
-  closeNote
+  closeNote,
+  profile
 } = usePortfolio();
 
 const { currentThemeColor } = useTheme();
 
 // --- App State ---
-const appVersion = "1.3.4"; // Bumped version
+const appVersion = "1.3.5"; // Bumped version
 const showBoot = ref(true);
 const isBooted = ref(false);
 const isMatrixMode = ref(false);
 const showTerminal = ref(false);
 const isZenMode = ref(false);
 const contextMenu = ref({ visible: false, x: 0, y: 0 });
-
-// Contact info for Terminal
-const myEmail = "Lotfi.moghaddam.alireza@gmail.com";
-const myLinkedin = "https://linkedin.com/in/alireza-lotfi-moghaddam-378a8018a";
-const myTelegramID = "@YourID";
 
 // --- Methods ---
 const handleBootComplete = () => {
@@ -67,8 +63,8 @@ const handleMenuAction = (action) => {
   if (action === "terminal") showTerminal.value = true;
   if (action === "matrix") isMatrixMode.value = !isMatrixMode.value;
   if (action === "source")
-    window.open(`https://github.com/${userGithub}`, "_blank");
-  if (action === "email") navigator.clipboard.writeText(myEmail);
+    window.open(`https://github.com/${userGithub.value}`, "_blank");
+  if (action === "email") navigator.clipboard.writeText(profile.value.contact?.email || "");
 };
 
 const handleKeydown = (e) => {
@@ -141,11 +137,11 @@ onUnmounted(() => {
     </Transition>
 
     <TerminalModal :visible="showTerminal" :projects="projects" :skills="mySkills" :contact="{
-      email: myEmail,
-      linkedin: myLinkedin,
+      email: profile.contact?.email,
+      linkedin: profile.contact?.linkedin,
       github: userGithub,
-      telegram: myTelegramID,
-    }" :version="appVersion" username="Damoon" role="Software Engineer" @close="showTerminal = false" />
+      telegram: profile.contact?.telegramId,
+    }" :learning="profile.learning" :version="appVersion" username="Damoon" role="Software Engineer" @close="showTerminal = false" />
 
     <MusicPlayer />
 

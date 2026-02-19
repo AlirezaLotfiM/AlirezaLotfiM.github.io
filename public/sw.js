@@ -1,5 +1,5 @@
 // ورژن رو حتما تغییر بده تا مرورگر بفهمه فایل عوض شده
-const CACHE_NAME = 'damoon-portfolio-v2.1.0';
+const CACHE_NAME = 'damoon-portfolio-v2.2.0';
 
 const urlsToCache = [
   '/',

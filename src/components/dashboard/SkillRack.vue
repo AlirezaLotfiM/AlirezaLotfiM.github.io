@@ -1,7 +1,7 @@
 <script setup>
 import { usePortfolio } from '../../composables/usePortfolio';
 
-const { mySkills, toPersianDigits } = usePortfolio();
+const { mySkills, toPersianDigits, profile } = usePortfolio();
 </script>
 
 <template>
@@ -28,20 +28,20 @@ const { mySkills, toPersianDigits } = usePortfolio();
     </ul>
 
     <!-- Currently Learning Section -->
-    <div class="learning-wrapper">
+    <div class="learning-wrapper" v-if="profile.learning?.focus || profile.learning?.reading">
       <div class="learning-box">
         <div class="learning-header">
           <span class="pulse-dot-large"></span>
           <span class="title">Currently Learning</span>
         </div>
         <div class="learning-content">
-          <div class="learning-item">
+          <div class="learning-item" v-if="profile.learning?.focus">
             <span class="icon">🎯</span>
-            <span class="text">Focus: <strong class="highlight">Dapr & K8s</strong></span>
+            <span class="text">Focus: <strong class="highlight">{{ profile.learning.focus }}</strong></span>
           </div>
-          <div class="learning-item">
+          <div class="learning-item" v-if="profile.learning?.reading">
             <span class="icon">📚</span>
-            <span class="text">Reading: <strong class="highlight">DDIA</strong></span>
+            <span class="text">Reading: <strong class="highlight">{{ profile.learning.reading }}</strong></span>
           </div>
         </div>
       </div>
