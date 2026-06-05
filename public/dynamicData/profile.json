@@ -2,18 +2,52 @@
   "name": "علیرضا لطفی‌مقدم",
   "role": "Software Expert",
   "githubUser": "AlirezaLotfiM",
+  "avatarUrl": "/Damoon-d.png",
   "titles": [
     "Software Engineer",
     ".NET & Desktop Developer",
     "Database Enthusiast",
     "Backend Developer"
   ],
-  "bio": "توسعه‌دهنده با تجربه در C#، دیتابیس و سیستم‌های سازمانی. در حال یادگیری معماری‌های توزیع‌شده.",
+  "bio": "توسعه‌دهنده‌ای با تجربه در C#، طراحی پایگاه داده و سامانه‌های سازمانی؛ با تمرکز بر ساخت سرویس‌های پایدار، تمیز و قابل اتکا برای محیط‌های عملیاتی.",
+  "badges": [
+    "Backend",
+    "API Design",
+    "Database",
+    "Distributed Systems"
+  ],
+  "cardEmail": "Lotfi.moghaddam.alireza@gmail.com",
+  "identityCard": {
+    "eyebrow": "backend identity",
+    "role": "Software Engineer",
+    "bio": "توسعه‌دهنده بک‌اند با تمرکز بر سیستم‌های پایدار، طراحی داده و ساخت زیرساخت فنی تمیز، مقیاس‌پذیر و قابل اتکا.",
+    "focus": "ASP.NET Core",
+    "email": "Lotfi.moghaddam.alireza@gmail.com",
+    "badges": [
+      "Backend",
+      "API Design",
+      "Database"
+    ],
+    "enterLabel": "ورود به داشبورد",
+    "resumeLabel": "رزومه"
+  },
+  "quickActions": [
+    "ship backend modules",
+    "design resilient APIs",
+    "profile SQL queries"
+  ],
+  "shipping": "Core backend and internal platform modules for operational teams.",
+  "stackSummary": "C# / ASP.NET Core / SQL / WPF / Vue.js / Realtime & Messaging",
+  "stackModules": [
+    { "label": "shipping", "value": "Operational backend modules, API design, service reliability" },
+    { "label": "core stack", "value": "C#, ASP.NET Core, SQL, WPF, Vue.js 3" },
+    { "label": "learning", "value": "Dapr, Kubernetes, distributed patterns, RabbitMQ" }
+  ],
   "contact": {
     "email": "Lotfi.moghaddam.alireza@gmail.com",
     "linkedin": "https://linkedin.com/in/alireza-lotfi-moghaddam-378a8018a",
-    "telegramUrl": "https://t.me/YourTelegramID",
-    "telegramId": "@YourID"
+    "telegramUrl": "https://t.me/DAMOON_X",
+    "telegramId": "@DAMOON_X"
   },
   "learning": {
     "focus": "Dapr & K8s",

@@ -1,6 +1,25 @@
 import { ref, computed } from 'vue';
 
+const THEME_STORAGE_KEY = 'user-theme-v2';
+
 const themes = [
+  {
+    id: "liquid-glass",
+    name: "Liquid Glass",
+    colors: {
+      "--bg-main": "#eaf4ff",
+      "--text-main": "#17314c",
+      "--text-secondary": "rgba(36, 67, 98, 0.78)",
+      "--panel-bg": "rgba(255, 255, 255, 0.52)",
+      "--panel-border": "rgba(255, 255, 255, 0.68)",
+      "--item-bg": "rgba(255, 255, 255, 0.34)",
+      "--item-hover-bg": "rgba(255, 255, 255, 0.52)",
+      "--bar-bg": "rgba(176, 205, 232, 0.34)",
+      "--neon": "#5c90c7",
+      "--glass-panel-base": "rgba(255, 255, 255, 0.78)",
+      "--glass-panel-highlight": "rgba(205, 227, 247, 0.52)"
+    }
+  },
   // --- Matrix Variants (Requested at Top) ---
   {
     id: "matrix-green",
@@ -400,14 +419,18 @@ function applyTheme(theme) {
     "--glass-panel",
     `linear-gradient(145deg, ${glassBase}, ${glassHighlight})`
   );
+  document.documentElement.style.setProperty(
+    "--accent-strong",
+    theme.colors["--accent-strong"] || theme.colors["--neon"]
+  );
 
   // Persist
-  localStorage.setItem('user-theme', theme.id);
+  localStorage.setItem(THEME_STORAGE_KEY, theme.id);
   currentTheme.value = theme;
 }
 
 function initTheme() {
-  const savedId = localStorage.getItem('user-theme');
+  const savedId = localStorage.getItem(THEME_STORAGE_KEY);
   if (savedId) {
     const found = themes.find(t => t.id === savedId);
     if (found) applyTheme(found);

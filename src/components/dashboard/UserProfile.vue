@@ -2,16 +2,13 @@
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import { usePortfolio } from '../../composables/usePortfolio';
 
-const { userGithub, projects, profile } = usePortfolio();
+const { userGithub, projects, profile, resumeUrl } = usePortfolio();
 
-// --- Props & Emits ---
 const emit = defineEmits(['open-terminal']);
 
-// --- Local State ---
 const copiedTooltip = ref(null);
-const typeText = ref("");
+const typeText = ref('');
 
-// --- Typewriter Logic ---
 const titles = computed(() => profile.value.titles || []);
 
 let typeIndex = 0;
@@ -21,7 +18,7 @@ let typeTimeout = null;
 
 const typeWriter = () => {
   const currentTitles = titles.value;
-  if (!currentTitles || currentTitles.length === 0) return;
+  if (!currentTitles?.length) return;
 
   const currentWord = currentTitles[typeIndex % currentTitles.length];
   if (!currentWord) return;
@@ -33,21 +30,21 @@ const typeWriter = () => {
     typeText.value = currentWord.substring(0, charIndex + 1);
     charIndex++;
   }
+
   let typeSpeed = isDeleting ? 50 : 100;
   if (!isDeleting && charIndex === currentWord.length) {
-    typeSpeed = 2000;
+    typeSpeed = 1800;
     isDeleting = true;
   } else if (isDeleting && charIndex === 0) {
     isDeleting = false;
     typeIndex = (typeIndex + 1) % currentTitles.length;
-    typeSpeed = 500;
+    typeSpeed = 450;
   }
   typeTimeout = setTimeout(typeWriter, typeSpeed);
 };
 
-// Restart typewriter when titles change (loaded)
 watch(titles, (newTitles) => {
-  if (newTitles && newTitles.length > 0) {
+  if (newTitles?.length) {
     clearTimeout(typeTimeout);
     typeIndex = 0;
     charIndex = 0;
@@ -56,19 +53,27 @@ watch(titles, (newTitles) => {
   }
 }, { immediate: true });
 
-// --- Helpers ---
 const toPersianDigits = (num) => {
-  const id = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
+  const id = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
   return num.toString().replace(/[0-9]/g, (w) => id[+w]);
 };
 
 const experienceYears = computed(() => {
-  const startDate = new Date("2020-08-22");
+  const startDate = new Date('2020-08-22');
   const now = new Date();
   let years = now.getFullYear() - startDate.getFullYear();
   if (now.getMonth() < startDate.getMonth()) years--;
   return toPersianDigits(`+${years}`);
 });
+
+const profileBadges = computed(() =>
+  (profile.value.badges || ['Backend', 'API Design', 'PostgreSQL', 'Distributed Systems']).slice(0, 3),
+);
+
+const compactStats = computed(() => [
+  { label: 'تجربه', value: `${experienceYears.value} سال` },
+  { label: 'پروژه', value: toPersianDigits(`+${projects.value.length}`) },
+]);
 
 const copyToClipboard = (text, type) => {
   if (!text) return;
@@ -87,25 +92,21 @@ const handleCardTilt = (e) => {
   const y = e.clientY - rect.top;
   const centerX = rect.width / 2;
   const centerY = rect.height / 2;
-  const rotateX = ((y - centerY) / centerY) * -5;
-  const rotateY = ((x - centerX) / centerX) * 5;
-  card.style.setProperty("--rx", `${rotateX}deg`);
-  card.style.setProperty("--ry", `${rotateY}deg`);
-  card.style.setProperty("--x", `${x}px`);
-  card.style.setProperty("--y", `${y}px`);
+  card.style.setProperty('--rx', `${((y - centerY) / centerY) * -3}deg`);
+  card.style.setProperty('--ry', `${((x - centerX) / centerX) * 3}deg`);
+  card.style.setProperty('--x', `${x}px`);
+  card.style.setProperty('--y', `${y}px`);
 };
 
 const resetCard = (e) => {
   const card = e.currentTarget;
-  card.style.setProperty("--rx", `0deg`);
-  card.style.setProperty("--ry", `0deg`);
-  card.style.setProperty("--x", `-1000px`);
+  card.style.setProperty('--rx', '0deg');
+  card.style.setProperty('--ry', '0deg');
+  card.style.setProperty('--x', '-1000px');
 };
 
 onMounted(() => {
-  if (titles.value.length > 0) {
-    typeWriter();
-  }
+  if (titles.value.length > 0) typeWriter();
 });
 
 onUnmounted(() => {
@@ -117,108 +118,112 @@ onUnmounted(() => {
   <aside class="col-profile">
     <div class="glass-panel profile-box spotlight-card" @mousemove="handleCardTilt" @mouseleave="resetCard">
       <div class="spotlight-bg"></div>
+
       <header class="profile-header">
         <div class="avatar-glow">
-          <img :src="`https://github.com/${userGithub}.png`" alt="Avatar" />
+          <img :src="profile.avatarUrl || '/Damoon-d.png'" alt="Avatar" />
         </div>
         <div class="profile-texts">
           <h1>{{ profile.name || '...' }}</h1>
           <p class="role" dir="ltr">
-            <span class="typewriter">{{ typeText }}</span><span class="cursor">|</span>
+            <span class="typewriter-line"><span class="typewriter">{{ typeText }}</span><span class="cursor">|</span></span>
           </p>
           <p class="role-sub">{{ profile.role }}</p>
-          <div class="availability-badge">
-            <span class="pulse-dot"></span>
-            <span>Open to New Opportunities</span>
-            <div class="tooltip-custom">
-              آماده همکاری در پروژه‌های توزیع‌شده و توسعه بک‌اند
-            </div>
-          </div>
         </div>
       </header>
 
+      <div class="badge-row" dir="ltr">
+        <span v-for="badge in profileBadges" :key="badge" class="meta-chip">{{ badge }}</span>
+      </div>
+
+      <p class="bio-short">
+        {{ profile.bio }}
+      </p>
+
+      <div class="stats-row">
+        <div v-for="stat in compactStats" :key="stat.label" class="simple-stat">
+          <span class="stat-label">{{ stat.label }}</span>
+          <strong>{{ stat.value }}</strong>
+        </div>
+      </div>
+
+      <div class="focus-line">
+        <span class="focus-label">تمرکز فعلی:</span>
+        <span class="focus-value" dir="ltr">{{ profile.learning?.focus || 'ASP.NET Core' }}</span>
+      </div>
+
       <div class="action-buttons">
         <button class="terminal-toggle" @click="emit('open-terminal')" title="Ctrl + K">
-          damoon@root:~$
+          <span class="mono-ui">>_</span>
+          <span>ترمینال</span>
         </button>
-        <a class="resume-btn" href="/MyResume.pdf" download="MyResume.pdf" title="دانلود رزومه">
+        <a
+          class="resume-btn"
+          :href="resumeUrl || profile.resumeUrl || '/MyResume.pdf'"
+          target="_blank"
+          rel="noopener noreferrer"
+          title="دانلود رزومه"
+        >
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
             <polyline points="7 10 12 15 17 10"></polyline>
             <line x1="12" y1="15" x2="12" y2="3"></line>
           </svg>
-          دانلود رزومه
+          <span>رزومه</span>
         </a>
-      </div>
-
-      <div class="bio-short">
-        {{ profile.bio }}
-      </div>
-      <div class="stats-row">
-        <div class="stat">
-          <strong>{{ experienceYears }}</strong><span>سال تجربه</span>
-        </div>
-        <div class="sep"></div>
-        <div class="stat">
-          <strong>{{ toPersianDigits(`+${projects.length}`) }}</strong><span>پروژه</span>
-        </div>
       </div>
 
       <div class="contact-grid">
         <div class="contact-wrapper">
           <button class="contact-btn email" @click="copyToClipboard(profile.contact?.email, 'email')" aria-label="Email">
-            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"
-              stroke-linecap="round" stroke-linejoin="round">
+            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
               <rect width="20" height="16" x="2" y="4" rx="2" />
               <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
             </svg>
           </button>
           <div class="tooltip-box">
-            <span class="label">ایمیل</span><button class="copy-btn"
-              @click.prevent="copyToClipboard(profile.contact?.email, 'email')">
-              {{ copiedTooltip === "email" ? "کپی شد! ✅" : "کپی آدرس" }}
+            <span class="label">ایمیل</span>
+            <button class="copy-btn" @click.prevent="copyToClipboard(profile.contact?.email, 'email')">
+              {{ copiedTooltip === 'email' ? 'کپی شد! ✅' : 'کپی آدرس' }}
             </button>
           </div>
         </div>
         <div class="contact-wrapper">
-          <a :href="profile.contact?.linkedin" target="_blank" class="contact-btn linkedin" aria-label="LinkedIn"><svg
-              viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"
-              stroke-linecap="round" stroke-linejoin="round">
+          <a :href="profile.contact?.linkedin" target="_blank" class="contact-btn linkedin" aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
               <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
               <rect width="4" height="12" x="2" y="9" />
               <circle cx="4" cy="4" r="2" />
-            </svg></a>
+            </svg>
+          </a>
           <div class="tooltip-box">
-            <span class="label">لینکدین</span><button class="copy-btn"
-              @click.prevent="copyToClipboard(profile.contact?.linkedin, 'linkedin')">
-              {{
-                copiedTooltip === "linkedin" ? "کپی لینک! ✅" : "کپی لینک"
-              }}
+            <span class="label">لینکدین</span>
+            <button class="copy-btn" @click.prevent="copyToClipboard(profile.contact?.linkedin, 'linkedin')">
+              {{ copiedTooltip === 'linkedin' ? 'کپی لینک! ✅' : 'کپی لینک' }}
             </button>
           </div>
         </div>
         <div class="contact-wrapper">
-          <a :href="profile.contact?.telegramUrl" target="_blank" class="contact-btn telegram" aria-label="Telegram"><svg
-              viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"
-              stroke-linecap="round" stroke-linejoin="round">
+          <a :href="profile.contact?.telegramUrl" target="_blank" class="contact-btn telegram" aria-label="Telegram">
+            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
               <path d="m22 2-7 20-4-9-9-4Z" />
               <path d="M22 2 11 13" />
-            </svg></a>
+            </svg>
+          </a>
           <div class="tooltip-box">
-            <span class="label">تلگرام</span><button class="copy-btn"
-              @click.prevent="copyToClipboard(profile.contact?.telegramId, 'telegram')">
-              {{ copiedTooltip === "telegram" ? "کپی شد! ✅" : "کپی ID" }}
+            <span class="label">تلگرام</span>
+            <button class="copy-btn" @click.prevent="copyToClipboard(profile.contact?.telegramId, 'telegram')">
+              {{ copiedTooltip === 'telegram' ? 'کپی شد! ✅' : 'کپی ID' }}
             </button>
           </div>
         </div>
         <div class="contact-wrapper">
-          <a :href="`https://github.com/${userGithub}`" target="_blank" class="contact-btn github"
-            aria-label="GitHub"><svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor"
-              stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <path
-                d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+          <a :href="`https://github.com/${userGithub}`" target="_blank" class="contact-btn github" aria-label="GitHub">
+            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
               <path d="M9 18c-4.51 2-5-2-7-2" />
-            </svg></a>
+            </svg>
+          </a>
           <div class="tooltip-box">
             <span class="label">گیت‌هاب</span>
           </div>
@@ -236,274 +241,194 @@ onUnmounted(() => {
 }
 
 .profile-box {
-  padding: 30px 25px;
+  padding: 20px 18px 22px;
+  gap: 14px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .profile-header {
-  margin-top: 10px;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  text-align: center;
+  gap: 14px;
+  text-align: right;
+}
+
+.profile-texts {
+  min-width: 0;
+  flex: 1;
 }
 
 .profile-texts h1 {
-  font-size: 1.3rem;
-  margin: 5px 0 2px;
+  font-size: 1.25rem;
+  margin: 0 0 4px;
   color: var(--text-main);
 }
 
 .role {
-  font-size: 0.85rem;
-  margin-bottom: 2px;
-  color: var(--neon);
-  opacity: 0.9;
+  margin: 0 0 6px;
+  font-size: 0.86rem;
+  color: var(--accent-strong);
+  font-family: var(--font-mono);
+  min-height: 1.4rem;
+}
+
+.typewriter-line {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .role-sub {
-  font-size: 0.75rem;
-  margin-bottom: 15px;
-  color: var(--text-muted);
-}
-
-.availability-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.75rem;
-  color: var(--text-main);
-  background: rgba(103, 255, 100, 0.1);
-  padding: 4px 10px;
-  border-radius: 20px;
-  border: 1px solid rgba(103, 255, 100, 0.3);
-  position: relative;
-  cursor: help;
-  margin-bottom: 15px;
-  transition: all 0.3s ease;
-  white-space: nowrap;
-}
-
-.availability-badge:hover {
-  background: rgba(103, 255, 100, 0.2);
-  border-color: var(--neon);
-}
-
-.pulse-dot {
-  width: 8px;
-  height: 8px;
-  background-color: var(--neon);
-  border-radius: 50%;
-  position: relative;
-}
-
-.pulse-dot::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 100%;
-  height: 100%;
-  background-color: var(--neon);
-  border-radius: 50%;
-  animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
-}
-
-@keyframes pulse-ring {
-  0% { width: 100%; height: 100%; opacity: 0.8; }
-  100% { width: 300%; height: 300%; opacity: 0; }
-}
-
-.tooltip-custom {
-  position: absolute;
-  bottom: 125%;
-  left: 50%;
-  transform: translateX(-50%) translateY(10px);
-  background: var(--bg-main);
-  border: 1px solid var(--neon);
-  padding: 8px 12px;
-  border-radius: 8px;
-  max-width: 220px;
-  width: max-content;
-  font-size: 0.75rem;
-  text-align: center;
-  pointer-events: none;
-  opacity: 0;
-  transition: 0.3s;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-  z-index: 10;
-  line-height: 1.5;
-  white-space: normal;
-  word-wrap: break-word;
-}
-
-.tooltip-custom::after {
-  content: "";
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  border-width: 6px;
-  border-style: solid;
-  border-color: var(--neon) transparent transparent transparent;
-}
-
-.availability-badge:hover .tooltip-custom {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-}
-
-.bio-short {
-  margin: 15px 0;
-  font-size: 0.85rem;
-  line-height: 1.5;
-  color: var(--text-muted);
-}
-
-.stats-row {
-  margin-bottom: 15px;
-  padding: 10px 0;
-  display: flex;
-  justify-content: center;
-  gap: 30px;
-  border-top: 1px solid var(--panel-border);
-  border-bottom: 1px solid var(--panel-border);
-}
-
-.stat {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.stat strong {
-  font-size: 1.4rem;
-  color: var(--text-main);
-}
-
-.stat span {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-}
-
-.action-buttons {
-  display: flex;
-  gap: 10px;
-  width: 100%;
-  margin-bottom: 10px;
-}
-
-.terminal-toggle,
-.resume-btn {
-  flex: 1;
   margin: 0;
-  padding: 10px;
-  font-size: 0.85rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 40px;
-  border-radius: 12px;
-  font-weight: bold;
-  transition: 0.3s;
-}
-
-.terminal-toggle {
-  background: rgba(0, 0, 0, 0.5);
-  color: var(--neon);
-  border: 1px solid var(--neon);
-  cursor: pointer;
-}
-
-.terminal-toggle:hover {
-  background: var(--neon);
-  color: #000;
-  box-shadow: 0 0 15px var(--neon);
-}
-
-.resume-btn {
-  background: rgba(103, 255, 100, 0.1);
-  border: 1px solid var(--neon);
-  color: var(--neon);
-  text-decoration: none;
-  gap: 8px;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 0 5px rgba(103, 255, 100, 0.2);
-}
-
-.resume-btn:hover {
-  background: var(--neon);
-  color: #000;
-  box-shadow: 0 0 20px var(--neon);
-  transform: translateY(-2px);
-}
-
-.resume-btn:active {
-  transform: translateY(0);
+  font-size: 0.76rem;
+  color: var(--text-soft);
 }
 
 .avatar-glow {
-  position: relative;
+  width: 78px;
+  height: 78px;
+  flex-shrink: 0;
   overflow: hidden;
-  width: 90px;
-  height: 90px;
-  margin: 0 auto 10px;
   border-radius: 50%;
   padding: 4px;
-  background: linear-gradient(135deg, var(--neon), transparent);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(198, 223, 244, 0.42));
+  box-shadow: 0 10px 24px rgba(92, 144, 199, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.84);
 }
 
 .avatar-glow img {
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  background: var(--bg-main);
+  object-fit: cover;
 }
 
-.avatar-glow:hover img {
-  animation: glitch-anim 0.3s infinite;
+.badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: flex-start;
+  margin-top: 2px;
 }
 
-.avatar-glow:hover::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
+.bio-short {
+  margin: 0;
+  font-size: 0.86rem;
+  line-height: 1.9;
+  color: var(--text-soft);
+}
+
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.simple-stat {
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(247, 251, 255, 0.72);
+  border: 1px solid rgba(210, 226, 241, 0.92);
+  text-align: center;
+}
+
+.stat-label {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--text-soft);
+  margin-bottom: 4px;
+}
+
+.simple-stat strong {
+  font-size: 0.84rem;
+  color: var(--text-main);
+}
+
+.focus-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 12px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.58);
+  border: 1px solid rgba(214, 229, 243, 0.92);
+  font-size: 0.8rem;
+}
+
+.focus-label {
+  color: var(--text-soft);
+  flex-shrink: 0;
+}
+
+.focus-value {
+  color: var(--text-main);
+  font-family: var(--font-mono);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.action-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 2px;
+}
+
+.terminal-toggle,
+.resume-btn {
+  min-width: 0;
+  padding: 11px 12px;
+  min-height: 44px;
+  border-radius: 16px;
+  font-size: 0.78rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 700;
+  transition: 0.25s ease;
+}
+
+.terminal-toggle {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(233, 244, 252, 0.84));
+  color: var(--accent-strong);
+  border: 1px solid rgba(204, 220, 236, 1);
+  cursor: pointer;
+}
+
+.resume-btn {
+  background: linear-gradient(180deg, rgba(94, 144, 196, 0.96), rgba(76, 122, 171, 0.9));
+  border: 1px solid rgba(86, 129, 177, 1);
+  color: #fff;
+  text-decoration: none;
+}
+
+.contact-grid {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 6px;
   width: 100%;
-  height: 100%;
-  background: rgba(103, 255, 100, 0.5);
-  z-index: 2;
-  opacity: 0;
-  pointer-events: none;
-  animation: glitch-flash 0.3s infinite;
-  border-radius: 50%;
+  position: relative;
 }
 
-@keyframes glitch-anim {
-  0% { transform: translate(0); }
-  20% { transform: translate(-2px, 2px); filter: hue-rotate(90deg); }
-  40% { transform: translate(-2px, -2px); filter: hue-rotate(0deg); }
-  60% { transform: translate(2px, 2px); filter: hue-rotate(180deg); }
-  80% { transform: translate(2px, -2px); filter: hue-rotate(0deg); }
-  100% { transform: translate(0); }
-}
-
-@keyframes glitch-flash {
-  0% { opacity: 0; }
-  50% { opacity: 0.2; }
-  100% { opacity: 0; }
+.contact-wrapper {
+  position: relative;
 }
 
 .typewriter {
-  color: var(--neon);
-  font-weight: bold;
+  color: var(--accent-strong);
+  font-weight: 700;
 }
 
 .cursor {
   animation: blink 1s infinite;
   display: inline-block;
-  color: var(--neon);
+  color: var(--accent-strong);
 }
 
 @keyframes blink {
@@ -513,116 +438,110 @@ onUnmounted(() => {
 
 .tooltip-box {
   position: absolute;
-  bottom: 125%;
+  bottom: calc(100% + 14px);
   left: 50%;
-  transform: translateX(-50%) translateY(10px);
-  background: var(--bg-main);
-  border: 1px solid var(--neon);
-  border-radius: 8px;
-  padding: 8px;
+  transform: translateX(-50%) translateY(8px) scale(0.96);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(235, 245, 252, 0.94));
+  border: 1px solid rgba(207, 223, 239, 1);
+  border-radius: 16px;
+  padding: 10px 10px 9px;
   width: max-content;
-  min-width: 120px;
+  min-width: 146px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 5px;
+  gap: 7px;
   opacity: 0;
   pointer-events: none;
-  transition: 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.8);
+  transition: 0.24s ease;
   z-index: 20;
 }
 
 .contact-wrapper:hover .tooltip-box {
   opacity: 1;
-  transform: translateX(-50%) translateY(0);
+  transform: translateX(-50%) translateY(0) scale(1);
   pointer-events: auto;
 }
 
 .tooltip-box::after {
-  content: "";
+  content: '';
   position: absolute;
   top: 100%;
   left: 50%;
   transform: translateX(-50%);
-  border-width: 6px;
+  border-width: 8px;
   border-style: solid;
-  border-color: var(--neon) transparent transparent transparent;
+  border-color: rgba(238, 246, 252, 0.96) transparent transparent transparent;
 }
 
 .tooltip-box .label {
-  font-size: 0.75rem;
-  color: var(--text-main);
-  margin-bottom: 2px;
+  font-size: 0.72rem;
+  color: var(--text-soft);
 }
 
 .tooltip-box .copy-btn {
-  background: rgba(103, 255, 100, 0.15);
-  color: var(--neon);
-  border: none;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 0.7rem;
+  background: rgba(240, 247, 253, 0.92);
+  color: var(--accent-strong);
+  border: 1px solid rgba(209, 225, 240, 1);
+  padding: 6px 10px;
+  border-radius: 12px;
+  font-size: 0.72rem;
   cursor: pointer;
   width: 100%;
-  transition: 0.2s;
-  font-family: "Vazirmatn";
 }
 
-.tooltip-box .copy-btn:hover {
-  background: var(--neon);
-  color: #000;
-}
-
-.contact-grid {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  margin-top: auto;
-  width: 100%;
-  position: relative;
-  padding-top: 15px;
-}
-.contact-wrapper {
-  position: relative;
-}
-
-/* Mobile responsive adjustments */
 @media (max-width: 1024px) {
   .col-profile {
     order: 1;
     height: auto;
   }
+
   .profile-box {
-    padding: 20px;
-    flex-direction: column;
+    padding: 16px;
+    overflow: visible;
   }
+
   .profile-header {
-    display: flex;
     align-items: center;
-    gap: 15px;
-    margin-bottom: 15px;
-    text-align: right;
+    gap: 12px;
   }
-  .avatar-glow {
-    margin: 0;
-    width: 70px;
-    height: 70px;
+
+  .stats-row,
+  .action-buttons {
+    grid-template-columns: 1fr;
   }
-  .profile-texts h1 {
-    font-size: 1.3rem;
-    margin: 0;
-  }
-  .bio-short {
-    text-align: right;
-    margin: 10px 0;
-    font-size: 0.85rem;
-  }
+
   .contact-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    width: 100%;
-    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 640px) {
+  .profile-box {
+    padding: 14px;
+    gap: 12px;
+  }
+
+  .profile-header {
+    align-items: flex-start;
+  }
+
+  .avatar-glow {
+    width: 68px;
+    height: 68px;
+  }
+
+  .profile-texts h1 {
+    font-size: 1.1rem;
+  }
+
+  .bio-short {
+    font-size: 0.82rem;
+    line-height: 1.75;
+  }
+
+  .focus-line {
+    flex-wrap: wrap;
   }
 }
 </style>

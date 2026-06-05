@@ -35,6 +35,7 @@ const shareNote = () => {
   <div class="notes-container">
     <!-- Detail View -->
     <article v-if="selectedNote" class="thread-view">
+      <div class="thread-shell-tag mono-ui" dir="ltr">notes/thread :: active</div>
       <header class="thread-header">
         <div class="note-meta">
           <h1>{{ selectedNote.title }}</h1>
@@ -128,28 +129,46 @@ const shareNote = () => {
 <style scoped>
 .notes-container {
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
+
+
+
 
 .notes-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .note-row {
-  padding: 20px 25px;
-  border-radius: 16px;
-  background: var(--item-bg);
-  border: 1px solid var(--panel-border);
+  padding: 22px 24px;
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(235, 245, 252, 0.76));
+  border: 1px solid rgba(207, 223, 239, 1);
+  border-left: 2px solid rgba(92, 144, 199, 0.18);
   position: relative;
   overflow: hidden;
   display: block;
   text-decoration: none;
   color: var(--text-main);
-  transition: transform 0.1s;
+  transition: 0.24s ease;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.86),
+    0 12px 28px rgba(77, 121, 168, 0.08);
+}
+
+.note-row:hover {
+  border-color: rgba(192, 212, 232, 1);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(232, 243, 252, 0.86));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.92),
+    0 18px 34px rgba(77, 121, 168, 0.12);
 }
 
 .note-inner {
@@ -169,14 +188,20 @@ const shareNote = () => {
   gap: 8px;
 }
 
+.thread-shell-tag {
+  margin-bottom: 10px;
+  font-size: 0.72rem;
+  color: var(--text-soft);
+}
+
 .note-icon {
   font-size: 1.2rem;
 }
 
 .note-preview {
   font-size: 0.9rem;
-  color: var(--text-muted);
-  line-height: 1.6;
+  color: var(--text-secondary);
+  line-height: 1.72;
   margin: 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -190,18 +215,18 @@ const shareNote = () => {
   align-items: center;
   margin-top: 10px;
   padding-top: 10px;
-  border-top: 1px solid var(--panel-border);
+  border-top: 1px solid rgba(214, 229, 243, 0.96);
 }
 
 .date {
   font-size: 0.8rem;
   color: var(--text-secondary);
-  font-family: "Vazirmatn";
+  font-family: var(--font-mono);
 }
 
 .read-btn {
   font-size: 0.85rem;
-  color: var(--neon);
+  color: var(--accent-strong);
   opacity: 0.8;
   transition: 0.3s;
 }
@@ -224,7 +249,7 @@ const shareNote = () => {
   align-items: center;
   justify-content: space-between;
   padding-bottom: 15px;
-  border-bottom: 1px solid var(--panel-border);
+  border-bottom: 1px solid rgba(214, 229, 243, 0.96);
   margin-bottom: 20px;
   direction: rtl;
 }
@@ -236,20 +261,21 @@ const shareNote = () => {
 }
 
 .back-btn {
-  background: var(--item-bg);
-  border: 1px solid var(--panel-border);
+  background: rgba(245, 250, 255, 0.94);
+  border: 1px solid rgba(209, 225, 240, 1);
   color: var(--text-secondary);
-  padding: 6px 12px;
-  border-radius: 8px;
+  padding: 7px 12px;
+  border-radius: 12px;
   cursor: pointer;
   transition: 0.2s;
   font-family: inherit;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 .back-btn:hover {
-  background: var(--neon);
-  color: #000;
-  border-color: var(--neon);
+  background: rgba(94, 144, 196, 0.96);
+  color: #fff;
+  border-color: rgba(86, 129, 177, 1);
 }
 
 .note-meta h1 {
@@ -275,21 +301,24 @@ const shareNote = () => {
 }
 
 .content-block {
-  padding: 20px;
-  border-radius: 12px;
+  padding: 22px;
+  border-radius: 20px;
   line-height: 1.7;
   font-size: 0.95rem;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.86),
+    0 12px 28px rgba(77, 121, 168, 0.08);
 }
 
 .main-post {
-  background: var(--item-bg);
-  border: 1px solid var(--panel-border);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(235, 245, 252, 0.78));
+  border: 1px solid rgba(207, 223, 239, 1);
 }
 
 .update-separator {
   display: flex;
   align-items: center;
-  color: var(--neon);
+  color: var(--accent-strong);
   font-size: 0.8rem;
   margin: 10px 0;
 }
@@ -299,15 +328,15 @@ const shareNote = () => {
   content: "";
   flex: 1;
   height: 1px;
-  background: var(--neon);
+  background: var(--accent-strong);
   opacity: 0.3;
   margin: 0 10px;
 }
 
 .update-post {
-  background: var(--item-bg);
-  border-left: 3px solid var(--neon);
-  border-radius: 4px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(235, 245, 252, 0.74));
+  border: 1px solid rgba(207, 223, 239, 1);
+  border-right: 4px solid rgba(92, 144, 199, 0.92);
 }
 
 .update-header {
@@ -427,4 +456,5 @@ const shareNote = () => {
   from { opacity: 0; }
   to { opacity: 1; }
 }
+
 </style>

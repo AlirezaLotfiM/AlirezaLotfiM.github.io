@@ -5,6 +5,8 @@ const cursorX = ref(-100);
 const cursorY = ref(-100);
 const dotX = ref(-100);
 const dotY = ref(-100);
+let rafId = 0;
+let isCursorEnabled = false;
 
 const onMouseMove = (e) => {
   cursorX.value = e.clientX;
@@ -15,14 +17,20 @@ const animate = () => {
   // حرکت نرم دایره دور
   dotX.value += (cursorX.value - dotX.value) * 0.15;
   dotY.value += (cursorY.value - dotY.value) * 0.15;
-  requestAnimationFrame(animate);
+  rafId = requestAnimationFrame(animate);
 };
 
 onMounted(() => {
+  isCursorEnabled = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  if (!isCursorEnabled) return;
   window.addEventListener('mousemove', onMouseMove);
   animate();
 });
-onUnmounted(() => window.removeEventListener('mousemove', onMouseMove));
+onUnmounted(() => {
+  if (!isCursorEnabled) return;
+  window.removeEventListener('mousemove', onMouseMove);
+  cancelAnimationFrame(rafId);
+});
 </script>
 
 <template>

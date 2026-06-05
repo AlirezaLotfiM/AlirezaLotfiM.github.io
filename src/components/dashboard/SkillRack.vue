@@ -1,22 +1,38 @@
 <script setup>
+import { computed } from 'vue';
 import { usePortfolio } from '../../composables/usePortfolio';
 
 const { mySkills, toPersianDigits, profile } = usePortfolio();
+
+const stackModules = computed(() =>
+  profile.value.stackModules || [
+    { label: 'shipping', value: 'Backend services' },
+    { label: 'learning', value: profile.value.learning?.focus || 'Dapr & K8s' },
+    { label: 'stack', value: 'C# / PostgreSQL / Vue' },
+  ],
+);
 </script>
 
 <template>
   <aside class="col-skills glass-panel skills-box">
     <header class="panel-header">
+      <span class="section-kicker">skills/modules</span>
       <h3>ماژول‌های تخصص</h3>
+      <p>Capability map with practical delivery bias.</p>
     </header>
+
     <ul class="rack-container scroll-area">
       <li v-for="skill in mySkills" :key="skill.name" class="skill-module" dir="ltr">
+        <div class="module-meta mono-ui">
+          <span class="module-path">module/{{ skill.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') }}</span>
+          <span class="module-level">{{ toPersianDigits(skill.level) }}%</span>
+        </div>
         <div class="module-header">
           <div class="module-title">
             <span class="status-dot"></span>
             <span class="skill-name">{{ skill.name }}</span>
           </div>
-          <span class="skill-percent" dir="rtl">{{ toPersianDigits(skill.level) }}٪</span>
+          <span class="skill-percent mono-ui">L{{ Math.round(skill.level / 10) }}</span>
         </div>
 
         <div class="module-bar-bg">
@@ -27,23 +43,15 @@ const { mySkills, toPersianDigits, profile } = usePortfolio();
       </li>
     </ul>
 
-    <!-- Currently Learning Section -->
-    <div class="learning-wrapper" v-if="profile.learning?.focus || profile.learning?.reading">
-      <div class="learning-box">
-        <div class="learning-header">
-          <span class="pulse-dot-large"></span>
-          <span class="title">Currently Learning</span>
-        </div>
-        <div class="learning-content">
-          <div class="learning-item" v-if="profile.learning?.focus">
-            <span class="icon">🎯</span>
-            <span class="text">Focus: <strong class="highlight">{{ profile.learning.focus }}</strong></span>
-          </div>
-          <div class="learning-item" v-if="profile.learning?.reading">
-            <span class="icon">📚</span>
-            <span class="text">Reading: <strong class="highlight">{{ profile.learning.reading }}</strong></span>
-          </div>
-        </div>
+    <div class="stack-console">
+      <div class="console-head">
+        <span class="module-eyebrow">runtime/status</span>
+        <span class="code-label">live</span>
+      </div>
+      <div class="module-divider"></div>
+      <div v-for="item in stackModules" :key="item.label" class="console-row">
+        <span class="console-key mono-ui">{{ item.label }}</span>
+        <span class="console-value">{{ item.value }}</span>
       </div>
     </div>
   </aside>
@@ -57,21 +65,26 @@ const { mySkills, toPersianDigits, profile } = usePortfolio();
   flex-direction: column;
 }
 
-.skills-box {
-  /* Inherits glass-panel properties from App.vue via shared CSS if needed,
-     but local styles override or extend. */
+.panel-header {
+  padding: 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.34);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .panel-header h3 {
   margin: 0;
-  padding: 20px;
-  font-size: 1rem;
-  border-bottom: 1px solid var(--panel-border);
-  color: var(--neon);
-  text-align: center;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  text-shadow: 0 0 10px var(--neon);
+  font-size: 0.98rem;
+  color: var(--text-main);
+  letter-spacing: 0.04em;
+}
+
+.panel-header p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  line-height: 1.6;
 }
 
 .rack-container {
@@ -80,93 +93,46 @@ const { mySkills, toPersianDigits, profile } = usePortfolio();
   list-style: none;
   flex: 1;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   display: flex;
   flex-direction: column;
   gap: 15px;
-  min-height: 0; /* Important for flex child scroll */
-}
-
-/* Learning Section Styles */
-.learning-wrapper {
-  padding: 15px 20px 20px;
-  border-top: 1px solid var(--panel-border);
-  background: rgba(0, 0, 0, 0.2);
-}
-
-.learning-box {
-  padding: 12px;
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid var(--panel-border);
-  border-radius: 12px;
-  width: 100%;
-}
-
-.learning-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-.pulse-dot-large {
-  width: 8px;
-  height: 8px;
-  background: var(--neon);
-  border-radius: 50%;
-  box-shadow: 0 0 5px var(--neon);
-  animation: pulse-dot-large 2s infinite;
-}
-
-@keyframes pulse-dot-large {
-  0% { transform: scale(0.95); opacity: 0.7; }
-  50% { transform: scale(1.1); opacity: 1; box-shadow: 0 0 10px var(--neon); }
-  100% { transform: scale(0.95); opacity: 0.7; }
-}
-
-.learning-content {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.learning-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.85rem;
-  color: var(--text-main);
-}
-
-.learning-item .icon {
-  font-size: 1rem;
-}
-
-.learning-item .highlight {
-  color: var(--neon);
-  font-weight: normal;
+  min-height: 0;
 }
 
 .skill-module {
-  background: var(--item-bg);
-  border: 1px solid var(--panel-border);
-  border-radius: 10px;
-  padding: 15px;
+  background: rgba(255, 255, 255, 0.64);
+  border: 1px solid rgba(216, 230, 244, 0.98);
+  border-radius: 16px;
+  padding: 14px;
   transition: all 0.3s ease;
   position: relative;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.54);
 }
 
 .skill-module:hover {
-  background: var(--item-hover-bg);
-  border-color: var(--text-secondary);
-  transform: translateX(5px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  background: rgba(255, 255, 255, 0.82);
+  border-color: rgba(204, 221, 238, 1);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(92, 144, 199, 0.08);
+}
+
+.module-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 0.68rem;
+  color: var(--text-soft);
+}
+
+.module-path,
+.module-level {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .module-header {
@@ -195,10 +161,9 @@ const { mySkills, toPersianDigits, profile } = usePortfolio();
 }
 
 .skill-percent {
-  font-family: "Vazirmatn", sans-serif;
   font-weight: bold;
-  font-size: 0.85rem;
-  color: var(--neon);
+  font-size: 0.78rem;
+  color: var(--accent-strong);
   opacity: 0.8;
   flex-shrink: 0;
 }
@@ -206,17 +171,17 @@ const { mySkills, toPersianDigits, profile } = usePortfolio();
 .status-dot {
   width: 6px;
   height: 6px;
-  background-color: var(--neon);
+  background-color: var(--accent-strong);
   border-radius: 50%;
-  box-shadow: 0 0 5px var(--neon);
+  box-shadow: 0 0 8px rgba(92, 144, 199, 0.5);
   animation: pulse-dot 2s infinite;
   flex-shrink: 0;
 }
 
 @keyframes pulse-dot {
-  0% { opacity: 0.4; box-shadow: 0 0 0 var(--neon); }
-  50% { opacity: 1; box-shadow: 0 0 8px var(--neon); }
-  100% { opacity: 0.4; box-shadow: 0 0 0 var(--neon); }
+  0% { opacity: 0.4; box-shadow: 0 0 0 rgba(92, 144, 199, 0.2); }
+  50% { opacity: 1; box-shadow: 0 0 8px rgba(92, 144, 199, 0.45); }
+  100% { opacity: 0.4; box-shadow: 0 0 0 rgba(92, 144, 199, 0.2); }
 }
 
 .module-bar-bg {
@@ -230,41 +195,102 @@ const { mySkills, toPersianDigits, profile } = usePortfolio();
 
 .module-bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, transparent, var(--neon));
+  background: linear-gradient(90deg, rgba(173, 206, 235, 0.56), var(--accent-strong));
   border-radius: 3px;
   position: relative;
-  box-shadow: 0 0 10px var(--neon);
-  animation: fill-bar 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  max-width: 0; /* Changed from width to max-width to match keyframe */
-}
-
-@keyframes fill-bar {
-  0% { max-width: 0; }
-  100% { max-width: 100%; }
+  box-shadow: 0 0 12px rgba(92, 144, 199, 0.26);
 }
 
 .bar-glow {
   position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: 5px;
-  background: var(--text-main);
-  opacity: 0.6;
-  filter: blur(2px);
-  box-shadow: 0 0 5px var(--text-main);
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.65), transparent);
+  animation: scan 2.8s linear infinite;
 }
 
-/* Mobile */
+@keyframes scan {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
+}
+
+.stack-console {
+  padding: 14px 18px 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.16);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.console-head {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.console-head .code-label {
+  position: absolute;
+  left: 0;
+}
+
+.console-row {
+  display: grid;
+  grid-template-columns: 70px 1fr;
+  gap: 10px;
+  align-items: start;
+}
+
+.console-key {
+  font-size: 0.72rem;
+  color: var(--text-soft);
+  text-transform: lowercase;
+  justify-self: start;
+}
+
+.console-value {
+  font-size: 0.84rem;
+  color: var(--text-main);
+  line-height: 1.6;
+  justify-self: end;
+  text-align: left;
+}
+
 @media (max-width: 1024px) {
   .col-skills {
     order: 3;
     height: auto;
   }
+
   .rack-container {
     overflow: visible;
-    height: auto;
   }
-  /* In Zen mode on mobile, this is hidden by parent layout rules in App.vue/shared CSS */
+
+  .console-head {
+    justify-content: flex-start;
+  }
+
+  .console-head .code-label {
+    position: static;
+    margin-right: auto;
+  }
+
+  .console-row {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .console-value {
+    justify-self: start;
+  }
+}
+
+@media (max-width: 640px) {
+  .panel-header,
+  .rack-container,
+  .stack-console {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
 }
 </style>

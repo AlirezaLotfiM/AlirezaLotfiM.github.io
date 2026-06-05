@@ -1,7 +1,9 @@
 {
   "name": "Alireza Lotfi | Software Engineer",
   "short_name": "Damoon",
-  "start_url": "./index.html",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#0a0a0a",
   "theme_color": "#67FF64",

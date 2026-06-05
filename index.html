@@ -4,6 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0a0a0a" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta
       name="description"
       content="Portfolio of Alireza Lotfi, a Senior .NET Developer specializing in distributed systems, WPF, and high-performance backend architecture."
@@ -16,16 +19,5 @@
   <body>
     <div id="app"></div>
     <script type="module" src="/src/main.js"></script>
-    <script>
-      if ("serviceWorker" in navigator) {
-        window.addEventListener("load", () => {
-          // حذف اسلش اول برای سازگاری با گیت‌هاب پیج
-          navigator.serviceWorker
-            .register("sw.js")
-            .then((reg) => console.log("SW registered!"))
-            .catch((err) => console.log("SW failed", err));
-        });
-      }
-    </script>
   </body>
 </html>

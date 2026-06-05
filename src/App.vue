@@ -1,12 +1,12 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue";
 import CustomCursor from "./components/CustomCursor.vue";
-import CyberParticles from "./components/CyberParticles.vue";
 import MatrixRain from "./components/MatrixRain.vue";
 import TerminalModal from "./components/TerminalModal.vue";
 import ContextMenu from "./components/ContextMenu.vue";
 import BootSequence from "./components/BootSequence.vue";
 import MusicPlayer from "./components/MusicPlayer.vue";
+import LiquidIdentityCard from "./components/LiquidIdentityCard.vue";
 
 import UserProfile from "./components/dashboard/UserProfile.vue";
 import MainContent from "./components/dashboard/MainContent.vue";
@@ -23,15 +23,18 @@ const {
   fetchData,
   selectedNote,
   closeNote,
-  profile
+  profile,
+  resumeUrl
 } = usePortfolio();
 
 const { currentThemeColor } = useTheme();
 
 // --- App State ---
-const appVersion = "1.3.5"; // Bumped version
+const appVersion = "1.4.6";
 const showBoot = ref(true);
 const isBooted = ref(false);
+const showIdentityCard = ref(true);
+const isEnteringDashboard = ref(false);
 const isMatrixMode = ref(false);
 const showTerminal = ref(false);
 const isZenMode = ref(false);
@@ -85,6 +88,15 @@ const toggleZenMode = () => {
   }
 };
 
+const enterDashboard = () => {
+  if (isEnteringDashboard.value) return;
+  isEnteringDashboard.value = true;
+  window.setTimeout(() => {
+    showIdentityCard.value = false;
+    isEnteringDashboard.value = false;
+  }, 420);
+};
+
 // --- Lifecycle ---
 let typeTimeout = null; // Used in UserProfile, but logic moved there. App.vue doesn't need it.
 
@@ -133,7 +145,11 @@ onUnmounted(() => {
 
   <div v-show="!showBoot" class="main-wrapper" :class="{ 'fade-in-enter': isBooted }">
     <Transition name="fade">
-      <component :is="isMatrixMode ? MatrixRain : CyberParticles" :color="currentThemeColor" :key="currentThemeColor" />
+      <MatrixRain v-if="isMatrixMode" :color="currentThemeColor" :key="currentThemeColor" />
+      <div v-else class="ambient-backdrop" aria-hidden="true">
+        <span class="ambient-orb orb-one"></span>
+        <span class="ambient-orb orb-two"></span>
+      </div>
     </Transition>
 
     <TerminalModal :visible="showTerminal" :projects="projects" :skills="mySkills" :contact="{
@@ -149,7 +165,19 @@ onUnmounted(() => {
       @close="contextMenu.visible = false" />
 
     <div class="dashboard" @mousemove="handleMouseMove" :class="{ 'zen-mode': isZenMode }">
-      <div class="layout-grid" :class="{ 'zen-active': isZenMode }">
+      <Transition name="identity-card">
+        <LiquidIdentityCard
+          v-if="showIdentityCard"
+          :profile="profile"
+          :resume-url="resumeUrl"
+          :projects-count="projects.length"
+          :class="{ exiting: isEnteringDashboard }"
+          @enter="enterDashboard"
+          @open-terminal="showTerminal = true"
+        />
+      </Transition>
+
+      <div class="layout-grid" :class="{ 'zen-active': isZenMode, 'intro-active': showIdentityCard, 'intro-leaving': isEnteringDashboard }">
 
         <!-- Profile Column -->
         <UserProfile @open-terminal="showTerminal = true" />
@@ -165,7 +193,7 @@ onUnmounted(() => {
 
       </div>
 
-      <footer class="app-footer" dir="ltr">
+      <footer class="app-footer" dir="ltr" :class="{ dimmed: showIdentityCard }">
         <span class="made-by">Handcrafted by
           <strong class="brand-signature" style="color: var(--neon)">Damoon</strong></span>
         <span class="divider">|</span>
@@ -188,9 +216,12 @@ onUnmounted(() => {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  padding: 25px;
+  padding: 24px;
   box-sizing: border-box;
   transition: 0.3s;
+  position: relative;
+  z-index: 1;
+  touch-action: pan-y;
 }
 
 .dashboard.zen-mode {
@@ -200,13 +231,26 @@ onUnmounted(() => {
 .layout-grid {
   display: grid;
   grid-template-columns: 280px 1fr 260px;
-  gap: 25px;
+  gap: 18px;
   width: 100%;
-  max-width: 1600px;
+  max-width: 1580px;
   margin: 0 auto;
   flex: 1;
   min-height: 0;
   transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.layout-grid.intro-active {
+  filter: blur(12px);
+  transform: scale(0.965);
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.layout-grid.intro-leaving {
+  filter: blur(0);
+  transform: scale(1);
+  opacity: 1;
 }
 
 .layout-grid.zen-active {
@@ -237,19 +281,37 @@ onUnmounted(() => {
 
 .app-footer {
   width: 100%;
-  max-width: 1600px;
+  max-width: 1580px;
   margin: 0 auto;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 15px;
-  padding-top: 15px;
+  padding-top: 14px;
   color: var(--text-secondary);
   font-size: 0.8rem;
-  font-family: monospace;
-  opacity: 0.7;
+  font-family: var(--font-mono);
+  opacity: 0.8;
   transition: 0.3s;
   flex-shrink: 0;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.42);
+}
+
+.app-footer.dimmed {
+  opacity: 0.2;
+  filter: blur(6px);
+}
+
+.identity-card-enter-active,
+.identity-card-leave-active {
+  transition: opacity 0.42s ease, transform 0.42s ease, filter 0.42s ease;
+}
+
+.identity-card-enter-from,
+.identity-card-leave-to {
+  opacity: 0;
+  transform: translateY(18px) scale(0.97);
+  filter: blur(10px);
 }
 
 .app-footer:hover {
@@ -261,43 +323,88 @@ onUnmounted(() => {
 }
 
 .gemini-text {
-  background: linear-gradient(90deg, #4285f4, #9b72cb, #d96570);
+  background: linear-gradient(90deg, #5b8fca, #7caad7, #83c0d8);
   -webkit-background-clip: text;
   color: transparent;
   font-weight: bold;
 }
 
 .brand-signature {
-  font-family: "Courier New", monospace;
-  letter-spacing: 1px;
-  text-shadow: 0 0 5px var(--neon), 0 0 10px var(--neon);
+  font-family: var(--font-mono);
+  letter-spacing: 0.04em;
+  text-shadow: 0 0 12px rgba(255, 255, 255, 0.7);
   transition: all 0.3s ease;
   display: inline-block;
   cursor: default;
 }
 
 .brand-signature:hover {
-  text-shadow: 0 0 10px var(--neon), 0 0 20px var(--neon), 0 0 30px var(--neon);
-  transform: scale(1.1);
+  text-shadow: 0 0 16px rgba(255, 255, 255, 0.82);
+  transform: translateY(-1px);
 }
 
 .version-tag {
-  font-family: monospace;
-  background: var(--item-bg);
-  padding: 2px 6px;
-  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.32);
+  padding: 4px 10px;
+  border-radius: 999px;
   color: var(--text-secondary);
   font-size: 0.75rem;
-  border: 1px solid var(--panel-border);
+  border: 1px solid rgba(255, 255, 255, 0.54);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.56);
+}
+
+.ambient-backdrop {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.ambient-orb {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  filter: blur(58px);
+  opacity: 0.32;
+  animation: ambientFloat 24s ease-in-out infinite;
+}
+
+.orb-one {
+  width: 24vw;
+  height: 24vw;
+  top: 10%;
+  left: 8%;
+  min-width: 180px;
+  min-height: 180px;
+  background: rgba(255, 255, 255, 0.46);
+}
+
+.orb-two {
+  width: 18vw;
+  height: 18vw;
+  right: 12%;
+  top: 18%;
+  min-width: 140px;
+  min-height: 140px;
+  background: rgba(177, 216, 248, 0.24);
+  animation-duration: 28s;
+  animation-direction: reverse;
+}
+
+@keyframes ambientFloat {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(1.5vw, -1.5vw, 0) scale(1.05); }
 }
 
 /* Mobile responsive */
 @media (max-width: 1024px) {
   .dashboard {
     display: block;
-    padding: 15px;
+    padding: 14px;
+    min-height: 100vh;
     height: auto;
-    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
   .layout-grid {
     display: flex;
@@ -305,6 +412,24 @@ onUnmounted(() => {
     height: auto;
     max-height: none;
     gap: 20px;
+  }
+  .layout-grid :deep(.col-profile) {
+    order: 1;
+  }
+  .layout-grid :deep(.col-main) {
+    order: 2;
+  }
+  .layout-grid :deep(.col-skills) {
+    order: 3;
+  }
+  .layout-grid.intro-active {
+    transform: scale(0.98);
+  }
+  .app-footer {
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 18px 0 4px;
+    text-align: center;
   }
   .dashboard.zen-mode {
     height: 100vh !important;

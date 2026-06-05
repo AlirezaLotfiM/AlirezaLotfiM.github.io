@@ -1,47 +1,46 @@
 <script setup>
-import { onMounted, ref } from 'vue';
+import { computed } from 'vue';
+import { usePortfolio } from '../../../composables/usePortfolio';
 
-const giscusContainer = ref(null);
+const { guestbookEntries } = usePortfolio();
 
-onMounted(() => {
-  if (!giscusContainer.value) return;
-
-  const script = document.createElement('script');
-  script.src = "https://giscus.app/client.js";
-  script.setAttribute('data-repo', "AlirezaLotfiM/AlirezaLotfiM.github.io");
-  script.setAttribute('data-repo-id', "R_kgDOINh7ow");
-  script.setAttribute('data-category', "Announcements");
-  script.setAttribute('data-category-id', "DIC_kwDOINh7o84C2k3T");
-  script.setAttribute('data-mapping', "pathname");
-  script.setAttribute('data-strict', "0");
-  script.setAttribute('data-reactions-enabled', "1");
-  script.setAttribute('data-emit-metadata', "0");
-  script.setAttribute('data-input-position', "bottom");
-  script.setAttribute('data-theme', "https://alirezalotfimoghaddam.s3.ir-thr-at1.arvanstorage.ir/giscus-theme.css?versionId="); // Use Custom CSS
-  script.setAttribute('data-lang', "fa");
-  script.setAttribute('data-loading', "lazy");
-  script.setAttribute('crossorigin', "anonymous");
-  script.async = true;
-
-  giscusContainer.value.appendChild(script);
-});
+const entries = computed(() =>
+  [...guestbookEntries.value].sort(
+    (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+  ),
+);
 </script>
 
 <template>
   <div class="guestbook-tab">
     <div class="guestbook-header">
       <h2>دفترچه یادگاری</h2>
-      <p>خوشحال می‌شم نظرتون رو راجع به سایت بدونم! 👇</p>
+      <!-- <p>این بخش حالا به صورت کامل از داده های استاتیک خود پروژه بارگذاری می شود.</p> -->
     </div>
 
-    <div ref="giscusContainer" class="giscus-wrapper"></div>
+    <div v-if="entries.length" class="guestbook-list">
+      <article v-for="entry in entries" :key="entry.id" class="guestbook-card spotlight-card">
+        <div class="spotlight-bg"></div>
+        <div class="entry-head">
+          <div>
+            <h3>{{ entry.name }}</h3>
+            <span class="role">{{ entry.role }}</span>
+          </div>
+          <time :datetime="entry.created_at">
+            {{ new Date(entry.created_at).toLocaleDateString('fa-IR') }}
+          </time>
+        </div>
+        <p>{{ entry.message }}</p>
+      </article>
+    </div>
+
+    <div v-else class="empty-state">
+      هنوز پیامی برای این بخش ثبت نشده است.
+    </div>
   </div>
 </template>
 
 <style scoped>
-:deep(.giscus), :deep(.giscus-frame) {
-  width: 100% !important;
-}
 .guestbook-tab {
   animation: fadeIn 0.5s ease-in-out;
 }
@@ -60,10 +59,52 @@ onMounted(() => {
   color: var(--text-secondary);
 }
 
-.giscus-wrapper {
-  margin-top: 20px;
+.guestbook-list {
+  display: grid;
+  gap: 14px;
+}
+
+.guestbook-card {
+  position: relative;
+  overflow: hidden;
+  padding: 18px;
+  border-radius: 14px;
+  border: 1px solid var(--panel-border);
   background: var(--item-bg);
-  padding: 15px;
-  border-radius: 10px;
+}
+
+.entry-head {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+  align-items: flex-start;
+}
+
+.entry-head h3 {
+  margin: 0;
+  color: var(--text-main);
+}
+
+.role,
+time,
+.empty-state {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.guestbook-card p {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  line-height: 1.8;
+  color: var(--text-main);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 20px;
 }
 </style>

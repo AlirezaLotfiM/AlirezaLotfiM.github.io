@@ -1,7 +1,6 @@
 <script setup>
 import { computed } from 'vue';
 import { usePortfolio } from '../../composables/usePortfolio';
-import ThemeSwitcher from './ThemeSwitcher.vue';
 
 import ProjectsTab from './tabs/ProjectsTab.vue';
 import InterestsTab from './tabs/InterestsTab.vue';
@@ -19,26 +18,40 @@ const {
   loading,
   activeFilter,
   availableLanguages,
-  closeNote
+  closeNote,
 } = usePortfolio();
 
-// Zen mode is handled in App.vue globally via class binding, but the button to toggle it is here.
-// We need to emit an event or use a shared state for Zen mode.
-// In App.vue, isZenMode is ref.
-// I will add isZenMode to usePortfolio or emit it.
-// Since it affects the layout (siblings of MainContent), it should probably be in usePortfolio or emitted.
-// Let's check where it is used. It hides col-profile and col-skills.
-// So App.vue needs to know.
-// I'll emit 'toggle-zen' from here.
-const props = defineProps(['isZenMode']);
+defineProps(['isZenMode']);
 const emit = defineEmits(['toggle-zen']);
 
+const tabCommand = computed(() => {
+  if (selectedNote.value) return 'open note --focus';
+
+  const map = {
+    projects: 'ls projects --architectures',
+    interests: 'cat interests.json',
+    roadmap: 'show roadmap --active',
+    history: 'cat history.log',
+    guestbook: 'tail guestbook.log',
+    notes: 'ls notes --recent',
+  };
+
+  return map[activeTab.value] || map.projects;
+});
 </script>
 
 <template>
   <main class="col-main glass-panel main-box">
-    <!-- Header: Tabs & Controls -->
     <header class="tabs-header" :class="{ hidden: isZenMode }">
+      <div class="command-shell" dir="ltr">
+        <span class="prompt mono-ui">alireza@portfolio:~$</span>
+        <span class="command-text mono-ui">{{ tabCommand }}</span>
+        <button class="command-shortcut mono-ui" type="button" @click="emit('toggle-zen')" v-if="selectedNote">
+          Zen
+        </button>
+        <span v-else class="command-shortcut mono-ui">Ctrl + K</span>
+      </div>
+
       <nav class="main-tabs" aria-label="Main Navigation">
         <button @click="selectedNote ? closeNote() : (activeTab = 'projects')"
           :class="{ active: !selectedNote && activeTab === 'projects' }">
@@ -65,24 +78,18 @@ const emit = defineEmits(['toggle-zen']);
         </button>
       </nav>
 
-      <div class="header-controls">
+      <div v-if="activeTab === 'projects' && !selectedNote" class="header-controls">
         <div class="project-controls">
-          <div class="controls-left">
-            <div v-if="activeTab === 'projects' && !selectedNote" class="filter-chips">
-              <button v-for="lang in availableLanguages" :key="lang" @click="activeFilter = lang"
-                :class="{ 'active-filter': activeFilter === lang }" class="filter-btn">
-                {{ lang === "All" ? "همه" : lang }}
-              </button>
-            </div>
-          </div>
-          <div class="controls-right">
-            <ThemeSwitcher />
+          <div class="filter-chips">
+            <button v-for="lang in availableLanguages" :key="lang" @click="activeFilter = lang"
+              :class="{ 'active-filter': activeFilter === lang }" class="filter-btn">
+              {{ lang === 'All' ? 'همه' : lang }}
+            </button>
           </div>
         </div>
       </div>
     </header>
 
-    <!-- Content Body -->
     <div class="content-body">
       <div v-if="loading" class="loading-skeletons">
         <SkeletonGrid v-if="activeTab === 'projects' || activeTab === 'interests'" />
@@ -90,27 +97,8 @@ const emit = defineEmits(['toggle-zen']);
       </div>
 
       <Transition name="fade-slide" mode="out-in">
-        <!-- Notes Detail View (overrides tabs) -->
         <div v-if="!loading && selectedNote" class="thread-view-wrapper" key="thread">
-           <!-- We can pass the selectedNote handling to NotesTab or keep it here.
-                Since the UI structure in App.vue had the detail view *replacing* the grid,
-                it's easier to let NotesTab handle both list and detail, OR handle detail here.
-                In App.vue, the detail view code is massive.
-                I will move the Detail View logic into NotesTab.vue and pass a prop 'viewMode=detail'.
-                BUT, activeTab might be 'projects' when opening a note?
-                Wait, openNote is only called from Notes list?
-                In App.vue: <div v-if="selectedNote">...</div> else if projects...
-                So selectedNote overrides everything.
-                I will let NotesTab handle the detail view if I can pass props, but selectedNote is global state.
-                Let's put the Note Detail logic in a separate component 'NoteDetail.vue' and use it here.
-                Actually, simpler: Let NotesTab handle everything related to notes (list and detail).
-                But selectedNote overrides *other* tabs too? No, usually you only open notes from Notes tab.
-                Let's check App.vue.
-                Ah, notes are in `notes-list`.
-                So when I click a note, selectedNote becomes true.
-                I will instantiate NotesTab if selectedNote is true, or if activeTab is notes.
-           -->
-           <NotesTab :is-detail="true" @toggle-zen="emit('toggle-zen')" :is-zen-mode="isZenMode"/>
+          <NotesTab :is-detail="true" @toggle-zen="emit('toggle-zen')" :is-zen-mode="isZenMode" />
         </div>
 
         <ProjectsTab v-else-if="!loading && activeTab === 'projects'" key="projects" />
@@ -119,7 +107,6 @@ const emit = defineEmits(['toggle-zen']);
         <HistoryTab v-else-if="!loading && activeTab === 'history'" key="history" />
         <GuestbookTab v-else-if="!loading && activeTab === 'guestbook'" key="guestbook" />
         <NotesTab v-else-if="!loading && activeTab === 'notes'" key="notes" />
-
       </Transition>
     </div>
   </main>
@@ -132,19 +119,55 @@ const emit = defineEmits(['toggle-zen']);
   transition: 0.3s;
 }
 
-.main-box {
-  /* Inherits glass-panel properties */
-}
-
-/* Header Styles */
 .tabs-header.hidden {
   display: none !important;
+}
+
+.command-shell {
+  margin: 18px 24px 14px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(208, 224, 240, 0.92);
+  background: rgba(245, 250, 255, 0.82);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.88);
+  overflow: hidden;
+}
+
+.prompt {
+  color: var(--accent-strong);
+  white-space: nowrap;
+}
+
+.command-text {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text-secondary);
+}
+
+.command-shortcut {
+  flex-shrink: 0;
+  border: 1px solid rgba(214, 229, 243, 0.96);
+  background: rgba(255, 255, 255, 0.68);
+  color: var(--text-soft);
+  border-radius: 10px;
+  padding: 6px 10px;
+  font-size: 0.72rem;
+}
+
+button.command-shortcut {
+  cursor: pointer;
 }
 
 .main-tabs {
   display: flex;
   width: 100%;
-  border-bottom: 1px solid var(--panel-border);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.44);
   overflow-x: auto;
   scrollbar-width: none;
 }
@@ -155,103 +178,158 @@ const emit = defineEmits(['toggle-zen']);
 
 .main-tabs button {
   flex: 1;
-  padding: 12px 10px;
-  font-size: 0.95rem;
+  padding: 15px 12px;
+  font-size: 0.86rem;
   white-space: nowrap;
   background: transparent;
   border: none;
   border-bottom: 2px solid transparent;
   color: var(--text-secondary);
-  font-family: inherit;
   cursor: pointer;
   transition: all 0.3s ease;
   margin-bottom: -1px;
   text-align: center;
   min-width: fit-content;
+  position: relative;
 }
 
 .main-tabs button:hover {
   color: var(--text-main);
-  background: var(--item-bg);
+  background: rgba(255, 255, 255, 0.24);
 }
 
 .main-tabs button.active {
   color: var(--text-main);
-  border-bottom: 2px solid var(--neon);
-  background: linear-gradient(to top, var(--item-hover-bg), transparent);
+  border-bottom: 2px solid rgba(92, 144, 199, 0.95);
+  background: linear-gradient(to top, rgba(255, 255, 255, 0.88), rgba(233, 244, 252, 0.5));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.84),
+    0 8px 18px rgba(92, 144, 199, 0.08);
 }
 
 .header-controls {
-  border-top: 1px solid var(--panel-border);
-  padding-top: 10px;
-  width: 100%;
-  padding-left: 30px;
-  padding-right: 30px;
+  border-top: 1px solid rgba(255, 255, 255, 0.26);
+  padding: 10px 24px 0;
 }
 
 .project-controls {
   display: flex;
   width: 100%;
   align-items: center;
-  justify-content: space-between;
-}
-
-.controls-left {
-  display: flex;
-  justify-content: flex-start;
-}
-
-.controls-right {
-  display: flex;
-  flex-grow: 1;
-  justify-content: flex-end;
+  min-height: 36px;
 }
 
 .filter-chips {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   flex-wrap: wrap;
 }
 
 .filter-btn {
-  background: var(--item-bg);
-  border: 1px solid var(--panel-border);
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(212, 226, 240, 0.92);
   color: var(--text-secondary);
-  font-size: 0.8rem;
-  padding: 4px 12px;
-  border-radius: 20px;
+  font-size: 0.76rem;
+  padding: 5px 12px;
+  border-radius: 999px;
   cursor: pointer;
   transition: 0.2s;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
 }
 
 .filter-btn:hover {
-  background: var(--item-hover-bg);
+  background: rgba(255, 255, 255, 0.7);
   color: var(--text-main);
 }
 
 .filter-btn.active-filter {
-  background: var(--neon);
-  color: black;
-  border-color: var(--neon);
-  font-weight: bold;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--text-main);
+  border-color: rgba(179, 202, 225, 1);
+  font-weight: 700;
 }
 
 .content-body {
-  padding: 25px;
+  padding: 22px 24px 24px;
   overflow-y: auto;
   height: 100%;
+  -webkit-overflow-scrolling: touch;
 }
 
-/* Mobile */
 @media (max-width: 1024px) {
   .col-main {
     order: 2;
     height: auto;
-    min-height: 500px;
+    min-height: 420px;
   }
+
+  .tabs-header {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .command-shell {
+    margin: 14px 14px 12px;
+    padding: 11px 12px;
+    gap: 8px;
+    font-size: 0.74rem;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .header-controls,
+  .content-body {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
   .content-body {
     overflow: visible;
     height: auto;
+  }
+
+  .main-tabs {
+    padding: 0 6px;
+    gap: 4px;
+    border-bottom: none;
+    flex-wrap: nowrap;
+    scroll-padding-inline: 14px;
+  }
+
+  .main-tabs button {
+    flex: 0 0 auto;
+    padding: 12px 14px;
+    border: 1px solid rgba(214, 229, 243, 0.78);
+    border-radius: 14px;
+    margin-bottom: 0;
+    background: rgba(255, 255, 255, 0.4);
+  }
+
+  .main-tabs button.active {
+    border-bottom: 1px solid rgba(179, 202, 225, 1);
+  }
+}
+
+@media (max-width: 640px) {
+  .col-main {
+    min-height: 0;
+  }
+
+  .command-shell {
+    margin: 12px 12px 10px;
+    padding: 10px 11px;
+  }
+
+  .prompt,
+  .command-text,
+  .command-shortcut {
+    font-size: 0.7rem;
+  }
+
+  .header-controls,
+  .content-body {
+    padding-left: 12px;
+    padding-right: 12px;
   }
 }
 </style>

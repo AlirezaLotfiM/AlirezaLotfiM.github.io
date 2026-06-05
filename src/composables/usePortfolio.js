@@ -12,6 +12,7 @@ const activeFilter = ref("All");
 const selectedNote = ref(null);
 const noteComments = ref([]);
 const loadingComments = ref(false);
+const guestbookEntries = ref([]);
 
 // New dynamic state
 const mySkills = ref([]);
@@ -27,6 +28,7 @@ const profile = ref({
   learning: {},
   resumeUrl: ""
 });
+const resumeUrl = ref("");
 const techStack = ref({});
 
 // Helper Functions
@@ -138,6 +140,7 @@ const fetchDynamicData = async () => {
     if (!configRes.ok) throw new Error("Failed to load config.json");
     const config = await configRes.json();
     const urls = config.urls;
+    resumeUrl.value = urls.resume || "";
 
     // 2. Fetch all dynamic data in parallel
     const [
@@ -147,7 +150,9 @@ const fetchDynamicData = async () => {
       roadmapRes,
       interestsRes,
       experienceRes,
-      techStackRes
+      techStackRes,
+      notesRes,
+      guestbookRes
     ] = await Promise.all([
       fetch(urls.profile),
       fetch(urls.skills),
@@ -155,11 +160,16 @@ const fetchDynamicData = async () => {
       fetch(urls.roadmap),
       fetch(urls.interests),
       fetch(urls.experience),
-      fetch(urls.techStack)
+      fetch(urls.techStack),
+      fetch(urls.notes),
+      fetch(urls.guestbook)
     ]);
 
     const profileData = await profileRes.json();
     profile.value = profileData;
+    if (!resumeUrl.value && profileData.resumeUrl) {
+      resumeUrl.value = profileData.resumeUrl;
+    }
     // Update github user from profile
     if (profileData.githubUser) {
         userGithub.value = profileData.githubUser;
@@ -171,6 +181,8 @@ const fetchDynamicData = async () => {
     interests.value = await interestsRes.json();
     workExperience.value = await experienceRes.json();
     techStack.value = await techStackRes.json();
+    notes.value = await notesRes.json();
+    guestbookEntries.value = await guestbookRes.json();
 
     return manualProjects;
   } catch (e) {
@@ -185,37 +197,7 @@ const fetchData = async () => {
   try {
     // Fetch dynamic data first
     const manualProjects = await fetchDynamicData();
-
-    // Now fetch GitHub data using the username from profile (or default)
-    const username = userGithub.value;
-
-    const [repoRes, noteRes] = await Promise.all([
-      fetch(`https://api.github.com/users/${username}/repos?sort=updated`),
-      fetch(
-        `https://api.github.com/repos/${username}/${username}.github.io/issues?state=open&creator=${username}`,
-      ),
-    ]);
-
-    // Handle Repos
-    let githubProjects = [];
-    if (repoRes.ok) {
-        const repos = await repoRes.json();
-        githubProjects = Array.isArray(repos)
-        ? repos.filter((r) => !r.fork).slice(0, 6)
-        : [];
-    } else {
-        console.warn("Failed to fetch GitHub repos");
-    }
-
-    // Handle Notes (Issues)
-    if (noteRes.ok) {
-        const issues = await noteRes.json();
-        notes.value = Array.isArray(issues) ? issues : [];
-    } else {
-        console.warn("Failed to fetch GitHub issues");
-    }
-
-    projects.value = [...manualProjects, ...githubProjects];
+    projects.value = manualProjects;
   } catch (e) {
     console.error("Error fetching data:", e);
   }
@@ -227,11 +209,10 @@ const openNote = async (note) => {
   loadingComments.value = true;
   noteComments.value = [];
   try {
-    if (note.comments > 0) {
-      const res = await fetch(note.comments_url);
-      if (res.ok) noteComments.value = await res.json();
-    }
-  } catch (e) {}
+    noteComments.value = Array.isArray(note.comments) ? note.comments : [];
+  } catch (e) {
+    console.error("Error opening note:", e);
+  }
   loadingComments.value = false;
 };
 
@@ -245,6 +226,7 @@ export function usePortfolio() {
     userGithub,
     projects,
     notes,
+    guestbookEntries,
     loading,
     activeTab,
     activeFilter,
@@ -256,6 +238,7 @@ export function usePortfolio() {
     roadmapItems,
     workExperience,
     profile,
+    resumeUrl,
     techStack,
     toPersianDigits,
     getLangColor, // Kept for backward compat
