@@ -30,7 +30,7 @@ const {
 const { currentThemeColor } = useTheme();
 
 // --- App State ---
-const appVersion = "1.5.0";
+const appVersion = "1.6.0";
 const showBoot = ref(true);
 const isBooted = ref(false);
 const showIdentityCard = ref(true);
