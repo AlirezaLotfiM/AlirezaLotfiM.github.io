@@ -30,7 +30,7 @@ const {
 const { currentThemeColor } = useTheme();
 
 // --- App State ---
-const appVersion = "1.4.6";
+const appVersion = "1.5.0";
 const showBoot = ref(true);
 const isBooted = ref(false);
 const showIdentityCard = ref(true);
@@ -180,12 +180,13 @@ onUnmounted(() => {
       <div class="layout-grid" :class="{ 'zen-active': isZenMode, 'intro-active': showIdentityCard, 'intro-leaving': isEnteringDashboard }">
 
         <!-- Profile Column -->
-        <UserProfile @open-terminal="showTerminal = true" />
+        <UserProfile @open-terminal="showTerminal = true" @go-home="showIdentityCard = true" />
 
         <!-- Main Content Column -->
         <MainContent
           :is-zen-mode="isZenMode"
           @toggle-zen="toggleZenMode"
+          @open-terminal="showTerminal = true"
         />
 
         <!-- Skills Column -->

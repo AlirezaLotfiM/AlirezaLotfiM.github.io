@@ -118,7 +118,7 @@ onUnmounted(() => {
 }
 
 .timeline-item.active .glass-panel {
-  border-color: rgba(103, 255, 100, 0.3); /* Slight glow on panels */
+  border-color: var(--neon);
 }
 
 /* Columns */
@@ -129,6 +129,10 @@ onUnmounted(() => {
   border-radius: 12px;
   background: var(--item-bg);
   transition: 0.3s;
+}
+
+.time-header::after, .time-body::after {
+  border-radius: 11px !important;
 }
 
 .time-header {

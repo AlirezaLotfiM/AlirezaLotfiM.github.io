@@ -1,8 +1,25 @@
 import { ref, computed } from 'vue';
 
-const THEME_STORAGE_KEY = 'user-theme-v2';
+const THEME_STORAGE_KEY = 'user-theme-v3';
 
 const themes = [
+  {
+    id: "space-glass",
+    name: "Space Glass",
+    colors: {
+      "--bg-main": "#0a0f1d",
+      "--text-main": "#f1f5f9",
+      "--text-secondary": "rgba(226, 232, 240, 0.82)",
+      "--panel-bg": "rgba(15, 23, 42, 0.62)",
+      "--panel-border": "rgba(148, 163, 184, 0.12)",
+      "--item-bg": "rgba(30, 41, 59, 0.4)",
+      "--item-hover-bg": "rgba(51, 65, 85, 0.6)",
+      "--bar-bg": "rgba(15, 23, 42, 0.8)",
+      "--neon": "#38bdf8",
+      "--glass-panel-base": "rgba(15, 23, 42, 0.82)",
+      "--glass-panel-highlight": "rgba(56, 189, 248, 0.04)"
+    }
+  },
   {
     id: "liquid-glass",
     name: "Liquid Glass",

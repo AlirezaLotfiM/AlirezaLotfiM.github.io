@@ -62,13 +62,15 @@ const resumeLabel = computed(() => cardData.value.resumeLabel || 'رزومه');
               <p class="role mono-ui" dir="ltr">{{ heroRole }}</p>
               <p class="title">{{ heroBio }}</p>
               <div class="badge-row" dir="ltr">
+                <span class="badge-chip focus-badge mono-ui" style="border-color: var(--neon); color: var(--neon); font-weight: 700;">Focus: {{ heroFocus }}</span>
                 <span v-for="badge in badges" :key="badge" class="badge-chip mono-ui">{{ badge }}</span>
               </div>
             </div>
 
-            <div class="focus-panel">
-              <span class="focus-label mono-ui" dir="ltr">Primary Focus</span>
-              <strong class="focus-value mono-ui" dir="ltr">{{ heroFocus }}</strong>
+            <div class="avatar-panel">
+              <div class="avatar-glow">
+                <img :src="profile.avatarUrl || '/Damoon-d.png'" alt="Alireza" />
+              </div>
             </div>
           </div>
 
@@ -117,7 +119,7 @@ const resumeLabel = computed(() => cardData.value.resumeLabel || 'رزومه');
 .scene {
   position: relative;
   width: min(100%, 680px);
-  aspect-ratio: 1.68;
+  min-height: 480px;
   pointer-events: auto;
 }
 
@@ -140,27 +142,25 @@ const resumeLabel = computed(() => cardData.value.resumeLabel || 'رزومه');
 .card-glow {
   inset: -3%;
   background:
-    radial-gradient(circle at var(--shine-x) var(--shine-y), rgba(255, 255, 255, 0.24), transparent 24%),
-    radial-gradient(circle at 50% 110%, rgba(164, 210, 255, 0.16), transparent 30%);
+    radial-gradient(circle at var(--shine-x) var(--shine-y), var(--neon) 12%, transparent 24%),
+    radial-gradient(circle at 50% 110%, var(--neon) 8%, transparent 30%);
   filter: blur(28px);
-  opacity: 0.72;
+  opacity: 0.35;
   animation: glowDrift 12s ease-in-out infinite;
 }
 
 .glass-card {
   position: relative;
   width: 100%;
-  height: 100%;
+  min-height: 480px;
   border-radius: 34px;
   overflow: hidden;
-  background:
-    linear-gradient(160deg, rgba(255, 255, 255, 0.84) 0%, rgba(243, 249, 255, 0.68) 42%, rgba(220, 236, 250, 0.58) 100%),
-    rgba(255, 255, 255, 0.32);
-  border: 1px solid rgba(255, 255, 255, 0.72);
+  background: var(--glass-panel);
+  border: 1px solid var(--panel-border);
   box-shadow:
-    0 32px 70px rgba(77, 121, 168, 0.14),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9),
-    inset 18px 18px 40px rgba(255, 255, 255, 0.08);
+    0 32px 70px rgba(0, 0, 0, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    inset 18px 18px 40px rgba(255, 255, 255, 0.02);
   backdrop-filter: blur(28px) saturate(170%);
   -webkit-backdrop-filter: blur(28px) saturate(170%);
   isolation: isolate;
@@ -176,9 +176,9 @@ const resumeLabel = computed(() => cardData.value.resumeLabel || 'رزومه');
 
 .glass-card::before {
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.58), transparent 22%),
-    radial-gradient(circle at var(--shine-x) var(--shine-y), rgba(255, 255, 255, 0.18), transparent 18%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent 26%, transparent 72%, rgba(255, 255, 255, 0.08));
+    linear-gradient(135deg, rgba(255, 255, 255, 0.05), transparent 22%),
+    radial-gradient(circle at var(--shine-x) var(--shine-y), rgba(255, 255, 255, 0.04), transparent 18%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 26%, transparent 72%, rgba(255, 255, 255, 0.02));
   mix-blend-mode: screen;
   opacity: 0.88;
 }
@@ -186,7 +186,7 @@ const resumeLabel = computed(() => cardData.value.resumeLabel || 'رزومه');
 .glass-card::after {
   inset: 1px;
   border-radius: 33px;
-  border: 1px solid rgba(255, 255, 255, 0.24);
+  border: 1px solid var(--panel-border);
 }
 
 .frame-highlight {
@@ -200,41 +200,55 @@ const resumeLabel = computed(() => cardData.value.resumeLabel || 'رزومه');
   position: absolute;
   inset: 0;
   z-index: 3;
-  display: grid;
-  grid-template-rows: 1fr auto;
-  gap: 16px;
-  padding: 26px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 34px 38px;
 }
 
 .card-top {
   display: grid;
-  grid-template-columns: minmax(0, 1.7fr) minmax(170px, 0.72fr);
-  gap: 16px;
-  align-items: stretch;
-}
-
-.identity-block,
-.focus-panel,
-.contact-card,
-.action-strip {
-  border-radius: 24px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.36), rgba(229, 241, 252, 0.18));
-  border: 1px solid rgba(255, 255, 255, 0.42);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  grid-template-columns: 1fr auto;
+  gap: 32px;
+  align-items: center;
 }
 
 .identity-block {
-  padding: 22px;
   min-width: 0;
 }
 
-.focus-panel {
-  padding: 20px;
+.avatar-panel {
   display: flex;
-  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  gap: 10px;
-  text-align: center;
+  padding: 10px;
+}
+
+.avatar-glow {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  padding: 4px;
+  background: linear-gradient(135deg, var(--item-bg), var(--item-hover-bg));
+  border: 1px solid var(--panel-border);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.avatar-glow img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.avatar-glow:hover {
+  border-color: var(--neon);
+  box-shadow: 0 0 18px var(--neon);
 }
 
 .eyebrow {
@@ -245,9 +259,9 @@ const resumeLabel = computed(() => cardData.value.resumeLabel || 'رزومه');
   padding: 8px 12px;
   border-radius: 999px;
   margin-bottom: 14px;
-  background: rgba(255, 255, 255, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.48);
-  color: rgba(28, 54, 83, 0.86);
+  background: var(--item-bg);
+  border: 1px solid var(--panel-border);
+  color: var(--text-secondary);
   font-size: 0.66rem;
   letter-spacing: 0.12em;
 }
@@ -257,21 +271,21 @@ const resumeLabel = computed(() => cardData.value.resumeLabel || 'رزومه');
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(179, 219, 255, 0.42));
-  box-shadow: 0 0 12px rgba(255, 255, 255, 0.55);
+  background: var(--neon);
+  box-shadow: 0 0 12px var(--neon);
 }
 
 .name {
   margin: 0;
   font-size: clamp(1.85rem, 3.8vw, 2.45rem);
   line-height: 1.18;
-  color: #17314c;
-  text-shadow: 0 10px 20px rgba(255, 255, 255, 0.42);
+  color: var(--text-main);
+  text-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
 .role {
   margin: 10px 0 0;
-  color: var(--accent-strong);
+  color: var(--neon);
   font-size: 0.84rem;
 }
 
@@ -280,7 +294,7 @@ const resumeLabel = computed(() => cardData.value.resumeLabel || 'رزومه');
   max-width: 430px;
   font-size: 0.88rem;
   line-height: 1.86;
-  color: rgba(36, 67, 98, 0.9);
+  color: var(--text-secondary);
 }
 
 .badge-row {
@@ -295,8 +309,8 @@ const resumeLabel = computed(() => cardData.value.resumeLabel || 'رزومه');
   align-items: center;
   padding: 6px 10px;
   border-radius: 999px;
-  border: 1px solid rgba(203, 221, 239, 0.95);
-  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid var(--panel-border);
+  background: var(--item-bg);
   color: var(--text-secondary);
   font-size: 0.71rem;
 }
@@ -310,67 +324,86 @@ const resumeLabel = computed(() => cardData.value.resumeLabel || 'رزومه');
 
 .focus-value {
   font-size: 0.98rem;
-  color: #17314c;
+  color: var(--text-main);
 }
 
 .card-bottom {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 12px;
-  align-items: stretch;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  border-top: 1px solid var(--panel-border);
+  padding-top: 24px;
 }
 
 .contact-card {
   min-width: 0;
-  padding: 14px 16px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .fact-label {
   font-size: 0.72rem;
-  color: rgba(56, 90, 123, 0.72);
+  color: var(--text-soft);
 }
 
 .fact-value {
   font-family: var(--font-mono);
   font-size: 0.8rem;
-  color: #17314c;
+  color: var(--text-main);
   overflow-wrap: anywhere;
 }
 
 .action-strip {
-  padding: 8px;
-  display: grid;
-  grid-template-columns: auto auto;
-  gap: 8px;
+  display: flex;
+  gap: 12px;
   align-items: center;
 }
 
 .primary-btn,
 .secondary-btn {
   border-radius: 16px;
-  padding: 12px 16px;
+  padding: 12px 18px;
   font-size: 0.78rem;
   cursor: pointer;
-  transition: 0.25s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
   text-align: center;
   white-space: nowrap;
+  font-weight: 700;
 }
 
 .primary-btn {
-  border: 1px solid rgba(86, 129, 177, 1);
-  background: linear-gradient(180deg, rgba(94, 144, 196, 0.96), rgba(76, 122, 171, 0.9));
-  color: #fff;
+  background: var(--neon);
+  color: #040814;
+  border: 1px solid var(--neon);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+}
+
+.primary-btn:hover {
+  filter: brightness(1.15);
+  box-shadow: 0 0 16px var(--neon);
+  transform: translateY(-2px);
 }
 
 .secondary-btn {
-  border: 1px solid rgba(204, 220, 236, 1);
-  background: rgba(255, 255, 255, 0.76);
+  border: 1px solid var(--panel-border);
+  background: var(--item-bg);
   color: var(--text-main);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.secondary-btn:hover {
+  background: var(--item-hover-bg);
+  border-color: var(--neon);
+  color: var(--text-main);
+  transform: translateY(-2px);
+}
+
+.primary-btn:active,
+.secondary-btn:active {
+  transform: translateY(0) scale(0.97);
 }
 
 .liquid {
@@ -484,7 +517,29 @@ const resumeLabel = computed(() => cardData.value.resumeLabel || 'رزومه');
     padding: 18px;
   }
 
-  .card-top,
+  .card-top {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    gap: 16px;
+    text-align: center;
+  }
+
+  .identity-block {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .identity-block .title {
+    text-align: center;
+  }
+
+  .badge-row {
+    justify-content: center;
+  }
+
   .card-bottom,
   .action-strip {
     grid-template-columns: 1fr;

@@ -4,7 +4,7 @@ import { usePortfolio } from '../../composables/usePortfolio';
 
 const { userGithub, projects, profile, resumeUrl } = usePortfolio();
 
-const emit = defineEmits(['open-terminal']);
+const emit = defineEmits(['open-terminal', 'go-home']);
 
 const copiedTooltip = ref(null);
 const typeText = ref('');
@@ -120,7 +120,7 @@ onUnmounted(() => {
       <div class="spotlight-bg"></div>
 
       <header class="profile-header">
-        <div class="avatar-glow">
+        <div class="avatar-glow" @click="emit('go-home')" title="بازگشت به صفحه نخست (کارت ویزیت)" style="cursor: pointer;">
           <img :src="profile.avatarUrl || '/Damoon-d.png'" alt="Avatar" />
         </div>
         <div class="profile-texts">
@@ -136,6 +136,17 @@ onUnmounted(() => {
         <span v-for="badge in profileBadges" :key="badge" class="meta-chip">{{ badge }}</span>
       </div>
 
+      <!-- Status Panel -->
+      <div class="status-panel" v-if="profile.learning">
+        <div class="status-item">
+          <span class="status-icon">🚀</span>
+          <div class="status-info">
+            <span class="status-label">تمرکز یادگیری:</span>
+            <strong class="status-value">{{ profile.learning.focus || 'Dapr & K8s' }}</strong>
+          </div>
+        </div>
+      </div>
+
       <p class="bio-short">
         {{ profile.bio }}
       </p>
@@ -147,16 +158,8 @@ onUnmounted(() => {
         </div>
       </div>
 
-      <div class="focus-line">
-        <span class="focus-label">تمرکز فعلی:</span>
-        <span class="focus-value" dir="ltr">{{ profile.learning?.focus || 'ASP.NET Core' }}</span>
-      </div>
 
       <div class="action-buttons">
-        <button class="terminal-toggle" @click="emit('open-terminal')" title="Ctrl + K">
-          <span class="mono-ui">>_</span>
-          <span>ترمینال</span>
-        </button>
         <a
           class="resume-btn"
           :href="resumeUrl || profile.resumeUrl || '/MyResume.pdf'"
@@ -169,64 +172,65 @@ onUnmounted(() => {
             <polyline points="7 10 12 15 17 10"></polyline>
             <line x1="12" y1="15" x2="12" y2="3"></line>
           </svg>
-          <span>رزومه</span>
+          <span>دانلود رزومه (Resume)</span>
         </a>
       </div>
+    </div>
 
-      <div class="contact-grid">
-        <div class="contact-wrapper">
-          <button class="contact-btn email" @click="copyToClipboard(profile.contact?.email, 'email')" aria-label="Email">
-            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <rect width="20" height="16" x="2" y="4" rx="2" />
-              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-            </svg>
+    <!-- Social Floating Bar outside the card -->
+    <div class="glass-panel contact-grid social-dock">
+      <div class="contact-wrapper">
+        <button class="contact-btn email" @click="copyToClipboard(profile.contact?.email, 'email')" aria-label="Email">
+          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="20" height="16" x="2" y="4" rx="2" />
+            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+          </svg>
+        </button>
+        <div class="tooltip-box">
+          <span class="label">ایمیل</span>
+          <button class="copy-btn" @click.prevent="copyToClipboard(profile.contact?.email, 'email')">
+            {{ copiedTooltip === 'email' ? 'کپی شد! ✅' : 'کپی آدرس' }}
           </button>
-          <div class="tooltip-box">
-            <span class="label">ایمیل</span>
-            <button class="copy-btn" @click.prevent="copyToClipboard(profile.contact?.email, 'email')">
-              {{ copiedTooltip === 'email' ? 'کپی شد! ✅' : 'کپی آدرس' }}
-            </button>
-          </div>
         </div>
-        <div class="contact-wrapper">
-          <a :href="profile.contact?.linkedin" target="_blank" class="contact-btn linkedin" aria-label="LinkedIn">
-            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-              <rect width="4" height="12" x="2" y="9" />
-              <circle cx="4" cy="4" r="2" />
-            </svg>
-          </a>
-          <div class="tooltip-box">
-            <span class="label">لینکدین</span>
-            <button class="copy-btn" @click.prevent="copyToClipboard(profile.contact?.linkedin, 'linkedin')">
-              {{ copiedTooltip === 'linkedin' ? 'کپی لینک! ✅' : 'کپی لینک' }}
-            </button>
-          </div>
+      </div>
+      <div class="contact-wrapper">
+        <a :href="profile.contact?.linkedin" target="_blank" class="contact-btn linkedin" aria-label="LinkedIn">
+          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+            <rect width="4" height="12" x="2" y="9" />
+            <circle cx="4" cy="4" r="2" />
+          </svg>
+        </a>
+        <div class="tooltip-box">
+          <span class="label">لینکدین</span>
+          <button class="copy-btn" @click.prevent="copyToClipboard(profile.contact?.linkedin, 'linkedin')">
+            {{ copiedTooltip === 'linkedin' ? 'کپی لینک! ✅' : 'کپی لینک' }}
+          </button>
         </div>
-        <div class="contact-wrapper">
-          <a :href="profile.contact?.telegramUrl" target="_blank" class="contact-btn telegram" aria-label="Telegram">
-            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <path d="m22 2-7 20-4-9-9-4Z" />
-              <path d="M22 2 11 13" />
-            </svg>
-          </a>
-          <div class="tooltip-box">
-            <span class="label">تلگرام</span>
-            <button class="copy-btn" @click.prevent="copyToClipboard(profile.contact?.telegramId, 'telegram')">
-              {{ copiedTooltip === 'telegram' ? 'کپی شد! ✅' : 'کپی ID' }}
-            </button>
-          </div>
+      </div>
+      <div class="contact-wrapper">
+        <a :href="profile.contact?.telegramUrl" target="_blank" class="contact-btn telegram" aria-label="Telegram">
+          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m22 2-7 20-4-9-9-4Z" />
+            <path d="M22 2 11 13" />
+          </svg>
+        </a>
+        <div class="tooltip-box">
+          <span class="label">تلگرام</span>
+          <button class="copy-btn" @click.prevent="copyToClipboard(profile.contact?.telegramId, 'telegram')">
+            {{ copiedTooltip === 'telegram' ? 'کپی شد! ✅' : 'کپی ID' }}
+          </button>
         </div>
-        <div class="contact-wrapper">
-          <a :href="`https://github.com/${userGithub}`" target="_blank" class="contact-btn github" aria-label="GitHub">
-            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
-              <path d="M9 18c-4.51 2-5-2-7-2" />
-            </svg>
-          </a>
-          <div class="tooltip-box">
-            <span class="label">گیت‌هاب</span>
-          </div>
+      </div>
+      <div class="contact-wrapper">
+        <a :href="`https://github.com/${userGithub}`" target="_blank" class="contact-btn github" aria-label="GitHub">
+          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+            <path d="M9 18c-4.51 2-5-2-7-2" />
+          </svg>
+        </a>
+        <div class="tooltip-box">
+          <span class="label">گیت‌هاب</span>
         </div>
       </div>
     </div>
@@ -237,10 +241,15 @@ onUnmounted(() => {
 .col-profile {
   height: 100%;
   min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
   transition: 0.3s;
 }
 
 .profile-box {
+  flex: 1;
+  height: auto !important;
   padding: 20px 18px 22px;
   gap: 14px;
   overflow-y: auto;
@@ -294,8 +303,9 @@ onUnmounted(() => {
   overflow: hidden;
   border-radius: 50%;
   padding: 4px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(198, 223, 244, 0.42));
-  box-shadow: 0 10px 24px rgba(92, 144, 199, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.84);
+  background: linear-gradient(135deg, var(--item-bg), var(--item-hover-bg));
+  border: 1px solid var(--panel-border);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 .avatar-glow img {
@@ -313,11 +323,63 @@ onUnmounted(() => {
   margin-top: 2px;
 }
 
+/* Status Panel */
+.status-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid var(--panel-border);
+  text-align: right;
+  transition: all 0.2s ease;
+}
+
+.status-item:hover {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: var(--neon);
+}
+
+.status-icon {
+  font-size: 1.05rem;
+  flex-shrink: 0;
+}
+
+.status-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.status-label {
+  font-size: 0.68rem;
+  color: var(--text-soft);
+  font-weight: 600;
+}
+
+.status-value {
+  font-size: 0.78rem;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .bio-short {
   margin: 0;
   font-size: 0.86rem;
   line-height: 1.9;
   color: var(--text-soft);
+  margin-top: auto;
 }
 
 .stats-row {
@@ -329,8 +391,8 @@ onUnmounted(() => {
 .simple-stat {
   padding: 10px 12px;
   border-radius: 14px;
-  background: rgba(247, 251, 255, 0.72);
-  border: 1px solid rgba(210, 226, 241, 0.92);
+  background: var(--item-bg);
+  border: 1px solid var(--panel-border);
   text-align: center;
 }
 
@@ -346,35 +408,10 @@ onUnmounted(() => {
   color: var(--text-main);
 }
 
-.focus-line {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 11px 12px;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.58);
-  border: 1px solid rgba(214, 229, 243, 0.92);
-  font-size: 0.8rem;
-}
-
-.focus-label {
-  color: var(--text-soft);
-  flex-shrink: 0;
-}
-
-.focus-value {
-  color: var(--text-main);
-  font-family: var(--font-mono);
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
 
 .action-buttons {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
+  grid-template-columns: 1fr;
   margin-top: 2px;
 }
 
@@ -392,19 +429,24 @@ onUnmounted(() => {
   font-weight: 700;
   transition: 0.25s ease;
 }
-
-.terminal-toggle {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(233, 244, 252, 0.84));
-  color: var(--accent-strong);
-  border: 1px solid rgba(204, 220, 236, 1);
-  cursor: pointer;
+.resume-btn {
+  background: var(--neon);
+  border: 1px solid var(--neon);
+  color: #040814;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.resume-btn {
-  background: linear-gradient(180deg, rgba(94, 144, 196, 0.96), rgba(76, 122, 171, 0.9));
-  border: 1px solid rgba(86, 129, 177, 1);
-  color: #fff;
-  text-decoration: none;
+.resume-btn:hover {
+  filter: brightness(1.15);
+  border-color: var(--neon);
+  color: #040814;
+  box-shadow: 0 0 16px var(--neon);
+  transform: translateY(-2px);
+}
+
+.resume-btn:active {
+  transform: translateY(0) scale(0.97);
 }
 
 .contact-grid {
@@ -414,6 +456,30 @@ onUnmounted(() => {
   margin-top: 6px;
   width: 100%;
   position: relative;
+}
+
+.social-dock {
+  height: auto !important; /* overrides glass-panel height 100% */
+  display: flex;
+  flex-direction: row !important;
+  justify-content: space-around;
+  align-items: center;
+  padding: 8px 12px;
+  background: var(--item-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 20px;
+  margin-top: 0px;
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    0 10px 25px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(12px);
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.social-dock:hover {
+  background: var(--item-hover-bg);
+  border-color: var(--neon);
 }
 
 .contact-wrapper {
@@ -441,8 +507,8 @@ onUnmounted(() => {
   bottom: calc(100% + 14px);
   left: 50%;
   transform: translateX(-50%) translateY(8px) scale(0.96);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(235, 245, 252, 0.94));
-  border: 1px solid rgba(207, 223, 239, 1);
+  background: var(--bg-main);
+  border: 1px solid var(--panel-border);
   border-radius: 16px;
   padding: 10px 10px 9px;
   width: max-content;
@@ -471,7 +537,7 @@ onUnmounted(() => {
   transform: translateX(-50%);
   border-width: 8px;
   border-style: solid;
-  border-color: rgba(238, 246, 252, 0.96) transparent transparent transparent;
+  border-color: var(--panel-border) transparent transparent transparent;
 }
 
 .tooltip-box .label {
@@ -480,14 +546,19 @@ onUnmounted(() => {
 }
 
 .tooltip-box .copy-btn {
-  background: rgba(240, 247, 253, 0.92);
+  background: var(--item-bg);
   color: var(--accent-strong);
-  border: 1px solid rgba(209, 225, 240, 1);
+  border: 1px solid var(--panel-border);
   padding: 6px 10px;
   border-radius: 12px;
   font-size: 0.72rem;
   cursor: pointer;
   width: 100%;
+  transition: all 0.2s;
+}
+.tooltip-box .copy-btn:hover {
+  background: var(--item-hover-bg);
+  border-color: var(--neon);
 }
 
 @media (max-width: 1024px) {
@@ -540,8 +611,6 @@ onUnmounted(() => {
     line-height: 1.75;
   }
 
-  .focus-line {
-    flex-wrap: wrap;
-  }
+
 }
 </style>

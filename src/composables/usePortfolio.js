@@ -38,6 +38,19 @@ const toPersianDigits = (num) => {
   return num.toString().replace(/[0-9]/g, (w) => id[+w]);
 };
 
+const fetchWithFallback = async (remoteUrl, localUrl) => {
+  try {
+    const res = await fetch(remoteUrl);
+    if (!res.ok) throw new Error(`Remote load failed with status: ${res.status}`);
+    return await res.json();
+  } catch (e) {
+    console.warn(`Failed to fetch remote data from ${remoteUrl}. Falling back to local data at ${localUrl}.`, e);
+    const res = await fetch(localUrl);
+    if (!res.ok) throw new Error(`Local load failed with status: ${res.status}`);
+    return await res.json();
+  }
+};
+
 const { currentThemeColor } = useTheme();
 const { setPageTitle, setMetaDescription, resetSEO } = useSEO();
 
@@ -136,57 +149,85 @@ const filteredProjects = computed(() => {
 const fetchDynamicData = async () => {
   try {
     // 1. Fetch Config
-    const configRes = await fetch("/config.json");
-    if (!configRes.ok) throw new Error("Failed to load config.json");
-    const config = await configRes.json();
-    const urls = config.urls;
-    resumeUrl.value = urls.resume || "";
+    let urls = {
+      profile: "/dynamicData/profile.json",
+      skills: "/dynamicData/skills.json",
+      projects: "/dynamicData/projects.json",
+      roadmap: "/dynamicData/roadmap.json",
+      interests: "/dynamicData/interests.json",
+      experience: "/dynamicData/experience.json",
+      techStack: "/dynamicData/techStack.json",
+      notes: "/dynamicData/notes.json",
+      guestbook: "/dynamicData/guestbook.json",
+      resume: "/MyResume.pdf"
+    };
 
-    // 2. Fetch all dynamic data in parallel
+    try {
+      const configRes = await fetch("/config.json");
+      if (configRes.ok) {
+        const config = await configRes.json();
+        if (config.urls) {
+          urls = { ...urls, ...config.urls };
+        }
+      }
+    } catch (configErr) {
+      console.warn("Failed to load config.json, using local defaults", configErr);
+    }
+
+    // Try verifying remote resume; fall back to local if fails
+    try {
+      const resumeTest = await fetch(urls.resume, { method: "HEAD" });
+      if (resumeTest.ok) {
+        resumeUrl.value = urls.resume;
+      } else {
+        resumeUrl.value = "/MyResume.pdf";
+      }
+    } catch (e) {
+      resumeUrl.value = "/MyResume.pdf";
+    }
+
+    // 2. Fetch all dynamic data in parallel with fallback to local files
     const [
-      profileRes,
-      skillsRes,
-      projectsRes,
-      roadmapRes,
-      interestsRes,
-      experienceRes,
-      techStackRes,
-      notesRes,
-      guestbookRes
+      profileData,
+      skillsData,
+      manualProjects,
+      roadmapData,
+      interestsData,
+      experienceData,
+      techStackData,
+      notesData,
+      guestbookData
     ] = await Promise.all([
-      fetch(urls.profile),
-      fetch(urls.skills),
-      fetch(urls.projects),
-      fetch(urls.roadmap),
-      fetch(urls.interests),
-      fetch(urls.experience),
-      fetch(urls.techStack),
-      fetch(urls.notes),
-      fetch(urls.guestbook)
+      fetchWithFallback(urls.profile, "/dynamicData/profile.json"),
+      fetchWithFallback(urls.skills, "/dynamicData/skills.json"),
+      fetchWithFallback(urls.projects, "/dynamicData/projects.json"),
+      fetchWithFallback(urls.roadmap, "/dynamicData/roadmap.json"),
+      fetchWithFallback(urls.interests, "/dynamicData/interests.json"),
+      fetchWithFallback(urls.experience, "/dynamicData/experience.json"),
+      fetchWithFallback(urls.techStack, "/dynamicData/techStack.json"),
+      fetchWithFallback(urls.notes, "/dynamicData/notes.json"),
+      fetchWithFallback(urls.guestbook, "/dynamicData/guestbook.json")
     ]);
 
-    const profileData = await profileRes.json();
     profile.value = profileData;
-    if (!resumeUrl.value && profileData.resumeUrl) {
+    if (profileData.resumeUrl && resumeUrl.value === "/MyResume.pdf") {
       resumeUrl.value = profileData.resumeUrl;
     }
-    // Update github user from profile
     if (profileData.githubUser) {
-        userGithub.value = profileData.githubUser;
+      userGithub.value = profileData.githubUser;
     }
 
-    mySkills.value = await skillsRes.json();
-    const manualProjects = await projectsRes.json();
-    roadmapItems.value = await roadmapRes.json();
-    interests.value = await interestsRes.json();
-    workExperience.value = await experienceRes.json();
-    techStack.value = await techStackRes.json();
-    notes.value = await notesRes.json();
-    guestbookEntries.value = await guestbookRes.json();
+    mySkills.value = skillsData;
+    roadmapItems.value = roadmapData;
+    interests.value = interestsData;
+    workExperience.value = experienceData;
+    techStack.value = techStackData;
+    notes.value = notesData;
+    guestbookEntries.value = guestbookData;
 
     return manualProjects;
   } catch (e) {
-    console.error("Error fetching dynamic data:", e);
+    console.error("Critical error in fetchDynamicData:", e);
     // Return empty projects array in case of error
     return [];
   }

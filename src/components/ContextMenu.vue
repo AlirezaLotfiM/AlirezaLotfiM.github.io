@@ -11,17 +11,17 @@ defineEmits(['action', 'close']);
     @click.stop
   >
     <div class="menu-item" @click="$emit('action', 'terminal')">
-      <span>📟</span> Open Terminal
+      <span>📟</span> باز کردن ترمینال
     </div>
     <div class="menu-item" @click="$emit('action', 'matrix')">
-      <span>🌧️</span> Toggle Matrix
+      <span>🌧️</span> باران ماتریکس
     </div>
     <div class="sep"></div>
     <div class="menu-item" @click="$emit('action', 'source')">
-      <span>💻</span> View Source
+      <span>💻</span> مشاهده سورس کد
     </div>
     <div class="menu-item" @click="$emit('action', 'email')">
-      <span>📧</span> Copy Email
+      <span>📧</span> کپی آدرس ایمیل
     </div>
   </div>
   <div v-if="visible" class="overlay" @click="$emit('close')"></div>

@@ -39,9 +39,9 @@
   "shipping": "Core backend and internal platform modules for operational teams.",
   "stackSummary": "C# / ASP.NET Core / SQL / WPF / Vue.js / Realtime & Messaging",
   "stackModules": [
-    { "label": "shipping", "value": "Operational backend modules, API design, service reliability" },
-    { "label": "core stack", "value": "C#, ASP.NET Core, SQL, WPF, Vue.js 3" },
-    { "label": "learning", "value": "Dapr, Kubernetes, distributed patterns, RabbitMQ" }
+    { "label": "shipping", "value": "Operational backends & APIs" },
+    { "label": "core stack", "value": "C#, .NET, SQL, WPF, Vue.js" },
+    { "label": "learning", "value": "Dapr, K8s, RabbitMQ" }
   ],
   "contact": {
     "email": "Lotfi.moghaddam.alireza@gmail.com",

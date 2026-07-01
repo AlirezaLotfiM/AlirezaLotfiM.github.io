@@ -50,12 +50,12 @@ onUnmounted(() => {
 
 .main-dot {
   position: absolute; width: 8px; height: 8px;
-  background: #67FF64; border-radius: 50%;
+  background: var(--neon); border-radius: 50%;
   left: -4px; top: -4px;
 }
 .ring-dot {
   position: absolute; width: 40px; height: 40px;
-  border: 1px solid #67FF64; border-radius: 50%;
+  border: 1px solid var(--neon); border-radius: 50%;
   left: -20px; top: -20px; opacity: 0.5;
 }
 </style>

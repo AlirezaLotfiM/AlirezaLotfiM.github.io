@@ -7,7 +7,6 @@ import InterestsTab from './tabs/InterestsTab.vue';
 import RoadmapTab from './tabs/RoadmapTab.vue';
 import NotesTab from './tabs/NotesTab.vue';
 import HistoryTab from './tabs/HistoryTab.vue';
-import GuestbookTab from './tabs/GuestbookTab.vue';
 
 import SkeletonGrid from '../skeletons/SkeletonGrid.vue';
 import SkeletonList from '../skeletons/SkeletonList.vue';
@@ -22,7 +21,7 @@ const {
 } = usePortfolio();
 
 defineProps(['isZenMode']);
-const emit = defineEmits(['toggle-zen']);
+const emit = defineEmits(['toggle-zen', 'open-terminal']);
 
 const tabCommand = computed(() => {
   if (selectedNote.value) return 'open note --focus';
@@ -32,7 +31,6 @@ const tabCommand = computed(() => {
     interests: 'cat interests.json',
     roadmap: 'show roadmap --active',
     history: 'cat history.log',
-    guestbook: 'tail guestbook.log',
     notes: 'ls notes --recent',
   };
 
@@ -49,7 +47,9 @@ const tabCommand = computed(() => {
         <button class="command-shortcut mono-ui" type="button" @click="emit('toggle-zen')" v-if="selectedNote">
           Zen
         </button>
-        <span v-else class="command-shortcut mono-ui">Ctrl + K</span>
+        <button v-else class="command-shortcut mono-ui" type="button" @click="emit('open-terminal')" title="Ctrl + K">
+          Terminal
+        </button>
       </div>
 
       <nav class="main-tabs" aria-label="Main Navigation">
@@ -68,10 +68,6 @@ const tabCommand = computed(() => {
         <button @click="selectedNote ? closeNote() : (activeTab = 'history')"
           :class="{ active: !selectedNote && activeTab === 'history' }">
           سوابق
-        </button>
-        <button @click="selectedNote ? closeNote() : (activeTab = 'guestbook')"
-          :class="{ active: !selectedNote && activeTab === 'guestbook' }">
-          یادگاری
         </button>
         <button @click="activeTab = 'notes'" :class="{ active: activeTab === 'notes' || selectedNote }">
           یادداشت
@@ -105,7 +101,6 @@ const tabCommand = computed(() => {
         <InterestsTab v-else-if="!loading && activeTab === 'interests'" key="interests" />
         <RoadmapTab v-else-if="!loading && activeTab === 'roadmap'" key="roadmap" />
         <HistoryTab v-else-if="!loading && activeTab === 'history'" key="history" />
-        <GuestbookTab v-else-if="!loading && activeTab === 'guestbook'" key="guestbook" />
         <NotesTab v-else-if="!loading && activeTab === 'notes'" key="notes" />
       </Transition>
     </div>
@@ -127,12 +122,12 @@ const tabCommand = computed(() => {
   margin: 18px 24px 14px;
   padding: 12px 14px;
   border-radius: 16px;
-  border: 1px solid rgba(208, 224, 240, 0.92);
-  background: rgba(245, 250, 255, 0.82);
+  border: 1px solid var(--panel-border);
+  background: var(--item-bg);
   display: flex;
   align-items: center;
   gap: 12px;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.88);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
   overflow: hidden;
 }
 
@@ -152,8 +147,8 @@ const tabCommand = computed(() => {
 
 .command-shortcut {
   flex-shrink: 0;
-  border: 1px solid rgba(214, 229, 243, 0.96);
-  background: rgba(255, 255, 255, 0.68);
+  border: 1px solid var(--panel-border);
+  background: var(--item-bg);
   color: var(--text-soft);
   border-radius: 10px;
   padding: 6px 10px;
@@ -195,16 +190,16 @@ button.command-shortcut {
 
 .main-tabs button:hover {
   color: var(--text-main);
-  background: rgba(255, 255, 255, 0.24);
+  background: var(--item-hover-bg);
 }
 
 .main-tabs button.active {
   color: var(--text-main);
-  border-bottom: 2px solid rgba(92, 144, 199, 0.95);
-  background: linear-gradient(to top, rgba(255, 255, 255, 0.88), rgba(233, 244, 252, 0.5));
+  border-bottom: 2px solid var(--neon);
+  background: var(--item-bg);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.84),
-    0 8px 18px rgba(92, 144, 199, 0.08);
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 8px 18px rgba(0, 0, 0, 0.15);
 }
 
 .header-controls {
@@ -226,26 +221,26 @@ button.command-shortcut {
 }
 
 .filter-btn {
-  background: rgba(255, 255, 255, 0.5);
-  border: 1px solid rgba(212, 226, 240, 0.92);
+  background: var(--item-bg);
+  border: 1px solid var(--panel-border);
   color: var(--text-secondary);
   font-size: 0.76rem;
   padding: 5px 12px;
   border-radius: 999px;
   cursor: pointer;
   transition: 0.2s;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 .filter-btn:hover {
-  background: rgba(255, 255, 255, 0.7);
+  background: var(--item-hover-bg);
   color: var(--text-main);
 }
 
 .filter-btn.active-filter {
-  background: rgba(255, 255, 255, 0.92);
+  background: var(--item-hover-bg);
   color: var(--text-main);
-  border-color: rgba(179, 202, 225, 1);
+  border-color: var(--neon);
   font-weight: 700;
 }
 

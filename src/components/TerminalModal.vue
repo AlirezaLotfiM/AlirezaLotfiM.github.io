@@ -212,22 +212,23 @@ onMounted(() => {
 }
 
 .terminal-header {
-  height: 32px; background: #fff; color: #000;
+  height: 32px; background: #1c1c1e; color: #fff;
   display: flex; justify-content: space-between; align-items: center;
-  padding-left: 8px; flex-shrink: 0; user-select: none;
+  padding-left: 12px; flex-shrink: 0; user-select: none;
+  border-bottom: 1px solid #2d2d2d;
 }
 
-.header-left { display: flex; align-items: center; gap: 8px; overflow: hidden; }
-.win-icon { font-size: 0.75rem; font-weight: bold; border: 1px solid #000; padding: 0 2px; }
-.window-title { font-size: 0.8rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.header-left { display: flex; align-items: center; gap: 8px; overflow: hidden; color: #aaa; }
+.win-icon { font-size: 0.75rem; font-weight: bold; border: 1px solid #555; padding: 0 4px; color: #aaa; border-radius: 3px; }
+.window-title { font-size: 0.8rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #ccc; }
 
 .window-controls { display: flex; height: 100%; }
 .win-btn {
   width: 46px; height: 100%; border: none; background: transparent;
-  color: #000; font-size: 0.9rem; cursor: pointer; transition: 0.1s;
+  color: #aaa; font-size: 0.9rem; cursor: pointer; transition: 0.1s;
   display: flex; align-items: center; justify-content: center;
 }
-.win-btn:hover { background: #e5e5e5; }
+.win-btn:hover { background: #3a3a3c; color: #fff; }
 .win-btn.close:hover { background: #e81123; color: white; }
 
 .terminal-body {

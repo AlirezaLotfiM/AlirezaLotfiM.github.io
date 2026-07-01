@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { usePortfolio } from '../../composables/usePortfolio';
 
 const { mySkills, toPersianDigits, profile } = usePortfolio();
@@ -11,6 +11,69 @@ const stackModules = computed(() =>
     { label: 'stack', value: 'C# / PostgreSQL / Vue' },
   ],
 );
+
+const moduleIcons = {
+  shipping: '📦',
+  learning: '🚀',
+  stack: '🛠️'
+};
+
+const moduleTitles = {
+  shipping: 'توسعه جاری (Shipping)',
+  learning: 'تمرکز آموزشی (Learning)',
+  stack: 'زنجیره ابزار (Tech Stack)'
+};
+
+const currentSlide = ref(0);
+const progress = ref(0);
+let progressInterval = null;
+const slideDuration = 4500;
+const stepTime = 30;
+
+const startProgress = () => {
+  progress.value = 0;
+  if (progressInterval) clearInterval(progressInterval);
+  
+  const startTime = Date.now();
+  progressInterval = setInterval(() => {
+    const elapsed = Date.now() - startTime;
+    progress.value = Math.min(100, (elapsed / slideDuration) * 100);
+    
+    if (elapsed >= slideDuration) {
+      nextSlide();
+    }
+  }, stepTime);
+};
+
+const stopProgress = () => {
+  if (progressInterval) {
+    clearInterval(progressInterval);
+    progressInterval = null;
+  }
+};
+
+const nextSlide = () => {
+  currentSlide.value = (currentSlide.value + 1) % stackModules.value.length;
+  startProgress();
+};
+
+const prevSlide = () => {
+  currentSlide.value = (currentSlide.value - 1 + stackModules.value.length) % stackModules.value.length;
+  startProgress();
+};
+
+const goToSlide = (index) => {
+  currentSlide.value = index;
+  startProgress();
+};
+
+onMounted(() => {
+  startProgress();
+});
+
+onUnmounted(() => {
+  stopProgress();
+});
 </script>
 
 <template>
@@ -43,16 +106,38 @@ const stackModules = computed(() =>
       </li>
     </ul>
 
-    <div class="stack-console">
+    <div class="stack-console" @mouseenter="stopProgress" @mouseleave="startProgress">
       <div class="console-head">
-        <span class="module-eyebrow">runtime/status</span>
-        <span class="code-label">live</span>
+        <span class="module-eyebrow">SYSTEM STATUS</span>
+        <div class="carousel-pagination">
+          <button 
+            v-for="(_, index) in stackModules" 
+            :key="index" 
+            class="page-dot" 
+            :class="{ active: currentSlide === index }" 
+            @click="goToSlide(index)"
+            :aria-label="`Go to slide ${index + 1}`"
+          ></button>
+        </div>
       </div>
       <div class="module-divider"></div>
-      <div v-for="item in stackModules" :key="item.label" class="console-row">
-        <span class="console-key mono-ui">{{ item.label }}</span>
-        <span class="console-value">{{ item.value }}</span>
+      
+      <div class="carousel-wrapper">
+        <div class="carousel-content">
+          <Transition name="slide-fade" mode="out-in">
+            <div :key="currentSlide" class="status-card-minimal">
+              <div class="status-icon">{{ moduleIcons[stackModules[currentSlide].label] || '⚡' }}</div>
+              <div class="status-info">
+                <span class="status-title">{{ moduleTitles[stackModules[currentSlide].label] || stackModules[currentSlide].label }}</span>
+                <span class="status-value" :dir="stackModules[currentSlide].label === 'stack' ? 'ltr' : 'rtl'">
+                  {{ stackModules[currentSlide].value }}
+                </span>
+              </div>
+            </div>
+          </Transition>
+        </div>
       </div>
+      <div class="slide-progress-bar" :style="{ width: `${progress}%` }"></div>
     </div>
   </aside>
 </template>
@@ -101,8 +186,8 @@ const stackModules = computed(() =>
 }
 
 .skill-module {
-  background: rgba(255, 255, 255, 0.64);
-  border: 1px solid rgba(216, 230, 244, 0.98);
+  background: var(--item-bg);
+  border: 1px solid var(--panel-border);
   border-radius: 16px;
   padding: 14px;
   transition: all 0.3s ease;
@@ -110,14 +195,14 @@ const stackModules = computed(() =>
   display: flex;
   flex-direction: column;
   gap: 10px;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.54);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 .skill-module:hover {
-  background: rgba(255, 255, 255, 0.82);
-  border-color: rgba(204, 221, 238, 1);
+  background: var(--item-hover-bg);
+  border-color: var(--neon);
   transform: translateY(-1px);
-  box-shadow: 0 8px 20px rgba(92, 144, 199, 0.08);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
 .module-meta {
@@ -171,17 +256,17 @@ const stackModules = computed(() =>
 .status-dot {
   width: 6px;
   height: 6px;
-  background-color: var(--accent-strong);
+  background-color: var(--neon);
   border-radius: 50%;
-  box-shadow: 0 0 8px rgba(92, 144, 199, 0.5);
+  box-shadow: 0 0 8px var(--neon);
   animation: pulse-dot 2s infinite;
   flex-shrink: 0;
 }
 
 @keyframes pulse-dot {
-  0% { opacity: 0.4; box-shadow: 0 0 0 rgba(92, 144, 199, 0.2); }
-  50% { opacity: 1; box-shadow: 0 0 8px rgba(92, 144, 199, 0.45); }
-  100% { opacity: 0.4; box-shadow: 0 0 0 rgba(92, 144, 199, 0.2); }
+  0% { opacity: 0.4; box-shadow: 0 0 0 rgba(255, 255, 255, 0); }
+  50% { opacity: 1; box-shadow: 0 0 8px var(--neon); }
+  100% { opacity: 0.4; box-shadow: 0 0 0 rgba(255, 255, 255, 0); }
 }
 
 .module-bar-bg {
@@ -195,10 +280,10 @@ const stackModules = computed(() =>
 
 .module-bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, rgba(173, 206, 235, 0.56), var(--accent-strong));
+  background: linear-gradient(90deg, var(--neon), var(--accent-strong));
   border-radius: 3px;
   position: relative;
-  box-shadow: 0 0 12px rgba(92, 144, 199, 0.26);
+  box-shadow: 0 0 12px var(--neon);
 }
 
 .bar-glow {
@@ -214,46 +299,134 @@ const stackModules = computed(() =>
 }
 
 .stack-console {
-  padding: 14px 18px 18px;
-  border-top: 1px solid rgba(255, 255, 255, 0.3);
-  background: rgba(255, 255, 255, 0.16);
+  padding: 14px 18px 16px;
+  border-top: 1px solid var(--panel-border);
+  background: var(--item-bg);
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
+  position: relative;
 }
 
 .console-head {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   position: relative;
 }
 
-.console-head .code-label {
+.carousel-wrapper {
+  width: 100%;
+}
+
+.carousel-content {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.carousel-pagination {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.page-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.page-dot:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.page-dot.active {
+  background: var(--neon);
+  box-shadow: 0 0 5px var(--neon);
+  width: 10px;
+  border-radius: 2px;
+}
+
+.status-card-minimal {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 0;
+  height: 52px;
+}
+
+.slide-progress-bar {
   position: absolute;
+  bottom: 0;
   left: 0;
+  height: 1.5px;
+  background: var(--neon);
+  box-shadow: 0 0 5px var(--neon);
+  transition: width 0.04s linear;
 }
 
-.console-row {
-  display: grid;
-  grid-template-columns: 70px 1fr;
-  gap: 10px;
-  align-items: start;
+.status-icon {
+  font-size: 1.15rem;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--panel-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
-.console-key {
-  font-size: 0.72rem;
+.status-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.status-title {
+  font-size: 0.64rem;
   color: var(--text-soft);
-  text-transform: lowercase;
-  justify-self: start;
+  font-weight: 600;
+  text-transform: uppercase;
 }
 
-.console-value {
-  font-size: 0.84rem;
+.status-value {
+  font-size: 0.78rem;
   color: var(--text-main);
-  line-height: 1.6;
-  justify-self: end;
-  text-align: left;
+  font-weight: 700;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(103, 255, 100, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 5px rgba(103, 255, 100, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(103, 255, 100, 0); }
+}
+
+/* Carousel transitions */
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: all 0.22s ease;
+}
+
+.slide-fade-enter-from {
+  opacity: 0;
+  transform: translateX(8px);
+}
+
+.slide-fade-leave-to {
+  opacity: 0;
+  transform: translateX(-8px);
 }
 
 @media (max-width: 1024px) {
@@ -270,18 +443,9 @@ const stackModules = computed(() =>
     justify-content: flex-start;
   }
 
-  .console-head .code-label {
+  .live-status {
     position: static;
     margin-right: auto;
-  }
-
-  .console-row {
-    grid-template-columns: 1fr;
-    gap: 4px;
-  }
-
-  .console-value {
-    justify-self: start;
   }
 }
 

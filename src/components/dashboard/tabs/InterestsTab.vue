@@ -27,24 +27,24 @@ const { handleCardTilt, resetCard } = useTilt();
 }
 
 .interest-card {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(236, 246, 252, 0.74));
-  border: 1px solid rgba(207, 223, 239, 1);
+  background: var(--item-bg);
+  border: 1px solid var(--panel-border);
   border-radius: 18px;
   padding: 22px 18px;
   text-align: center;
   overflow: hidden;
   position: relative;
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.86),
-    0 12px 28px rgba(77, 121, 168, 0.08);
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 12px 28px rgba(0, 0, 0, 0.15);
 }
 
 .interest-card:hover {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(232, 243, 252, 0.84));
-  border-color: rgba(192, 212, 232, 1);
+  background: var(--item-hover-bg);
+  border-color: var(--neon);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.92),
-    0 16px 30px rgba(77, 121, 168, 0.1);
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 16px 30px rgba(0, 0, 0, 0.22);
 }
 
 .interest-icon {

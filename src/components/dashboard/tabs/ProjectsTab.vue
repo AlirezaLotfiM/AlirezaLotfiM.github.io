@@ -152,8 +152,8 @@ const getTechList = (langString) => {
   position: relative;
   text-decoration: none;
   color: var(--text-main);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(235, 245, 252, 0.76));
-  border: 1px solid rgba(207, 223, 239, 1);
+  background: var(--item-bg);
+  border: 1px solid var(--panel-border);
   border-radius: 20px;
   overflow: hidden;
   transition: 0.24s ease;
@@ -162,16 +162,16 @@ const getTechList = (langString) => {
   flex-direction: column;
   min-height: 100%;
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.86),
-    0 12px 28px rgba(77, 121, 168, 0.08);
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 12px 28px rgba(0, 0, 0, 0.15);
 }
 
 .grid-item:hover {
-  border-color: rgba(192, 212, 232, 1);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(232, 243, 252, 0.86));
+  border-color: var(--neon);
+  background: var(--item-hover-bg);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.92),
-    0 18px 34px rgba(77, 121, 168, 0.12);
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 18px 34px rgba(0, 0, 0, 0.22);
 }
 
 .card-head {
@@ -273,7 +273,7 @@ const getTechList = (langString) => {
   column-gap: 14px;
   row-gap: 4px;
   padding-top: 10px;
-  border-top: 1px solid rgba(214, 229, 243, 0.72);
+  border-top: 1px solid var(--panel-border);
 }
 
 .detail-label {
@@ -297,7 +297,7 @@ const getTechList = (langString) => {
   margin-top: 15px;
   font-size: 0.8rem;
   color: var(--accent-strong);
-  border-top: 1px solid rgba(214, 229, 243, 0.96);
+  border-top: 1px solid var(--panel-border);
   padding-top: 12px;
   min-height: 54px;
   display: flex;
@@ -323,12 +323,17 @@ const getTechList = (langString) => {
 }
 
 .arch-btn {
-  border: 1px solid rgba(204, 220, 236, 1);
-  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid var(--panel-border);
+  background: var(--item-bg);
   color: var(--accent-strong);
   border-radius: 12px;
   padding: 8px 10px;
   cursor: pointer;
+  transition: all 0.2s;
+}
+.arch-btn:hover {
+  background: var(--item-hover-bg);
+  border-color: var(--neon);
 }
 
 @media (max-width: 1024px) {

@@ -56,11 +56,19 @@ const shareNote = () => {
         </div>
         <div class="header-left">
           <button @click="shareNote" class="icon-btn share-btn" :title="shareTooltip">
-            🔗
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+            </svg>
           </button>
           <button @click="emit('toggle-zen')" class="icon-btn zen-btn" :class="{ active: isZenMode }"
             :title="isZenMode ? 'خروج از تمرکز' : 'حالت تمرکز'">
-            {{ isZenMode ? "✕" : "👁️" }}
+            <svg v-if="!isZenMode" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+            </svg>
+            <svg v-else viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 14h6v6M20 10h-6V4M14 10l7-7M10 14l-7 7" />
+            </svg>
           </button>
           <button @click="closeNote" class="back-btn">
             ➜ بازگشت
@@ -149,9 +157,9 @@ const shareNote = () => {
 .note-row {
   padding: 22px 24px;
   border-radius: 20px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(235, 245, 252, 0.76));
-  border: 1px solid rgba(207, 223, 239, 1);
-  border-left: 2px solid rgba(92, 144, 199, 0.18);
+  background: var(--item-bg);
+  border: 1px solid var(--panel-border);
+  border-left: 3px solid var(--neon);
   position: relative;
   overflow: hidden;
   display: block;
@@ -159,16 +167,16 @@ const shareNote = () => {
   color: var(--text-main);
   transition: 0.24s ease;
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.86),
-    0 12px 28px rgba(77, 121, 168, 0.08);
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 12px 28px rgba(0, 0, 0, 0.15);
 }
 
 .note-row:hover {
-  border-color: rgba(192, 212, 232, 1);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(232, 243, 252, 0.86));
+  border-color: var(--neon);
+  background: var(--item-hover-bg);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.92),
-    0 18px 34px rgba(77, 121, 168, 0.12);
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 18px 34px rgba(0, 0, 0, 0.22);
 }
 
 .note-inner {
@@ -261,21 +269,21 @@ const shareNote = () => {
 }
 
 .back-btn {
-  background: rgba(245, 250, 255, 0.94);
-  border: 1px solid rgba(209, 225, 240, 1);
+  background: var(--item-bg);
+  border: 1px solid var(--panel-border);
   color: var(--text-secondary);
   padding: 7px 12px;
   border-radius: 12px;
   cursor: pointer;
   transition: 0.2s;
   font-family: inherit;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 .back-btn:hover {
-  background: rgba(94, 144, 196, 0.96);
-  color: #fff;
-  border-color: rgba(86, 129, 177, 1);
+  background: var(--item-hover-bg);
+  color: var(--text-main);
+  border-color: var(--neon);
 }
 
 .note-meta h1 {
@@ -311,8 +319,8 @@ const shareNote = () => {
 }
 
 .main-post {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(235, 245, 252, 0.78));
-  border: 1px solid rgba(207, 223, 239, 1);
+  background: var(--item-bg);
+  border: 1px solid var(--panel-border);
 }
 
 .update-separator {
@@ -334,9 +342,9 @@ const shareNote = () => {
 }
 
 .update-post {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(235, 245, 252, 0.74));
-  border: 1px solid rgba(207, 223, 239, 1);
-  border-right: 4px solid rgba(92, 144, 199, 0.92);
+  background: var(--item-bg);
+  border: 1px solid var(--panel-border);
+  border-right: 4px solid var(--neon);
 }
 
 .update-header {
