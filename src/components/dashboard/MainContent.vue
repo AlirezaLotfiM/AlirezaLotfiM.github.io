@@ -1,12 +1,13 @@
 <script setup>
-import { computed } from 'vue';
 import { usePortfolio } from '../../composables/usePortfolio';
+import { useAudioSynth } from '../../composables/useAudioSynth';
 
 import ProjectsTab from './tabs/ProjectsTab.vue';
 import InterestsTab from './tabs/InterestsTab.vue';
 import RoadmapTab from './tabs/RoadmapTab.vue';
 import NotesTab from './tabs/NotesTab.vue';
 import HistoryTab from './tabs/HistoryTab.vue';
+import GuestbookTab from './tabs/GuestbookTab.vue';
 
 import SkeletonGrid from '../skeletons/SkeletonGrid.vue';
 import SkeletonList from '../skeletons/SkeletonList.vue';
@@ -20,56 +21,48 @@ const {
   closeNote,
 } = usePortfolio();
 
-defineProps(['isZenMode']);
-const emit = defineEmits(['toggle-zen', 'open-terminal']);
+const { playClick } = useAudioSynth();
 
-const tabCommand = computed(() => {
-  if (selectedNote.value) return 'open note --focus';
-
-  const map = {
-    projects: 'ls projects --architectures',
-    interests: 'cat interests.json',
-    roadmap: 'show roadmap --active',
-    history: 'cat history.log',
-    notes: 'ls notes --recent',
-  };
-
-  return map[activeTab.value] || map.projects;
+const props = defineProps({
+  isZenMode: Boolean
 });
+
+const emit = defineEmits(['toggle-zen']);
 </script>
 
 <template>
   <main class="col-main glass-panel main-box">
-    <header class="tabs-header" :class="{ hidden: isZenMode }">
-      <div class="command-shell" dir="ltr">
-        <span class="prompt mono-ui">alireza@portfolio:~$</span>
-        <span class="command-text mono-ui">{{ tabCommand }}</span>
-        <button class="command-shortcut mono-ui" type="button" @click="emit('toggle-zen')" v-if="selectedNote">
-          Zen
-        </button>
-        <button v-else class="command-shortcut mono-ui" type="button" @click="emit('open-terminal')" title="Ctrl + K">
-          Terminal
-        </button>
-      </div>
+    <!-- Floating Exit Zen Button -->
+    <button v-if="isZenMode" @click="playClick(); emit('toggle-zen')" class="exit-zen-btn" title="خروج از حالت تمرکز (Ctrl + Z)" dir="rtl">
+      <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
+      </svg>
+      <span>خروج از حالت تمرکز</span>
+    </button>
 
+    <header class="tabs-header" :class="{ hidden: isZenMode }">
       <nav class="main-tabs" aria-label="Main Navigation">
-        <button @click="selectedNote ? closeNote() : (activeTab = 'projects')"
+        <button @click="playClick(); closeNote(); activeTab = 'projects'"
           :class="{ active: !selectedNote && activeTab === 'projects' }">
           پروژه‌ها
         </button>
-        <button @click="selectedNote ? closeNote() : (activeTab = 'interests')"
+        <button @click="playClick(); closeNote(); activeTab = 'interests'"
           :class="{ active: !selectedNote && activeTab === 'interests' }">
           علاقه‌مندی
         </button>
-        <button @click="selectedNote ? closeNote() : (activeTab = 'roadmap')"
+        <button @click="playClick(); closeNote(); activeTab = 'roadmap'"
           :class="{ active: !selectedNote && activeTab === 'roadmap' }">
           مسیر من
         </button>
-        <button @click="selectedNote ? closeNote() : (activeTab = 'history')"
+        <button @click="playClick(); closeNote(); activeTab = 'history'"
           :class="{ active: !selectedNote && activeTab === 'history' }">
           سوابق
         </button>
-        <button @click="activeTab = 'notes'" :class="{ active: activeTab === 'notes' || selectedNote }">
+        <button @click="playClick(); closeNote(); activeTab = 'guestbook'"
+          :class="{ active: !selectedNote && activeTab === 'guestbook' }">
+          یادگاری
+        </button>
+        <button @click="playClick(); closeNote(); activeTab = 'notes'" :class="{ active: activeTab === 'notes' || selectedNote }">
           یادداشت
         </button>
       </nav>
@@ -101,6 +94,7 @@ const tabCommand = computed(() => {
         <InterestsTab v-else-if="!loading && activeTab === 'interests'" key="interests" />
         <RoadmapTab v-else-if="!loading && activeTab === 'roadmap'" key="roadmap" />
         <HistoryTab v-else-if="!loading && activeTab === 'history'" key="history" />
+        <GuestbookTab v-else-if="!loading && activeTab === 'guestbook'" key="guestbook" />
         <NotesTab v-else-if="!loading && activeTab === 'notes'" key="notes" />
       </Transition>
     </div>
@@ -116,47 +110,6 @@ const tabCommand = computed(() => {
 
 .tabs-header.hidden {
   display: none !important;
-}
-
-.command-shell {
-  margin: 18px 24px 14px;
-  padding: 12px 14px;
-  border-radius: 16px;
-  border: 1px solid var(--panel-border);
-  background: var(--item-bg);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  overflow: hidden;
-}
-
-.prompt {
-  color: var(--accent-strong);
-  white-space: nowrap;
-}
-
-.command-text {
-  flex: 1;
-  min-width: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  color: var(--text-secondary);
-}
-
-.command-shortcut {
-  flex-shrink: 0;
-  border: 1px solid var(--panel-border);
-  background: var(--item-bg);
-  color: var(--text-soft);
-  border-radius: 10px;
-  padding: 6px 10px;
-  font-size: 0.72rem;
-}
-
-button.command-shortcut {
-  cursor: pointer;
 }
 
 .main-tabs {
@@ -251,6 +204,42 @@ button.command-shortcut {
   -webkit-overflow-scrolling: touch;
 }
 
+.exit-zen-btn {
+  position: absolute;
+  top: 18px;
+  right: 24px;
+  z-index: 100;
+  background: var(--glass-panel);
+  border: 1px solid var(--panel-border);
+  color: var(--text-soft);
+  padding: 8px 14px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.76rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  font-family: inherit;
+}
+
+.exit-zen-btn:hover {
+  border-color: var(--neon);
+  color: var(--text-main);
+  box-shadow: 0 0 10px rgba(var(--neon-rgb), 0.2);
+  transform: translateY(-1px);
+}
+
+.exit-zen-btn:active {
+  transform: translateY(0) scale(0.97);
+}
+
+.tabs-header {
+  position: relative;
+}
+
 @media (max-width: 1024px) {
   .col-main {
     order: 2;
@@ -261,15 +250,6 @@ button.command-shortcut {
   .tabs-header {
     display: flex;
     flex-direction: column;
-  }
-
-  .command-shell {
-    margin: 14px 14px 12px;
-    padding: 11px 12px;
-    gap: 8px;
-    font-size: 0.74rem;
-    flex-wrap: wrap;
-    align-items: flex-start;
   }
 
   .header-controls,
@@ -310,21 +290,17 @@ button.command-shortcut {
     min-height: 0;
   }
 
-  .command-shell {
-    margin: 12px 12px 10px;
-    padding: 10px 11px;
-  }
-
-  .prompt,
-  .command-text,
-  .command-shortcut {
-    font-size: 0.7rem;
-  }
-
   .header-controls,
   .content-body {
     padding-left: 12px;
     padding-right: 12px;
+  }
+  
+  .exit-zen-btn {
+    top: 14px;
+    right: 14px;
+    padding: 6px 10px;
+    font-size: 0.72rem;
   }
 }
 </style>

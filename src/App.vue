@@ -5,15 +5,16 @@ import MatrixRain from "./components/MatrixRain.vue";
 import TerminalModal from "./components/TerminalModal.vue";
 import ContextMenu from "./components/ContextMenu.vue";
 import BootSequence from "./components/BootSequence.vue";
-import MusicPlayer from "./components/MusicPlayer.vue";
 import LiquidIdentityCard from "./components/LiquidIdentityCard.vue";
 
 import UserProfile from "./components/dashboard/UserProfile.vue";
 import MainContent from "./components/dashboard/MainContent.vue";
 import SkillRack from "./components/dashboard/SkillRack.vue";
+import GlobalCommandBar from "./components/dashboard/GlobalCommandBar.vue";
 
 import { usePortfolio } from "./composables/usePortfolio";
 import { useTheme } from "./composables/useTheme";
+import { useAudioSynth } from "./composables/useAudioSynth";
 
 // --- Composables ---
 const {
@@ -28,9 +29,10 @@ const {
 } = usePortfolio();
 
 const { currentThemeColor } = useTheme();
+const { playBootChime } = useAudioSynth();
 
 // --- App State ---
-const appVersion = "1.6.0";
+const appVersion = "1.6.1";
 const showBoot = ref(true);
 const isBooted = ref(false);
 const showIdentityCard = ref(true);
@@ -39,11 +41,20 @@ const isMatrixMode = ref(false);
 const showTerminal = ref(false);
 const isZenMode = ref(false);
 const contextMenu = ref({ visible: false, x: 0, y: 0 });
+const terminalInitialCommand = ref('');
 
 // --- Methods ---
+const handleRunCommand = (cmd) => {
+  terminalInitialCommand.value = cmd;
+  showTerminal.value = true;
+};
+
 const handleBootComplete = () => {
   showBoot.value = false;
-  setTimeout(() => (isBooted.value = true), 100);
+  setTimeout(() => {
+    isBooted.value = true;
+    playBootChime();
+  }, 100);
 };
 
 const handleMouseMove = (e) => {
@@ -152,14 +163,12 @@ onUnmounted(() => {
       </div>
     </Transition>
 
-    <TerminalModal :visible="showTerminal" :projects="projects" :skills="mySkills" :contact="{
+    <TerminalModal :visible="showTerminal" :initial-command="terminalInitialCommand" :projects="projects" :skills="mySkills" :contact="{
       email: profile.contact?.email,
       linkedin: profile.contact?.linkedin,
       github: userGithub,
       telegram: profile.contact?.telegramId,
-    }" :learning="profile.learning" :version="appVersion" username="Damoon" role="Software Engineer" @close="showTerminal = false" />
-
-    <MusicPlayer />
+    }" :learning="profile.learning" :version="appVersion" username="Damoon" role="Software Engineer" @close="showTerminal = false; terminalInitialCommand = ''" @toggle-matrix="isMatrixMode = !isMatrixMode" />
 
     <ContextMenu :visible="contextMenu.visible" :x="contextMenu.x" :y="contextMenu.y" @action="handleMenuAction"
       @close="contextMenu.visible = false" />
@@ -182,12 +191,23 @@ onUnmounted(() => {
         <!-- Profile Column -->
         <UserProfile @open-terminal="showTerminal = true" @go-home="showIdentityCard = true" />
 
-        <!-- Main Content Column -->
-        <MainContent
-          :is-zen-mode="isZenMode"
-          @toggle-zen="toggleZenMode"
-          @open-terminal="showTerminal = true"
-        />
+        <!-- Main Content Column (Command Bar + Tabbed Content) -->
+        <div class="col-main-wrapper">
+          <GlobalCommandBar
+            v-if="!showIdentityCard"
+            :is-zen-mode="isZenMode"
+            @toggle-zen="toggleZenMode"
+            @toggle-matrix="isMatrixMode = !isMatrixMode"
+            @open-terminal="showTerminal = true"
+          />
+          <MainContent
+            :is-zen-mode="isZenMode"
+            @toggle-zen="toggleZenMode"
+            @open-terminal="showTerminal = true"
+            @run-command="handleRunCommand"
+            @toggle-matrix="isMatrixMode = !isMatrixMode"
+          />
+        </div>
 
         <!-- Skills Column -->
         <SkillRack />
@@ -261,6 +281,15 @@ onUnmounted(() => {
   max-width: none;
 }
 
+/* Column 2 wrapper: stacks command bar + tabbed content */
+.col-main-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+  height: 100%;
+}
+
 /* Hide sidebars in zen mode */
 .layout-grid.zen-active :deep(.col-profile),
 .layout-grid.zen-active :deep(.col-skills) {
@@ -271,7 +300,7 @@ onUnmounted(() => {
   width: 0; /* Add width 0 to collapse */
 }
 
-.layout-grid.zen-active :deep(.col-main.glass-panel) {
+.layout-grid.zen-active .col-main-wrapper :deep(.col-main.glass-panel) {
   border-radius: 0;
   border: none;
 }
@@ -417,7 +446,7 @@ onUnmounted(() => {
   .layout-grid :deep(.col-profile) {
     order: 1;
   }
-  .layout-grid :deep(.col-main) {
+  .col-main-wrapper {
     order: 2;
   }
   .layout-grid :deep(.col-skills) {
@@ -449,7 +478,7 @@ onUnmounted(() => {
   .layout-grid.zen-active :deep(.col-skills) {
     display: none !important;
   }
-  .layout-grid.zen-active :deep(.col-main) {
+  .layout-grid.zen-active .col-main-wrapper :deep(.col-main) {
     flex: 1;
     height: 100% !important;
     max-height: 100%;
@@ -457,6 +486,9 @@ onUnmounted(() => {
     flex-direction: column;
     border-radius: 0;
     border: none;
+  }
+  .layout-grid.zen-active .col-main-wrapper {
+    gap: 0;
   }
 }
 </style>

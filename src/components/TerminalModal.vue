@@ -1,9 +1,14 @@
 <script setup>
 import { ref, nextTick, watch, onMounted } from 'vue';
+import { useTheme } from '../composables/useTheme';
+import { useAudioSynth } from '../composables/useAudioSynth';
+
+const { playKey, playThemeChirp, playClick, isMuted } = useAudioSynth();
 
 // دریافت اطلاعات از والد (App.vue)
 const props = defineProps({
   visible: Boolean,
+  initialCommand: String,
   projects: Array,
   skills: Array,      // لیست مهارت‌ها
   contact: Object,    // آبجکت اطلاعات تماس
@@ -13,11 +18,19 @@ const props = defineProps({
   role: String        // عنوان شغلی
 });
 
-const emit = defineEmits(['close']);
+const emit = defineEmits(['close', 'toggle-matrix']);
 
 const inputRef = ref(null);
 const inputValue = ref('');
 const history = ref([]);
+
+const { themes, setTheme, currentTheme } = useTheme();
+
+const COMMANDS = ['help', 'whoami', 'skills', 'projects', 'ls', 'status', 'learning', 'contact', 'cls', 'clear', 'exit', 'theme', 'music', 'neofetch', 'matrix'];
+
+// Command history
+const cmdHistory = ref([]);
+const historyIndex = ref(-1);
 
 // تابع اولیه برای پر کردن تاریخچه با اطلاعات دینامیک
 const initTerminal = () => {
@@ -27,10 +40,10 @@ const initTerminal = () => {
     { type: 'empty' },
     { type: 'ascii', content: `
   ____    _    __  __  ___   ___  _   _ 
- |  _ \\  / \\  |  \\/  |/ _ \\ / _ \\| \\ | |
- | | | |/ _ \\ | |\\/| | | | | | | |  \\| |
- | |_| / ___ \\| |  | | |_| | |_| | |\\  |
- |____/_/   \\_\\_|  |_|\\___/ \\___/|_| \\_|
+  |  _ \\  / \\  |  \\/  |/ _ \\ / _ \\| \\ | |
+  | | | |/ _ \\ | |\\/| | | | | | | |  \\| |
+  | |_| / ___ \\| |  | | |_| | |_| | |\\  |
+  |____/_/   \\_\\_|  |_|\\___/ \\___/|_| \\_|
   ` },
     { type: 'output', content: `Welcome back, ${props.username || 'User'}.` },
     { type: 'output', content: "Type 'help' to see available commands." },
@@ -47,30 +60,49 @@ const focusInput = () => {
 watch(() => props.visible, (val) => {
   if (val) {
     initTerminal(); // ریست کردن ترمینال موقع باز شدن
-    focusInput();
+    if (props.initialCommand) {
+      inputValue.value = props.initialCommand;
+      setTimeout(() => {
+        handleCommand();
+      }, 250);
+    } else {
+      focusInput();
+    }
   }
 });
 
 const handleCommand = () => {
   const rawCmd = inputValue.value;
-  const cmd = rawCmd.trim().toLowerCase();
+  const cmd = rawCmd.trim();
+  const cmdLower = cmd.toLowerCase();
   
   if (rawCmd) {
     history.value.push({ type: 'command', content: rawCmd });
+    if (cmdHistory.value.length === 0 || cmdHistory.value[cmdHistory.value.length - 1] !== rawCmd) {
+      cmdHistory.value.push(rawCmd);
+    }
+    historyIndex.value = -1;
   }
 
+  const cmdParts = cmdLower.split(/\s+/);
+  const mainCmd = cmdParts[0];
+
   // --- دستورات ---
-  if (cmd === 'help') {
+  if (mainCmd === 'help') {
     addLog('Available Commands:', 'os-dim');
     addLog('  whoami    - Display user profile');
     addLog('  skills    - List technical skills');
     addLog('  projects  - List projects (ls)');
     addLog('  status    - Current focus & learning');
     addLog('  contact   - Show contact info');
+    addLog('  theme     - View/change dynamic theme');
+    addLog('  music     - Control digital audio widget');
+    addLog('  neofetch  - Print system environment statistics');
+    addLog('  matrix    - Toggle Matrix Rain background effect');
     addLog('  cls       - Clear terminal');
     addLog('  exit      - Close terminal');
   } 
-  else if (cmd === 'ls' || cmd === 'projects') {
+  else if (mainCmd === 'ls' || mainCmd === 'projects') {
     addLog('Scanning projects directory...', 'os-dim');
     addLog('');
     if (props.projects && props.projects.length) {
@@ -83,10 +115,9 @@ const handleCommand = () => {
     addLog('         MyResume.pdf');
     addLog('');
   } 
-  else if (cmd === 'skills') {
+  else if (mainCmd === 'skills') {
     addLog('--- LOADED SKILLS ---', 'os-warn');
     if (props.skills && props.skills.length) {
-      // نمایش مهارت‌ها به صورت لیست
       props.skills.forEach(s => {
         addLog(`[+] ${s.name.padEnd(20)} ${s.level}%`, 'os-ok');
       });
@@ -94,7 +125,7 @@ const handleCommand = () => {
       addLog('No skills data loaded.', 'os-bad');
     }
   }
-  else if (cmd === 'contact') {
+  else if (mainCmd === 'contact') {
     addLog('--- CONTACT CHANNELS ---', 'os-warn');
     if (props.contact) {
       if (props.contact.email) addLog(`Email:    ${props.contact.email}`);
@@ -103,7 +134,7 @@ const handleCommand = () => {
       if (props.contact.telegram) addLog(`Telegram: ${props.contact.telegram}`);
     }
   }
-  else if (cmd === 'status' || cmd === 'learning') {
+  else if (mainCmd === 'status' || mainCmd === 'learning') {
     addLog('--- CURRENT FOCUS ---', 'os-warn');
     if (props.learning) {
       if (props.learning.focus) addLog(`Focus:   ${props.learning.focus}`, 'os-ok');
@@ -113,15 +144,86 @@ const handleCommand = () => {
     }
     addLog('Mood:    Productive 🚀', 'os-dim');
   }
-  else if (cmd === 'whoami') {
+  else if (mainCmd === 'whoami') {
     addLog(`User:  ${props.username || 'Unknown'}`, 'os-ok');
     addLog(`Role:  ${props.role || 'Developer'}`, 'os-ok');
     addLog('Access Level: Root/Admin', 'os-dim');
   } 
-  else if (cmd === 'clear' || cmd === 'cls') {
+  else if (mainCmd === 'theme') {
+    if (cmdParts.length === 1) {
+      addLog('--- THEME SYSTEM ---', 'os-warn');
+      addLog(`Current Theme: ${currentTheme.value.name} [ID: ${currentTheme.value.id}]`, 'os-ok');
+      addLog('Available Themes:', 'os-dim');
+      themes.forEach(t => {
+        addLog(`  ${t.id.padEnd(20)} - ${t.name}`);
+      });
+      addLog('');
+      addLog("Usage: theme [theme-id]", 'os-dim');
+    } else {
+      const query = cmdParts.slice(1).join(' ').replace(/[-\s]+/g, ' ');
+      const matches = themes.filter(t => {
+        const idClean = t.id.toLowerCase().replace(/[-\s]+/g, ' ');
+        const nameClean = t.name.toLowerCase().replace(/[-\s]+/g, ' ');
+        return idClean.includes(query) || nameClean.includes(query);
+      });
+
+      if (matches.length > 0) {
+        let selected = matches.find(t => 
+          t.id.toLowerCase().replace(/[-\s]+/g, ' ') === query ||
+          t.name.toLowerCase().replace(/[-\s]+/g, ' ') === query
+        );
+        if (!selected) {
+          selected = matches[0];
+        }
+        setTheme(selected.id);
+        playThemeChirp();
+        addLog(`Theme successfully changed to: ${selected.name}`, 'os-ok');
+        if (matches.length > 1) {
+          const otherNames = matches.filter(m => m.id !== selected.id).map(m => m.id).join(', ');
+          addLog(`Other matches: ${otherNames}`, 'os-dim');
+        }
+      } else {
+        const queryOriginal = rawCmd.split(/\s+/).slice(1).join(' ');
+        addLog(`Theme matching '${queryOriginal}' not found. Type 'theme' to see all theme IDs.`, 'os-bad');
+      }
+    }
+  }
+  else if (mainCmd === 'music') {
+    if (cmdParts.length === 1) {
+      addLog('--- MUSIC PLAYER ---', 'os-warn');
+      addLog('Usage: music [play|pause|next|toggle]', 'os-dim');
+      addLog('Controls the background digital audio widget.', 'os-dim');
+    } else {
+      const action = cmdParts[1];
+      if (['play', 'pause', 'next', 'toggle'].includes(action)) {
+        window.dispatchEvent(new CustomEvent('portfolio-music', { detail: { action } }));
+        addLog(`Sent music command: ${action}`, 'os-ok');
+      } else {
+        addLog(`Unknown music action '${action}'. Actions: play, pause, next, toggle.`, 'os-bad');
+      }
+    }
+  }
+  else if (mainCmd === 'neofetch') {
+    addLog('--- SYSTEM ENVIRONMENT ---', 'os-warn');
+    addLog('██████████████████████  User:    Alireza Lotfi Moghaddam');
+    addLog('██████████████████████  OS:      Damoon CyberOS v1.6.0');
+    addLog('████   ████   ████   █  Host:    Vite + Vue 3 Single Page Application');
+    addLog('████   ████   ████   █  Kernel:  Web Audio / WebGL Core');
+    addLog('████   ████   ████   █  Uptime:  ' + Math.floor(performance.now() / 1000) + ' seconds');
+    addLog('██████████████████████  Shell:   Damoon Interactive CLI');
+    addLog('██████████████████████  Theme:   ' + currentTheme.value.name);
+    addLog('████   ████   ████   █  GitHub:  github.com/AlirezaLotfiM');
+    addLog('████   ████   ████   █  Status:  Muted=' + isMuted.value);
+  }
+  else if (mainCmd === 'matrix') {
+    emit('toggle-matrix');
+    playClick();
+    addLog('Toggled Matrix Rain background effect.', 'os-ok');
+  }
+  else if (mainCmd === 'clear' || mainCmd === 'cls') {
     history.value = [];
-  } 
-  else if (cmd === 'exit') {
+  }
+  else if (mainCmd === 'exit') {
     emit('close');
   } 
   else if (cmd !== '') {
@@ -130,6 +232,69 @@ const handleCommand = () => {
 
   inputValue.value = '';
   scrollToBottom();
+};
+
+const handleTabComplete = () => {
+  const val = inputValue.value;
+  if (!val) return;
+
+  const parts = val.split(/\s+/);
+  const mainPart = parts[0].toLowerCase();
+
+  if (parts.length === 1) {
+    const matches = COMMANDS.filter(cmd => cmd.startsWith(mainPart));
+    if (matches.length === 1) {
+      inputValue.value = matches[0] + ' ';
+    } else if (matches.length > 1) {
+      addLog(`C:\\Users\\Damoon>${inputValue.value}`, 'cmd-row');
+      addLog(matches.join('    '), 'os-dim');
+      scrollToBottom();
+    }
+  } 
+  else if (parts.length === 2 && mainPart === 'theme') {
+    const subPart = parts[1].toLowerCase();
+    const matches = themes.map(t => t.id).filter(id => id.includes(subPart));
+    if (matches.length === 1) {
+      inputValue.value = `theme ${matches[0]}`;
+    } else if (matches.length > 1) {
+      addLog(`C:\\Users\\Damoon>${inputValue.value}`, 'cmd-row');
+      addLog(matches.join('    '), 'os-dim');
+      scrollToBottom();
+    }
+  }
+  else if (parts.length === 2 && mainPart === 'music') {
+    const subPart = parts[1].toLowerCase();
+    const musicActions = ['play', 'pause', 'next', 'toggle'];
+    const matches = musicActions.filter(a => a.startsWith(subPart));
+    if (matches.length === 1) {
+      inputValue.value = `music ${matches[0]}`;
+    } else if (matches.length > 1) {
+      addLog(`C:\\Users\\Damoon>${inputValue.value}`, 'cmd-row');
+      addLog(matches.join('    '), 'os-dim');
+      scrollToBottom();
+    }
+  }
+};
+
+const handleArrowUp = () => {
+  if (cmdHistory.value.length === 0) return;
+  if (historyIndex.value === -1) {
+    historyIndex.value = cmdHistory.value.length - 1;
+  } else if (historyIndex.value > 0) {
+    historyIndex.value--;
+  }
+  inputValue.value = cmdHistory.value[historyIndex.value];
+};
+
+const handleArrowDown = () => {
+  if (historyIndex.value === -1) return;
+  if (historyIndex.value < cmdHistory.value.length - 1) {
+    historyIndex.value++;
+    inputValue.value = cmdHistory.value[historyIndex.value];
+  } else {
+    historyIndex.value = -1;
+    inputValue.value = '';
+  }
 };
 
 const addLog = (text, cls = '') => {
@@ -180,6 +345,10 @@ onMounted(() => {
               ref="inputRef"
               v-model="inputValue" 
               @keydown.enter="handleCommand" 
+              @keydown.tab.prevent="handleTabComplete"
+              @keydown.up.prevent="handleArrowUp"
+              @keydown.down.prevent="handleArrowDown"
+              @keydown="playKey"
               type="text" 
               spellcheck="false" 
               autocomplete="off" 

@@ -65,6 +65,7 @@ watch(
       interests: "علاقه‌مندی‌ها",
       roadmap: "مسیر من",
       history: "سوابق شغلی",
+      guestbook: "دفترچه یادگاری",
       notes: "یادداشت‌ها",
     };
     setPageTitle(titles[newTab] || "Software Engineer");
@@ -76,6 +77,10 @@ watch(
     if (newTab === "history")
       setMetaDescription(
         "سوابق شغلی و تجربه کاری من در شرکت‌های مختلف نرم‌افزاری.",
+      );
+    if (newTab === "guestbook")
+      setMetaDescription(
+        "دفترچه یادگاری علیرضا لطفی‌مقدم؛ نظرات، بازخوردها و یادداشت‌های بازدیدکنندگان.",
       );
   },
   { immediate: true },
@@ -97,6 +102,7 @@ watch(selectedNote, (newNote) => {
       interests: "علاقه‌مندی‌ها",
       roadmap: "مسیر من",
       history: "سوابق شغلی",
+      guestbook: "دفترچه یادگاری",
       notes: "یادداشت‌ها",
     };
     setPageTitle(titles[activeTab.value]);

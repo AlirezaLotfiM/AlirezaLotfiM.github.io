@@ -1,8 +1,10 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { usePortfolio } from '../../composables/usePortfolio';
+import { useAudioSynth } from '../../composables/useAudioSynth';
 
 const { mySkills, toPersianDigits, profile } = usePortfolio();
+const { playClick } = useAudioSynth();
 
 const stackModules = computed(() =>
   profile.value.stackModules || [
@@ -67,6 +69,36 @@ const goToSlide = (index) => {
   startProgress();
 };
 
+// Skill Category Filter State & Logic
+const activeCategory = ref('all');
+
+const categories = [
+  { id: 'all', label: 'همه' },
+  { id: 'backend', label: 'بک‌اند' },
+  { id: 'frontend', label: 'فرانت‌اند' },
+  { id: 'desktop', label: 'دسکتاپ' },
+  { id: 'data-system', label: 'دیتا و سیستم' }
+];
+
+const getSkillCategory = (name) => {
+  const nameLower = name.toLowerCase();
+  if (nameLower.includes('vue') || nameLower.includes('javascript') || nameLower.includes('css') || nameLower.includes('html')) {
+    return 'frontend';
+  }
+  if (nameLower.includes('wpf') || nameLower.includes('win32') || nameLower.includes('desktop')) {
+    return 'desktop';
+  }
+  if (nameLower.includes('sql') || nameLower.includes('data') || nameLower.includes('database') || nameLower.includes('system design')) {
+    return 'data-system';
+  }
+  return 'backend'; // default
+};
+
+const filteredSkills = computed(() => {
+  if (activeCategory.value === 'all') return mySkills.value;
+  return mySkills.value.filter(s => getSkillCategory(s.name) === activeCategory.value);
+});
+
 onMounted(() => {
   startProgress();
 });
@@ -81,11 +113,24 @@ onUnmounted(() => {
     <header class="panel-header">
       <span class="section-kicker">skills/modules</span>
       <h3>ماژول‌های تخصص</h3>
-      <p>Capability map with practical delivery bias.</p>
+      <p>نقشه توانمندی‌ها با تمرکز بر تحویل عملی.</p>
+      
+      <!-- Skill Category filters -->
+      <div class="skill-filters" dir="rtl">
+        <button 
+          v-for="cat in categories" 
+          :key="cat.id" 
+          @click="playClick(); activeCategory = cat.id"
+          class="filter-chip"
+          :class="{ active: activeCategory === cat.id }"
+        >
+          {{ cat.label }}
+        </button>
+      </div>
     </header>
 
-    <ul class="rack-container scroll-area">
-      <li v-for="skill in mySkills" :key="skill.name" class="skill-module" dir="ltr">
+    <TransitionGroup name="skill-list" tag="ul" class="rack-container scroll-area">
+      <li v-for="skill in filteredSkills" :key="skill.name" class="skill-module" dir="ltr">
         <div class="module-meta mono-ui">
           <span class="module-path">module/{{ skill.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') }}</span>
           <span class="module-level">{{ toPersianDigits(skill.level) }}%</span>
@@ -104,11 +149,11 @@ onUnmounted(() => {
           </div>
         </div>
       </li>
-    </ul>
+    </TransitionGroup>
 
     <div class="stack-console" @mouseenter="stopProgress" @mouseleave="startProgress">
       <div class="console-head">
-        <span class="module-eyebrow">SYSTEM STATUS</span>
+        <span class="module-eyebrow">وضعیت</span>
         <div class="carousel-pagination">
           <button 
             v-for="(_, index) in stackModules" 
@@ -170,6 +215,43 @@ onUnmounted(() => {
   color: var(--text-secondary);
   font-size: 0.82rem;
   line-height: 1.6;
+}
+
+/* Category Filters */
+.skill-filters {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+  justify-content: space-between;
+}
+
+.filter-chip {
+  flex: 1;
+  text-align: center;
+  white-space: nowrap;
+  background: var(--item-bg);
+  border: 1px solid var(--panel-border);
+  color: var(--text-secondary);
+  font-size: 0.7rem;
+  padding: 4px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filter-chip:hover {
+  background: var(--item-hover-bg);
+  color: var(--text-main);
+  border-color: var(--neon);
+}
+
+.filter-chip.active {
+  background: var(--neon);
+  border-color: var(--neon);
+  color: #040814;
+  font-weight: bold;
+  box-shadow: 0 0 8px rgba(var(--neon-rgb), 0.2);
 }
 
 .rack-container {
@@ -284,18 +366,19 @@ onUnmounted(() => {
   border-radius: 3px;
   position: relative;
   box-shadow: 0 0 12px var(--neon);
+  overflow: hidden;
 }
 
 .bar-glow {
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.65), transparent);
-  animation: scan 2.8s linear infinite;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+  animation: scan 3s ease-in-out infinite;
 }
 
 @keyframes scan {
-  from { transform: translateX(-100%); }
-  to { transform: translateX(100%); }
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
 
 .stack-console {
@@ -427,6 +510,25 @@ onUnmounted(() => {
 .slide-fade-leave-to {
   opacity: 0;
   transform: translateX(-8px);
+}
+
+/* Skill list transitions */
+.skill-list-enter-active,
+.skill-list-leave-active {
+  transition: all 0.3s ease;
+}
+.skill-list-enter-from {
+  opacity: 0;
+  transform: translateY(12px);
+}
+.skill-list-leave-to {
+  opacity: 0;
+  position: absolute;
+  transform: translateY(-12px);
+  width: calc(100% - 40px); /* accounting for padding */
+}
+.skill-list-move {
+  transition: transform 0.3s ease;
 }
 
 @media (max-width: 1024px) {

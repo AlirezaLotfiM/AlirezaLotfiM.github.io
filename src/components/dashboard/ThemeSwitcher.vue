@@ -1,8 +1,10 @@
 <script setup>
 import { ref, onMounted, onUnmounted, nextTick, watch } from 'vue';
 import { useTheme } from '../../composables/useTheme';
+import { useAudioSynth } from '../../composables/useAudioSynth';
 
 const { themes, setTheme, currentTheme } = useTheme();
+const { playClick, playThemeChirp } = useAudioSynth();
 const isOpen = ref(false);
 const containerRef = ref(null);
 const dropdownStyle = ref({});
@@ -30,6 +32,7 @@ const updatePosition = () => {
 
 const selectTheme = (themeId) => {
   setTheme(themeId);
+  playThemeChirp();
   isOpen.value = false;
 };
 
@@ -67,7 +70,7 @@ onUnmounted(() => {
 
 <template>
   <div class="theme-switcher" ref="containerRef">
-    <button @click.stop="isOpen = !isOpen" class="icon-btn theme-btn" title="تغییر رنگ تم">
+    <button @click.stop="playClick(); isOpen = !isOpen" class="icon-btn theme-btn" title="تغییر رنگ تم">
       🎨
     </button>
 

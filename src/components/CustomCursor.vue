@@ -5,6 +5,8 @@ const cursorX = ref(-100);
 const cursorY = ref(-100);
 const dotX = ref(-100);
 const dotY = ref(-100);
+const isHovering = ref(false);
+const isClicking = ref(false);
 let rafId = 0;
 let isCursorEnabled = false;
 
@@ -13,8 +15,24 @@ const onMouseMove = (e) => {
   cursorY.value = e.clientY;
 };
 
+const onMouseOver = (e) => {
+  const target = e.target;
+  if (!target) return;
+  // Match standard interactive selectors
+  const isInteractive = target.closest('a, button, input, textarea, select, [role="button"], .contact-btn, .theme-option, .page-dot, .mini-player-layout, .close-btn, .back-btn');
+  isHovering.value = !!isInteractive;
+};
+
+const onMouseDown = () => {
+  isClicking.value = true;
+};
+
+const onMouseUp = () => {
+  isClicking.value = false;
+};
+
 const animate = () => {
-  // حرکت نرم دایره دور
+  // Smooth motion for outer ring
   dotX.value += (cursorX.value - dotX.value) * 0.15;
   dotY.value += (cursorY.value - dotY.value) * 0.15;
   rafId = requestAnimationFrame(animate);
@@ -24,17 +42,24 @@ onMounted(() => {
   isCursorEnabled = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
   if (!isCursorEnabled) return;
   window.addEventListener('mousemove', onMouseMove);
+  window.addEventListener('mouseover', onMouseOver);
+  window.addEventListener('mousedown', onMouseDown);
+  window.addEventListener('mouseup', onMouseUp);
   animate();
 });
+
 onUnmounted(() => {
   if (!isCursorEnabled) return;
   window.removeEventListener('mousemove', onMouseMove);
+  window.removeEventListener('mouseover', onMouseOver);
+  window.removeEventListener('mousedown', onMouseDown);
+  window.removeEventListener('mouseup', onMouseUp);
   cancelAnimationFrame(rafId);
 });
 </script>
 
 <template>
-  <div class="cursor-wrapper">
+  <div class="cursor-wrapper" :class="{ hovering: isHovering, clicking: isClicking }">
     <div class="main-dot" :style="{ transform: `translate(${cursorX}px, ${cursorY}px)` }"></div>
     <div class="ring-dot" :style="{ transform: `translate(${dotX}px, ${dotY}px)` }"></div>
   </div>
@@ -52,10 +77,39 @@ onUnmounted(() => {
   position: absolute; width: 8px; height: 8px;
   background: var(--neon); border-radius: 50%;
   left: -4px; top: -4px;
+  transition: transform 0.15s ease;
 }
+
 .ring-dot {
   position: absolute; width: 40px; height: 40px;
   border: 1px solid var(--neon); border-radius: 50%;
   left: -20px; top: -20px; opacity: 0.5;
+  transition: width 0.25s, height 0.25s, left 0.25s, top 0.25s, background-color 0.25s, border-color 0.25s, opacity 0.25s;
+}
+
+/* Hover state */
+.cursor-wrapper.hovering .ring-dot {
+  width: 56px;
+  height: 56px;
+  left: -28px;
+  top: -28px;
+  background-color: rgba(var(--neon-rgb), 0.15);
+  border-color: var(--neon);
+  opacity: 0.8;
+}
+
+.cursor-wrapper.hovering .main-dot {
+  transform: scale(1.5) translate(0px, 0px);
+}
+
+/* Click state */
+.cursor-wrapper.clicking .ring-dot {
+  width: 24px;
+  height: 24px;
+  left: -12px;
+  top: -12px;
+  background-color: rgba(var(--neon-rgb), 0.35);
+  border-color: var(--neon);
+  opacity: 0.9;
 }
 </style>

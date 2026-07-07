@@ -79,16 +79,13 @@ html {
 body {
   margin: 0;
   padding: 0;
-  background:
-    radial-gradient(circle at 18% 16%, rgba(56, 189, 248, 0.12), transparent 24%),
-    radial-gradient(circle at 82% 84%, rgba(15, 23, 42, 0.8), transparent 30%),
-    linear-gradient(145deg, #020617 0%, #0a0f1d 42%, #0f172a 100%);
+  background: var(--bg-main);
   color: var(--text-main);
   font-family: var(--font-sans);
   width: 100vw;
   overflow: hidden;
   direction: rtl;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background 0.3s ease, color 0.3s ease;
   position: relative;
 }
 

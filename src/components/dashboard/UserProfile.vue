@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import { usePortfolio } from '../../composables/usePortfolio';
+import MusicPlayer from '../MusicPlayer.vue';
 
 const { userGithub, projects, profile, resumeUrl } = usePortfolio();
 
@@ -8,6 +9,7 @@ const emit = defineEmits(['open-terminal', 'go-home']);
 
 const copiedTooltip = ref(null);
 const typeText = ref('');
+const isPlayerMinimized = ref(true);
 
 const titles = computed(() => profile.value.titles || []);
 
@@ -136,17 +138,6 @@ onUnmounted(() => {
         <span v-for="badge in profileBadges" :key="badge" class="meta-chip">{{ badge }}</span>
       </div>
 
-      <!-- Status Panel -->
-      <div class="status-panel" v-if="profile.learning">
-        <div class="status-item">
-          <span class="status-icon">🚀</span>
-          <div class="status-info">
-            <span class="status-label">تمرکز یادگیری:</span>
-            <strong class="status-value">{{ profile.learning.focus || 'Dapr & K8s' }}</strong>
-          </div>
-        </div>
-      </div>
-
       <p class="bio-short">
         {{ profile.bio }}
       </p>
@@ -178,7 +169,7 @@ onUnmounted(() => {
     </div>
 
     <!-- Social Floating Bar outside the card -->
-    <div class="glass-panel contact-grid social-dock">
+    <div v-show="isPlayerMinimized" class="glass-panel contact-grid social-dock">
       <div class="contact-wrapper">
         <button class="contact-btn email" @click="copyToClipboard(profile.contact?.email, 'email')" aria-label="Email">
           <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -234,6 +225,9 @@ onUnmounted(() => {
         </div>
       </div>
     </div>
+
+    <!-- Music Player inside the sidebar -->
+    <MusicPlayer :is-minimized="isPlayerMinimized" @toggle-minimize="isPlayerMinimized = !isPlayerMinimized" />
   </aside>
 </template>
 
@@ -250,41 +244,47 @@ onUnmounted(() => {
 .profile-box {
   flex: 1;
   height: auto !important;
-  padding: 20px 18px 22px;
-  gap: 14px;
+  padding: 16px 16px 18px;
+  gap: 12px;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
 
 .profile-header {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 14px;
-  text-align: right;
+  gap: 12px;
+  text-align: center;
 }
 
 .profile-texts {
   min-width: 0;
   flex: 1;
+  width: 100%;
 }
 
 .profile-texts h1 {
-  font-size: 1.25rem;
-  margin: 0 0 4px;
+  font-size: 1.2rem;
+  margin: 0 0 2px;
   color: var(--text-main);
 }
 
 .role {
-  margin: 0 0 6px;
-  font-size: 0.86rem;
+  margin: 0 0 4px;
+  font-size: 0.84rem;
   color: var(--accent-strong);
   font-family: var(--font-mono);
-  min-height: 1.4rem;
+  min-height: 1.3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .typewriter-line {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   max-width: 100%;
   white-space: nowrap;
   overflow: hidden;
@@ -292,20 +292,21 @@ onUnmounted(() => {
 
 .role-sub {
   margin: 0;
-  font-size: 0.76rem;
+  font-size: 0.74rem;
   color: var(--text-soft);
+  text-align: center;
 }
 
 .avatar-glow {
-  width: 78px;
-  height: 78px;
+  width: 72px;
+  height: 72px;
   flex-shrink: 0;
   overflow: hidden;
   border-radius: 50%;
-  padding: 4px;
+  padding: 3px;
   background: linear-gradient(135deg, var(--item-bg), var(--item-hover-bg));
   border: 1px solid var(--panel-border);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 .avatar-glow img {
@@ -318,66 +319,15 @@ onUnmounted(() => {
 .badge-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 5px;
   justify-content: flex-start;
-  margin-top: 2px;
-}
-
-/* Status Panel */
-.status-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  width: 100%;
-}
-
-.status-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 12px;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.015);
-  border: 1px solid var(--panel-border);
-  text-align: right;
-  transition: all 0.2s ease;
-}
-
-.status-item:hover {
-  background: rgba(255, 255, 255, 0.03);
-  border-color: var(--neon);
-}
-
-.status-icon {
-  font-size: 1.05rem;
-  flex-shrink: 0;
-}
-
-.status-info {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-  min-width: 0;
-}
-
-.status-label {
-  font-size: 0.68rem;
-  color: var(--text-soft);
-  font-weight: 600;
-}
-
-.status-value {
-  font-size: 0.78rem;
-  color: var(--text-main);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  margin-top: 0px;
 }
 
 .bio-short {
   margin: 0;
-  font-size: 0.86rem;
-  line-height: 1.9;
+  font-size: 0.84rem;
+  line-height: 1.75;
   color: var(--text-soft);
   margin-top: auto;
 }
@@ -385,12 +335,12 @@ onUnmounted(() => {
 .stats-row {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
+  gap: 8px;
 }
 
 .simple-stat {
-  padding: 10px 12px;
-  border-radius: 14px;
+  padding: 8px 10px;
+  border-radius: 12px;
   background: var(--item-bg);
   border: 1px solid var(--panel-border);
   text-align: center;
@@ -398,30 +348,29 @@ onUnmounted(() => {
 
 .stat-label {
   display: block;
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   color: var(--text-soft);
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
 .simple-stat strong {
-  font-size: 0.84rem;
+  font-size: 0.82rem;
   color: var(--text-main);
 }
-
 
 .action-buttons {
   display: grid;
   grid-template-columns: 1fr;
-  margin-top: 2px;
+  margin-top: 0px;
 }
 
 .terminal-toggle,
 .resume-btn {
   min-width: 0;
-  padding: 11px 12px;
-  min-height: 44px;
-  border-radius: 16px;
-  font-size: 0.78rem;
+  padding: 9px 12px;
+  min-height: 40px;
+  border-radius: 14px;
+  font-size: 0.76rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -429,20 +378,21 @@ onUnmounted(() => {
   font-weight: 700;
   transition: 0.25s ease;
 }
+
 .resume-btn {
   background: var(--neon);
   border: 1px solid var(--neon);
   color: #040814;
   text-decoration: none;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
 }
 
 .resume-btn:hover {
   filter: brightness(1.15);
   border-color: var(--neon);
   color: #040814;
-  box-shadow: 0 0 16px var(--neon);
-  transform: translateY(-2px);
+  box-shadow: 0 0 12px var(--neon);
+  transform: translateY(-1.5px);
 }
 
 .resume-btn:active {
@@ -594,7 +544,7 @@ onUnmounted(() => {
   }
 
   .profile-header {
-    align-items: flex-start;
+    align-items: center;
   }
 
   .avatar-glow {

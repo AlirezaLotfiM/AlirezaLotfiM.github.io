@@ -50,7 +50,7 @@ const networkFirst = async (request, cacheName) => {
 
   try {
     const response = await fetch(request, { cache: 'no-store' });
-    if (response && response.ok) {
+    if (response && response.ok && request.method === 'GET') {
       cache.put(request, response.clone());
     }
     return response;
@@ -71,7 +71,7 @@ const staleWhileRevalidate = async (request, cacheName) => {
   const cached = await cache.match(request);
 
   const networkFetch = fetch(request).then((response) => {
-    if (response && response.ok) {
+    if (response && response.ok && request.method === 'GET') {
       cache.put(request, response.clone());
     }
     return response;
@@ -86,6 +86,12 @@ self.addEventListener('fetch', (event) => {
   if (!requestUrl.protocol.startsWith('http')) return;
 
   if (isNavigationRequest(event.request)) {
+    event.respondWith(networkFirst(event.request, RUNTIME_CACHE));
+    return;
+  }
+
+  // Caching dynamic configuration data via networkFirst strategy
+  if (requestUrl.pathname.includes('dynamicData') || requestUrl.href.includes('dynamicData')) {
     event.respondWith(networkFirst(event.request, RUNTIME_CACHE));
     return;
   }
