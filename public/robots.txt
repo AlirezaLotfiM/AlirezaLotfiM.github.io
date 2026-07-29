@@ -1,3 +1,9 @@
 User-agent: *
 Allow: /
-Sitemap: https://alirezalotfim.github.io/sitemap.xml
+Disallow: /dynamicData/guestbook.json
+
+# Sitemap
+Sitemap: https://alirezalotfimoghaddam.ir/sitemap.xml
+
+# Yandex: declare canonical host
+Host: alirezalotfimoghaddam.ir

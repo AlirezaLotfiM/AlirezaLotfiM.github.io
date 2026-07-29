@@ -168,6 +168,8 @@ const fetchDynamicData = async () => {
       resume: "/MyResume.pdf"
     };
 
+    // Temporarily disabled remote config fetching to force local data usage
+    /*
     try {
       const configRes = await fetch("/config.json");
       if (configRes.ok) {
@@ -179,6 +181,7 @@ const fetchDynamicData = async () => {
     } catch (configErr) {
       console.warn("Failed to load config.json, using local defaults", configErr);
     }
+    */
 
     // Try verifying remote resume; fall back to local if fails
     try {
