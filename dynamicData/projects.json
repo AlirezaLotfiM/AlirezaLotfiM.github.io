@@ -66,7 +66,7 @@
     "id": 107,
     "name": "KeyMapper Desktop Pet",
     "slug": "keymapper-desktop-pet",
-    "language": "C# / WPF / .NET 10",
+    "language": "C# / WPF / .NET",
     "description": "برنامه دسکتاپی ویندوزی با همراه پیکسل‌آرت زنده؛ ترکیبی از دستیار هوش مصنوعی محلی، پخشگر موسیقی هوشمند، OCR چندزبانه، ترجمه آنلاین و آفلاین، میانبر صفحه‌کلید و ابزارهای کاربردی روزمره. ساخته‌شده به‌صورت مشترک، به‌طور مداوم در حال توسعه.",
     "html_url": "https://github.com/AlirezaLotfiM/KeyMapper",
     "isPrivate": false,
