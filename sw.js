@@ -1,79 +1,105 @@
-// ورژن رو حتما تغییر بده تا مرورگر بفهمه فایل عوض شده
-const CACHE_NAME = 'damoon-portfolio-v2.2.0';
-
-const urlsToCache = [
+const swUrl = new URL(self.location.href);
+const SW_VERSION = swUrl.searchParams.get('v') || 'dev';
+const CACHE_PREFIX = 'damoon-portfolio';
+const STATIC_CACHE = `${CACHE_PREFIX}-static-${SW_VERSION}`;
+const RUNTIME_CACHE = `${CACHE_PREFIX}-runtime-${SW_VERSION}`;
+const APP_SHELL = [
   '/',
   '/index.html',
   '/manifest.json',
-  '/Damoon-d.png'
-  // نکته: فایل‌های CSS و JS بیلد شده رو اینجا نذار چون اسمشون عوض میشه
+  '/Damoon-d.png',
+  '/pwa-192x192.png',
+  '/pwa-512x512.png',
+  '/offline.html'
 ];
 
+self.addEventListener('message', (event) => {
+  if (event.data?.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
+
 self.addEventListener('install', (event) => {
-  // این خط باعث میشه سرویس ورکر جدید بلافاصله نصب بشه و منتظر نمونه
-  self.skipWaiting(); 
-  
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log('Opened cache');
-        return cache.addAll(urlsToCache);
-      })
+    caches.open(STATIC_CACHE).then((cache) => cache.addAll(APP_SHELL)).then(() => self.skipWaiting())
   );
 });
 
 self.addEventListener('activate', (event) => {
-  const cacheWhitelist = [CACHE_NAME];
-  
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheWhitelist.indexOf(cacheName) === -1) {
-            console.log('Deleting old cache:', cacheName);
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    }).then(() => {
-      // این خط خیلی مهمه: باعث میشه سرویس ورکر جدید بلافاصله کنترل صفحه رو به دست بگیره
-      return self.clients.claim(); 
-    })
-  );
+  event.waitUntil((async () => {
+    const cacheNames = await caches.keys();
+    await Promise.all(
+      cacheNames.map((cacheName) => {
+        if (!cacheName.startsWith(CACHE_PREFIX)) return Promise.resolve(false);
+        if (cacheName === STATIC_CACHE || cacheName === RUNTIME_CACHE) return Promise.resolve(false);
+        return caches.delete(cacheName);
+      })
+    );
+    await self.clients.claim();
+  })());
 });
 
+const isNavigationRequest = (request) => request.mode === 'navigate';
+const isCacheableRequest = (requestUrl, request) =>
+  request.method === 'GET' &&
+  requestUrl.origin === self.location.origin &&
+  !requestUrl.pathname.startsWith('/dynamicData/');
+
+const networkFirst = async (request, cacheName) => {
+  const cache = await caches.open(cacheName);
+
+  try {
+    const response = await fetch(request, { cache: 'no-store' });
+    if (response && response.ok && request.method === 'GET') {
+      cache.put(request, response.clone());
+    }
+    return response;
+  } catch (error) {
+    const cached = await cache.match(request);
+    if (cached) return cached;
+
+    if (isNavigationRequest(request)) {
+      return (await caches.match('/offline.html')) || (await caches.match('/index.html'));
+    }
+
+    throw error;
+  }
+};
+
+const staleWhileRevalidate = async (request, cacheName) => {
+  const cache = await caches.open(cacheName);
+  const cached = await cache.match(request);
+
+  const networkFetch = fetch(request).then((response) => {
+    if (response && response.ok && request.method === 'GET') {
+      cache.put(request, response.clone());
+    }
+    return response;
+  }).catch(() => cached);
+
+  return cached || networkFetch;
+};
+
 self.addEventListener('fetch', (event) => {
-  // فیکس ارور chrome-extension و فایل‌های غیر http
-  if (!event.request.url.startsWith('http')) {
+  const requestUrl = new URL(event.request.url);
+
+  if (!requestUrl.protocol.startsWith('http')) return;
+
+  if (isNavigationRequest(event.request)) {
+    event.respondWith(networkFirst(event.request, RUNTIME_CACHE));
     return;
   }
 
-  // استراتژی: اول کش، اگر نبود شبکه (Cache First, falling back to Network)
-  event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        if (response) {
-          return response;
-        }
+  // Caching dynamic configuration data via networkFirst strategy
+  if (requestUrl.pathname.includes('dynamicData') || requestUrl.href.includes('dynamicData')) {
+    event.respondWith(networkFirst(event.request, RUNTIME_CACHE));
+    return;
+  }
 
-        return fetch(event.request).then(
-          (response) => {
-            // چک کردن اینکه پاسخ معتبر باشه
-            if(!response || response.status !== 200 || response.type !== 'basic') {
-              return response;
-            }
+  if (!isCacheableRequest(requestUrl, event.request)) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
 
-            // کلون کردن پاسخ برای ذخیره در کش
-            const responseToCache = response.clone();
-
-            caches.open(CACHE_NAME)
-              .then((cache) => {
-                cache.put(event.request, responseToCache);
-              });
-
-            return response;
-          }
-        );
-      })
-  );
+  event.respondWith(staleWhileRevalidate(event.request, RUNTIME_CACHE));
 });

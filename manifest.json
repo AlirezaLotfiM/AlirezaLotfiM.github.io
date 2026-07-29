@@ -1,11 +1,16 @@
 {
-  "name": "Alireza Lotfi | Software Engineer",
-  "short_name": "Damoon",
-  "start_url": "./index.html",
+  "name": "علیرضا لطفی مقدم | Alireza Lotfi Moghaddam",
+  "short_name": "Alireza Lotfi",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#0a0a0a",
   "theme_color": "#67FF64",
-  "description": "Portfolio of Alireza Lotfi, a Senior .NET Developer specializing in distributed systems.",
+  "description": "پورتفولیوی علیرضا لطفی مقدم، مهندس نرم‌افزار ارشد. Portfolio of Alireza Lotfi Moghaddam, Senior Software Engineer specializing in .NET, distributed systems, and backend architecture.",
+  "lang": "fa",
+  "dir": "rtl",
+  "categories": ["developer", "portfolio", "technology"],
   "icons": [
     {
       "src": "pwa-192x192.png",

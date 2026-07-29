@@ -1,6 +1,6 @@
 [
   { "name": "C# (.NET Ecosystem)", "level": 80 },
-  { "name": "WPF & Win32 Integration", "level": 70 },
+  { "name": "WPF & Win32 Integration", "level": 60 },
   { "name": "ASP.NET Core WebAPI", "level": 75 },
   { "name": "SQL Server & Data Design", "level": 65 },
   { "name": "SignalR (Real-time Communication)", "level": 50 },
