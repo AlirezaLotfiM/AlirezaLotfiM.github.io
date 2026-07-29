@@ -7,7 +7,7 @@ const APP_SHELL = [
   '/',
   '/index.html',
   '/manifest.json',
-  '/Damoon-d.png',
+  '/Damoon-d.jpg',
   '/pwa-192x192.png',
   '/pwa-512x512.png',
   '/offline.html'
