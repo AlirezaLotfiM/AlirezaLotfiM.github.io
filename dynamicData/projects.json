@@ -1,5 +1,38 @@
 [
   {
+    "id": 107,
+    "name": "KeyMapper Desktop Pet",
+    "slug": "keymapper-desktop-pet",
+    "language": "C# / WPF / .NET 10",
+    "description": "برنامه دسکتاپی ویندوزی با همراه پیکسل‌آرت زنده؛ ترکیبی از دستیار هوش مصنوعی محلی، پخشگر موسیقی هوشمند، OCR چندزبانه، ترجمه آنلاین و آفلاین، میانبر صفحه‌کلید و ابزارهای کاربردی روزمره. ساخته‌شده به‌صورت مشترک، به‌طور مداوم در حال توسعه.",
+    "html_url": "https://github.com/AlirezaLotfiM/KeyMapper",
+    "isPrivate": false,
+    "status": "Active",
+    "updatedAt": "2026-07-29",
+    "stackLabel": "C# / WPF / LLamaSharp / Tesseract",
+    "role": "توسعه دهنده مشترک",
+    "architectureSummary": "WPF App + Local LLM + Tesseract OCR + LibreTranslate + Global Hooks",
+    "scale": "اپن‌سورس، ویندوز ۱۰/۱۱",
+    "impact": "ابزار دسکتاپ رایگان با AI محلی و حریم خصوصی کامل",
+    "details": [
+      "۶ همراه پیکسل‌آرت با شخصیت متمایز: Pip، Professor Owlet، Dude، Frieren، Yuji Itadori، Luffy",
+      "هوش مصنوعی محلی با LLamaSharp + مدل‌های Qwen3/Qwen2.5 GGUF (Lite تا Max، ۶۳۹MB تا ۹GB)",
+      "پخشگر موسیقی با تحلیل ریتم، شناسایی mood، انیمیشن beat-reactive و کتابخانه محلی",
+      "OCR سه‌زبانه (فارسی، انگلیسی، آلمانی) با Tesseract و چند پاس پیش‌پردازش",
+      "ترجمه زنده با LibreTranslate — نصب اختیاری محلی بدون نیاز به Docker یا Python سیستمی",
+      "تبدیل layout صفحه‌کلید غلط (فارسی/انگلیسی/آلمانی) به متن صحیح",
+      "Text Expansion با متغیرهای {date}، {time}، {clip}، {sel}، {cursor}",
+      "Command Palette برای جستجو و اجرای میانبرها و اکشن‌ها",
+      "اجرای برنامه و بازی‌های Steam، با راهنمایی برای موارد ناموجود",
+      "۷ تم رنگی (Warm Cream، Midnight Pixel، Cyber Groove و ...) با اعمال فوری",
+      "حافظه مکالمه محلی تا ۱۲ گفتگو برای هر شخصیت",
+      "PixelYar Cloud: پیش‌نمایش سرویس hosted روی Cloudflare Workers",
+      "یادآوری (Reminder)، یادداشت چسبنده (Sticky Notes)، اسکرین‌شات ناحیه‌ای",
+      "Global keyboard/mouse hook برای شناسایی میانبرها در کل سیستم"
+    ],
+    "architecture": "graph TD\n    subgraph UI[\"WPF Windows\"]\n      MW[\"MainWindow - Control Center\"]\n      PET[\"PetOverlayWindow - Desktop Pet\"]\n      MP[\"MusicPlayerWidget\"]\n      CHAT[\"AssistantWindow - Chat\"]\n      TR[\"TranslatorWindow\"]\n      OCR_W[\"OcrResultWindow\"]\n      CMD[\"CommandPalette\"]\n    end\n\n    subgraph AI[\"Local AI — LLamaSharp\"]\n      LLM[\"Qwen3/Qwen2.5 GGUF\"]\n      CONV[\"ConversationalAssistantService\"]\n      CTX[\"ConversationMemoryStore\"]\n    end\n\n    subgraph Tools[\"Desktop Tools\"]\n      OCR_S[\"OcrService - Tesseract\"]\n      LT[\"LibreTranslateService\"]\n      KL[\"KeyboardLayoutConverter\"]\n      IS[\"InputSimulator - Global Hook\"]\n      REM[\"ReminderService\"]\n      STK[\"StickyNoteManager\"]\n    end\n\n    subgraph Music[\"Music Engine\"]\n      MUS[\"MusicExperienceService\"]\n      ANA[\"Beat Analyzer\"]\n      AUD[\"LocalAudioPlayerService\"]\n    end\n\n    subgraph Cloud[\"Cloud - Preview\"]\n      CF[\"PixelYar Cloud - Cloudflare\"]\n    end\n\n    MW --> PET & MP & CHAT & TR & OCR_W & CMD\n    CHAT --> CONV\n    CONV --> LLM & CTX\n    CONV -.->|\"optional\"| CF\n    TR --> LT\n    OCR_W --> OCR_S\n    CMD --> IS & KL\n    PET --> MUS\n    MUS --> ANA & AUD\n\n    style LLM fill:#7c3aed,stroke:#fff\n    style MUS fill:#0369a1,stroke:#fff\n    style OCR_S fill:#0f766e,stroke:#fff\n    style LT fill:#b45309,stroke:#fff\n    style CF fill:#374151,stroke:#9ca3af\n    style PET fill:#166534,stroke:#fff"
+  },
+  {
     "id": 105,
     "name": "QMS — سامانه نوبت‌دهی تحت‌وب بیودارو",
     "slug": "biodaru-qms",
