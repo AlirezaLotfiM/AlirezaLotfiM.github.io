@@ -9,6 +9,13 @@ let ctx = null;
 let particlesArray = [];
 let animationFrameId;
 
+const handleResize = () => {
+  if (!canvasRef.value) return;
+  canvasRef.value.width = window.innerWidth;
+  canvasRef.value.height = window.innerHeight;
+  init();
+};
+
 const init = () => {
   particlesArray = [];
   const density = window.innerWidth < 768 ? 25000 : 10000; // Reduce density on mobile
@@ -62,18 +69,16 @@ const drawParticles = () => {
 };
 
 onMounted(() => {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   ctx = canvasRef.value.getContext('2d');
-  canvasRef.value.width = window.innerWidth;
-  canvasRef.value.height = window.innerHeight;
-  init();
+  handleResize();
   drawParticles();
-  window.addEventListener('resize', () => {
-    canvasRef.value.width = window.innerWidth;
-    canvasRef.value.height = window.innerHeight;
-    init();
-  });
+  window.addEventListener('resize', handleResize);
 });
-onUnmounted(() => cancelAnimationFrame(animationFrameId));
+onUnmounted(() => {
+  cancelAnimationFrame(animationFrameId);
+  window.removeEventListener('resize', handleResize);
+});
 </script>
 <template>
   <canvas ref="canvasRef" style="position: fixed; top: 0; left: 0; z-index: -1; pointer-events: none; opacity: 0.4;"></canvas>

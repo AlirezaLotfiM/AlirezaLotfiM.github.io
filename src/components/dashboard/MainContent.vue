@@ -1,13 +1,15 @@
 <script setup>
+import { defineAsyncComponent } from 'vue';
 import { usePortfolio } from '../../composables/usePortfolio';
 import { useAudioSynth } from '../../composables/useAudioSynth';
+import { useNavigation } from '../../composables/useNavigation';
 
-import ProjectsTab from './tabs/ProjectsTab.vue';
-import InterestsTab from './tabs/InterestsTab.vue';
-import RoadmapTab from './tabs/RoadmapTab.vue';
-import NotesTab from './tabs/NotesTab.vue';
-import HistoryTab from './tabs/HistoryTab.vue';
-import GuestbookTab from './tabs/GuestbookTab.vue';
+const ProjectsTab = defineAsyncComponent(() => import('./tabs/ProjectsTab.vue'));
+const InterestsTab = defineAsyncComponent(() => import('./tabs/InterestsTab.vue'));
+const RoadmapTab = defineAsyncComponent(() => import('./tabs/RoadmapTab.vue'));
+const NotesTab = defineAsyncComponent(() => import('./tabs/NotesTab.vue'));
+const HistoryTab = defineAsyncComponent(() => import('./tabs/HistoryTab.vue'));
+const GuestbookTab = defineAsyncComponent(() => import('./tabs/GuestbookTab.vue'));
 
 import SkeletonGrid from '../skeletons/SkeletonGrid.vue';
 import SkeletonList from '../skeletons/SkeletonList.vue';
@@ -22,6 +24,7 @@ const {
 } = usePortfolio();
 
 const { playClick } = useAudioSynth();
+const { tabPaths, navigateFromEvent } = useNavigation();
 
 const props = defineProps({
   isZenMode: Boolean
@@ -41,30 +44,43 @@ const emit = defineEmits(['toggle-zen']);
     </button>
 
     <header class="tabs-header" :class="{ hidden: isZenMode }">
-      <nav class="main-tabs" aria-label="Main Navigation">
-        <button @click="playClick(); closeNote(); activeTab = 'projects'"
+      <nav class="main-tabs" aria-label="بخش‌های اصلی">
+        <a :href="tabPaths.projects"
+          @click="playClick(); closeNote(); navigateFromEvent($event, tabPaths.projects)"
+          :aria-current="!selectedNote && activeTab === 'projects' ? 'page' : undefined"
           :class="{ active: !selectedNote && activeTab === 'projects' }">
           پروژه‌ها
-        </button>
-        <button @click="playClick(); closeNote(); activeTab = 'interests'"
+        </a>
+        <a :href="tabPaths.interests"
+          @click="playClick(); closeNote(); navigateFromEvent($event, tabPaths.interests)"
+          :aria-current="!selectedNote && activeTab === 'interests' ? 'page' : undefined"
           :class="{ active: !selectedNote && activeTab === 'interests' }">
           علاقه‌مندی
-        </button>
-        <button @click="playClick(); closeNote(); activeTab = 'roadmap'"
+        </a>
+        <a :href="tabPaths.roadmap"
+          @click="playClick(); closeNote(); navigateFromEvent($event, tabPaths.roadmap)"
+          :aria-current="!selectedNote && activeTab === 'roadmap' ? 'page' : undefined"
           :class="{ active: !selectedNote && activeTab === 'roadmap' }">
           مسیر من
-        </button>
-        <button @click="playClick(); closeNote(); activeTab = 'history'"
+        </a>
+        <a :href="tabPaths.history"
+          @click="playClick(); closeNote(); navigateFromEvent($event, tabPaths.history)"
+          :aria-current="!selectedNote && activeTab === 'history' ? 'page' : undefined"
           :class="{ active: !selectedNote && activeTab === 'history' }">
           سوابق
-        </button>
-        <button @click="playClick(); closeNote(); activeTab = 'guestbook'"
+        </a>
+        <a :href="tabPaths.guestbook"
+          @click="playClick(); closeNote(); navigateFromEvent($event, tabPaths.guestbook)"
+          :aria-current="!selectedNote && activeTab === 'guestbook' ? 'page' : undefined"
           :class="{ active: !selectedNote && activeTab === 'guestbook' }">
           یادگاری
-        </button>
-        <button @click="playClick(); closeNote(); activeTab = 'notes'" :class="{ active: activeTab === 'notes' || selectedNote }">
+        </a>
+        <a :href="tabPaths.notes"
+          @click="playClick(); closeNote(); navigateFromEvent($event, tabPaths.notes)"
+          :aria-current="activeTab === 'notes' || selectedNote ? 'page' : undefined"
+          :class="{ active: activeTab === 'notes' || selectedNote }">
           یادداشت
-        </button>
+        </a>
       </nav>
 
       <div v-if="activeTab === 'projects' && !selectedNote" class="header-controls">
@@ -124,7 +140,7 @@ const emit = defineEmits(['toggle-zen']);
   display: none;
 }
 
-.main-tabs button {
+.main-tabs a {
   flex: 1;
   padding: 15px 12px;
   font-size: 0.86rem;
@@ -141,12 +157,12 @@ const emit = defineEmits(['toggle-zen']);
   position: relative;
 }
 
-.main-tabs button:hover {
+.main-tabs a:hover {
   color: var(--text-main);
   background: var(--item-hover-bg);
 }
 
-.main-tabs button.active {
+.main-tabs a.active {
   color: var(--text-main);
   border-bottom: 2px solid var(--neon);
   background: var(--item-bg);
@@ -271,7 +287,7 @@ const emit = defineEmits(['toggle-zen']);
     scroll-padding-inline: 14px;
   }
 
-  .main-tabs button {
+  .main-tabs a {
     flex: 0 0 auto;
     padding: 12px 14px;
     border: 1px solid rgba(214, 229, 243, 0.78);
@@ -280,7 +296,7 @@ const emit = defineEmits(['toggle-zen']);
     background: rgba(255, 255, 255, 0.4);
   }
 
-  .main-tabs button.active {
+  .main-tabs a.active {
     border-bottom: 1px solid rgba(179, 202, 225, 1);
   }
 }

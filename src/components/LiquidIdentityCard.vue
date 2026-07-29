@@ -69,7 +69,14 @@ const resumeLabel = computed(() => cardData.value.resumeLabel || 'رزومه');
 
             <div class="avatar-panel">
               <div class="avatar-glow">
-                <img :src="profile.avatarUrl || '/Damoon-d.png'" alt="Alireza" />
+                <img
+                  :src="profile.avatarUrl || '/Damoon-d.jpg'"
+                  alt="پرتره علیرضا لطفی مقدم"
+                  width="848"
+                  height="804"
+                  fetchpriority="high"
+                  decoding="async"
+                />
               </div>
             </div>
           </div>

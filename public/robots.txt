@@ -5,5 +5,3 @@ Disallow: /dynamicData/guestbook.json
 # Sitemap
 Sitemap: https://alirezalotfimoghaddam.ir/sitemap.xml
 
-# Yandex: declare canonical host
-Host: alirezalotfimoghaddam.ir

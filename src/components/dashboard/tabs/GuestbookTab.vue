@@ -1,5 +1,5 @@
 <script setup>
-import { watch, onMounted } from 'vue';
+import { onMounted, onUnmounted, watch } from 'vue';
 import { useTheme } from '../../../composables/useTheme';
 
 const { currentTheme } = useTheme();
@@ -37,15 +37,13 @@ watch(() => currentTheme.value.id, () => {
   setTimeout(updateGiscus, 100);
 });
 
-onMounted(() => {
-  // Listen for Giscus loaded message and apply active theme
-  window.addEventListener('message', (event) => {
-    if (event.origin !== 'https://giscus.app') return;
-    if (event.data?.giscus?.postMessage?.type === 'loaded') {
-      updateGiscus();
-    }
-  });
-});
+const handleGiscusMessage = (event) => {
+  if (event.origin !== 'https://giscus.app') return;
+  if (event.data?.giscus?.postMessage?.type === 'loaded') updateGiscus();
+};
+
+onMounted(() => window.addEventListener('message', handleGiscusMessage));
+onUnmounted(() => window.removeEventListener('message', handleGiscusMessage));
 </script>
 
 <template>

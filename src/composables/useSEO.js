@@ -1,32 +1,140 @@
-import { onMounted, onUnmounted, watch } from 'vue';
+const siteUrl = "https://alirezalotfimoghaddam.ir";
+const siteName = "Alireza Lotfi Moghaddam";
+const defaultTitle =
+  "علیرضا لطفی مقدم | Alireza Lotfi Moghaddam — Software Engineer";
+const defaultDescription =
+  "پورتفولیوی علیرضا لطفی مقدم، مهندس نرم‌افزار با تمرکز بر C#، ASP.NET Core، WPF، طراحی API و سیستم‌های توزیع‌شده.";
+const defaultImage = `${siteUrl}/Damoon-d.jpg`;
 
-const defaultTitle = "Alireza Lotfi | Software Engineer";
-const defaultDescription = "Portfolio of Alireza Lotfi, a Senior .NET Developer specializing in distributed systems, WPF, and high-performance backend architecture.";
+const upsertMeta = (selector, attributes) => {
+  if (typeof document === "undefined") return;
+
+  let element = document.head.querySelector(selector);
+  if (!element) {
+    element = document.createElement("meta");
+    document.head.appendChild(element);
+  }
+
+  Object.entries(attributes).forEach(([name, value]) => {
+    if (value === null || value === undefined || value === "") {
+      element.removeAttribute(name);
+    } else {
+      element.setAttribute(name, value);
+    }
+  });
+};
+
+const upsertLink = (rel, href) => {
+  if (typeof document === "undefined") return;
+
+  let link = document.head.querySelector(`link[rel="${rel}"]`);
+  if (!link) {
+    link = document.createElement("link");
+    link.rel = rel;
+    document.head.appendChild(link);
+  }
+  link.href = href;
+};
+
+const setStructuredData = (data) => {
+  if (typeof document === "undefined") return;
+
+  let script = document.getElementById("route-structured-data");
+  if (!data) {
+    script?.remove();
+    return;
+  }
+
+  if (!script) {
+    script = document.createElement("script");
+    script.id = "route-structured-data";
+    script.type = "application/ld+json";
+    document.head.appendChild(script);
+  }
+  script.textContent = JSON.stringify(data);
+};
+
+const toAbsoluteUrl = (path = "/") => new URL(path, siteUrl).href;
 
 export function useSEO() {
-  const setPageTitle = (title) => {
-    document.title = title ? `${title} | Alireza Lotfi` : defaultTitle;
+  const setSEO = ({
+    title = defaultTitle,
+    description = defaultDescription,
+    path = "/",
+    image = defaultImage,
+    type = "website",
+    robots = "index, follow, max-image-preview:large, max-snippet:-1",
+    structuredData = null,
+  } = {}) => {
+    if (typeof document === "undefined") return;
+
+    const canonicalUrl = toAbsoluteUrl(path);
+    const absoluteImage = image.startsWith("http") ? image : toAbsoluteUrl(image);
+    document.title = title;
+    document.documentElement.lang = "fa";
+    document.documentElement.dir = "rtl";
+
+    upsertMeta('meta[name="description"]', {
+      name: "description",
+      content: description,
+    });
+    upsertMeta('meta[name="robots"]', { name: "robots", content: robots });
+    upsertMeta('meta[property="og:type"]', { property: "og:type", content: type });
+    upsertMeta('meta[property="og:url"]', {
+      property: "og:url",
+      content: canonicalUrl,
+    });
+    upsertMeta('meta[property="og:title"]', {
+      property: "og:title",
+      content: title,
+    });
+    upsertMeta('meta[property="og:description"]', {
+      property: "og:description",
+      content: description,
+    });
+    upsertMeta('meta[property="og:image"]', {
+      property: "og:image",
+      content: absoluteImage,
+    });
+    upsertMeta('meta[name="twitter:card"]', {
+      name: "twitter:card",
+      content: "summary_large_image",
+    });
+    upsertMeta('meta[name="twitter:title"]', {
+      name: "twitter:title",
+      content: title,
+    });
+    upsertMeta('meta[name="twitter:description"]', {
+      name: "twitter:description",
+      content: description,
+    });
+    upsertMeta('meta[name="twitter:image"]', {
+      name: "twitter:image",
+      content: absoluteImage,
+    });
+    upsertLink("canonical", canonicalUrl);
+    setStructuredData(structuredData);
   };
 
-  const setMetaDescription = (desc) => {
-    let metaDesc = document.querySelector('meta[name="description"]');
-    if (!metaDesc) {
-      metaDesc = document.createElement('meta');
-      metaDesc.name = "description";
-      document.head.appendChild(metaDesc);
-    }
-    metaDesc.content = desc || defaultDescription;
-  };
+  const setPageTitle = (title) =>
+    setSEO({ title: title ? `${title} | ${siteName}` : defaultTitle });
 
-  // Helper to reset on unmount or navigation
-  const resetSEO = () => {
-    setPageTitle(null);
-    setMetaDescription(null);
-  };
+  const setMetaDescription = (description) =>
+    upsertMeta('meta[name="description"]', {
+      name: "description",
+      content: description || defaultDescription,
+    });
+
+  const resetSEO = () => setSEO();
 
   return {
+    defaultDescription,
+    defaultTitle,
+    setSEO,
     setPageTitle,
     setMetaDescription,
-    resetSEO
+    resetSEO,
+    siteName,
+    siteUrl,
   };
 }

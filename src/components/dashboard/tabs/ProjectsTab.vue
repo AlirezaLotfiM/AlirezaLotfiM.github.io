@@ -1,11 +1,13 @@
 <script setup>
-import { ref } from 'vue';
+import { computed, defineAsyncComponent, ref } from 'vue';
 import { usePortfolio } from '../../../composables/usePortfolio';
 import { useTilt } from '../../../composables/useTilt';
-import ArchitectureModal from '../../ArchitectureModal.vue';
+import { getProjectPath, useNavigation } from '../../../composables/useNavigation';
 
-const { filteredProjects, getTechDetails } = usePortfolio();
+const { projects, filteredProjects, getTechDetails } = usePortfolio();
 const { handleCardTilt, resetCard } = useTilt();
+const { route, tabPaths, navigateFromEvent } = useNavigation();
+const ArchitectureModal = defineAsyncComponent(() => import('../../ArchitectureModal.vue'));
 
 const showArchModal = ref(false);
 const currentArchDiagram = ref('');
@@ -42,10 +44,83 @@ const getTechList = (langString) => {
   if (!langString) return [];
   return langString.split(/\s*\/\s*/).map((l) => getTechDetails(l));
 };
+
+const selectedProject = computed(() =>
+  projects.value.find((project) => getProjectPath(project) === route.value.path),
+);
 </script>
 
 <template>
   <div class="projects-shell">
+    <article v-if="route.isProject && selectedProject" class="project-detail">
+      <a
+        :href="tabPaths.projects"
+        class="project-back"
+        @click="navigateFromEvent($event, tabPaths.projects)"
+      >
+        ➜ بازگشت به پروژه‌ها
+      </a>
+
+      <header class="project-hero">
+        <div>
+          <span class="project-kicker mono-ui" dir="ltr">case study / {{ selectedProject.status }}</span>
+          <h1>{{ selectedProject.name }}</h1>
+          <p>{{ selectedProject.description }}</p>
+        </div>
+        <div class="project-actions">
+          <a
+            v-if="selectedProject.html_url && selectedProject.html_url !== '#'"
+            :href="selectedProject.html_url"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="source-btn"
+          >
+            مشاهده سورس
+          </a>
+          <button
+            v-if="selectedProject.architecture"
+            class="arch-btn mono-ui"
+            @click="openArchitecture(selectedProject)"
+          >
+            architecture
+          </button>
+        </div>
+      </header>
+
+      <div class="project-facts">
+        <div v-if="selectedProject.role">
+          <span>نقش</span>
+          <strong>{{ selectedProject.role }}</strong>
+        </div>
+        <div v-if="selectedProject.stackLabel">
+          <span>فناوری‌ها</span>
+          <strong dir="ltr">{{ selectedProject.stackLabel }}</strong>
+        </div>
+        <div v-if="selectedProject.architectureSummary">
+          <span>معماری</span>
+          <strong>{{ selectedProject.architectureSummary }}</strong>
+        </div>
+        <div v-if="selectedProject.scale">
+          <span>مقیاس</span>
+          <strong>{{ selectedProject.scale }}</strong>
+        </div>
+      </div>
+
+      <section v-if="selectedProject.impact" class="case-section">
+        <span class="section-label mono-ui">impact</span>
+        <h2>اثر پروژه</h2>
+        <p>{{ selectedProject.impact }}</p>
+      </section>
+
+      <section v-if="selectedProject.details?.length" class="case-section">
+        <span class="section-label mono-ui">engineering details</span>
+        <h2>جزئیات فنی</h2>
+        <ul>
+          <li v-for="detail in selectedProject.details" :key="detail">{{ detail }}</li>
+        </ul>
+      </section>
+    </article>
+
     <div class="grid-list">
       <ArchitectureModal
         :visible="showArchModal"
@@ -62,8 +137,9 @@ const getTechList = (langString) => {
         </div>
       </Teleport>
 
-      <a v-for="p in filteredProjects" :key="p.id" :href="p.html_url"
-        :target="p.html_url === '#' ? '' : '_blank'" class="grid-item spotlight-card"
+      <a v-if="!route.isProject" v-for="p in filteredProjects" :key="p.id" :href="getProjectPath(p)"
+        class="grid-item spotlight-card"
+        @click="navigateFromEvent($event, getProjectPath(p))"
         @mousemove="handleCardTilt" @mouseleave="resetCard">
         <div class="spotlight-bg"></div>
 
@@ -116,7 +192,7 @@ const getTechList = (langString) => {
         <div class="card-footer">
           <div class="footer-row">
             <span class="arrow-link">
-              {{ p.isPrivate ? 'پروژه سازمانی' : 'مشاهده سورس' }} &larr;
+              مطالعه پروژه &larr;
             </span>
 
             <button v-if="p.architecture" class="arch-btn mono-ui" @click.prevent="openArchitecture(p)">
@@ -125,8 +201,14 @@ const getTechList = (langString) => {
           </div>
         </div>
       </a>
-      <div v-if="filteredProjects.length === 0" class="empty-state">
+      <div v-if="!route.isProject && filteredProjects.length === 0" class="empty-state">
         پروژه‌ای یافت نشد.
+      </div>
+      <div v-if="route.isProject && !selectedProject" class="empty-state">
+        این پروژه پیدا نشد.
+        <a :href="tabPaths.projects" @click="navigateFromEvent($event, tabPaths.projects)">
+          بازگشت به فهرست پروژه‌ها
+        </a>
       </div>
     </div>
   </div>
@@ -137,6 +219,97 @@ const getTechList = (langString) => {
   display: flex;
   flex-direction: column;
   gap: 18px;
+}
+
+.project-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.project-back {
+  width: fit-content;
+  color: var(--accent-strong);
+  font-size: 0.85rem;
+}
+
+.project-hero,
+.project-facts,
+.case-section {
+  border: 1px solid var(--panel-border);
+  background: var(--item-bg);
+  border-radius: 22px;
+  padding: 24px;
+}
+
+.project-hero {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.project-hero h1 {
+  margin: 8px 0 12px;
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+}
+
+.project-hero p,
+.case-section p,
+.case-section li {
+  color: var(--text-secondary);
+  line-height: 1.9;
+}
+
+.project-kicker,
+.section-label {
+  color: var(--neon);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+}
+
+.project-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 150px;
+}
+
+.source-btn,
+.project-actions .arch-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  padding: 10px 14px;
+  background: var(--item-hover-bg);
+  color: var(--text-main);
+}
+
+.project-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.project-facts div {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.project-facts span {
+  color: var(--text-soft);
+  font-size: 0.75rem;
+}
+
+.case-section h2 {
+  margin: 8px 0 12px;
+}
+
+.case-section ul {
+  margin: 0;
+  padding-right: 20px;
 }
 
 
@@ -337,6 +510,14 @@ const getTechList = (langString) => {
 }
 
 @media (max-width: 1024px) {
+  .project-hero {
+    flex-direction: column;
+  }
+
+  .project-actions {
+    flex-direction: row;
+  }
+
   .detail-item,
   .footer-row {
     display: flex;

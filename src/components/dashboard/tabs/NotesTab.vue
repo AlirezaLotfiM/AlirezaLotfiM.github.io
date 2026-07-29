@@ -3,18 +3,19 @@ import { ref } from 'vue';
 import { usePortfolio } from '../../../composables/usePortfolio';
 import { useMarkdown } from '../../../composables/useMarkdown';
 import { useTilt } from '../../../composables/useTilt';
+import { getNotePath, useNavigation } from '../../../composables/useNavigation';
 
 const {
   notes,
   selectedNote,
   noteComments,
   loadingComments,
-  openNote,
   closeNote
 } = usePortfolio();
 
 const { parseMarkdown } = useMarkdown();
 const { handleCardTilt, resetCard } = useTilt();
+const { tabPaths, navigateFromEvent } = useNavigation();
 
 const shareTooltip = ref("کپی لینک");
 const props = defineProps(['isZenMode']);
@@ -22,11 +23,16 @@ const emit = defineEmits(['toggle-zen']);
 
 const shareNote = () => {
   if (!selectedNote.value) return;
-  navigator.clipboard.writeText(selectedNote.value.html_url);
+  navigator.clipboard.writeText(window.location.href);
   shareTooltip.value = "لینک کپی شد! ✅";
   setTimeout(() => {
     shareTooltip.value = "کپی لینک";
   }, 2000);
+};
+
+const closeNoteView = (event) => {
+  closeNote();
+  navigateFromEvent(event, tabPaths.notes);
 };
 
 </script>
@@ -70,9 +76,9 @@ const shareNote = () => {
               <path d="M4 14h6v6M20 10h-6V4M14 10l7-7M10 14l-7 7" />
             </svg>
           </button>
-          <button @click="closeNote" class="back-btn">
+          <a :href="tabPaths.notes" @click="closeNoteView" class="back-btn">
             ➜ بازگشت
-          </button>
+          </a>
         </div>
       </header>
       <div class="thread-content scroll-area">
@@ -98,10 +104,16 @@ const shareNote = () => {
 
     <!-- List View -->
     <ul v-else class="notes-list">
-      <li v-for="n in notes" :key="n.id" class="note-row spotlight-card" @click="openNote(n)"
-        @mousemove="handleCardTilt" @mouseleave="resetCard" style="cursor: pointer">
-        <div class="spotlight-bg"></div>
-        <div class="note-inner">
+      <li v-for="n in notes" :key="n.id">
+        <a
+          :href="getNotePath(n)"
+          class="note-row spotlight-card"
+          @click="navigateFromEvent($event, getNotePath(n))"
+          @mousemove="handleCardTilt"
+          @mouseleave="resetCard"
+        >
+          <div class="spotlight-bg"></div>
+          <div class="note-inner">
           <div class="note-head">
             <h4><span class="note-icon">📝</span> {{ n.title }}</h4>
           </div>
@@ -125,7 +137,8 @@ const shareNote = () => {
               new Date(n.created_at).toLocaleDateString("fa-IR")
             }}</span><span class="read-btn">بخوانید &larr;</span>
           </div>
-        </div>
+          </div>
+        </a>
       </li>
       <li v-if="notes.length === 0" class="empty-state">
         <p>هنوز یادداشتی منتشر نشده است.</p>

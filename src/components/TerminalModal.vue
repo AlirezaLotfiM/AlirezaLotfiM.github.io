@@ -1,5 +1,5 @@
 <script setup>
-import { ref, nextTick, watch, onMounted } from 'vue';
+import { ref, nextTick, watch, onMounted, onUnmounted } from 'vue';
 import { useTheme } from '../composables/useTheme';
 import { useAudioSynth } from '../composables/useAudioSynth';
 
@@ -31,6 +31,37 @@ const COMMANDS = ['help', 'whoami', 'skills', 'projects', 'ls', 'status', 'learn
 // Command history
 const cmdHistory = ref([]);
 const historyIndex = ref(-1);
+const terminalWindowRef = ref(null);
+let previousActiveElement = null;
+
+const closeTerminal = () => emit('close');
+
+const handleModalKeydown = (event) => {
+  if (!props.visible) return;
+  if (event.key === 'Escape') {
+    event.preventDefault();
+    closeTerminal();
+    return;
+  }
+
+  if (event.key !== 'Tab' || !terminalWindowRef.value) return;
+  const focusable = [
+    ...terminalWindowRef.value.querySelectorAll(
+      'button:not([disabled]), input:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])',
+    ),
+  ];
+  if (!focusable.length) return;
+
+  const first = focusable[0];
+  const last = focusable.at(-1);
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault();
+    last.focus();
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault();
+    first.focus();
+  }
+};
 
 // تابع اولیه برای پر کردن تاریخچه با اطلاعات دینامیک
 const initTerminal = () => {
@@ -59,6 +90,8 @@ const focusInput = () => {
 
 watch(() => props.visible, (val) => {
   if (val) {
+    previousActiveElement = document.activeElement;
+    document.addEventListener('keydown', handleModalKeydown);
     initTerminal(); // ریست کردن ترمینال موقع باز شدن
     if (props.initialCommand) {
       inputValue.value = props.initialCommand;
@@ -68,6 +101,9 @@ watch(() => props.visible, (val) => {
     } else {
       focusInput();
     }
+  } else {
+    document.removeEventListener('keydown', handleModalKeydown);
+    previousActiveElement?.focus?.();
   }
 });
 
@@ -311,20 +347,22 @@ const scrollToBottom = () => {
 onMounted(() => {
   initTerminal();
 });
+
+onUnmounted(() => document.removeEventListener('keydown', handleModalKeydown));
 </script>
 
 <template>
   <Transition name="fade">
-    <div v-if="visible" class="terminal-overlay" @click.self="$emit('close')">
-      <div class="terminal-window ltr-mode">
+    <div v-if="visible" class="terminal-overlay" @click.self="closeTerminal">
+      <div ref="terminalWindowRef" class="terminal-window ltr-mode" role="dialog" aria-modal="true" aria-labelledby="terminal-title">
         
         <div class="terminal-header">
           <div class="header-left">
             <span class="win-icon">C:\</span>
-            <span class="window-title">Administrator: Damoon OS v{{ version }}</span>
+            <span id="terminal-title" class="window-title">Administrator: Damoon OS v{{ version }}</span>
           </div>
           <div class="window-controls">
-            <button class="win-btn close" @click="$emit('close')" title="Close">✕</button>
+            <button class="win-btn close" @click="closeTerminal" title="Close" aria-label="بستن ترمینال">✕</button>
           </div>
         </div>
         

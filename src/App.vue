@@ -1,46 +1,71 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
-import CustomCursor from "./components/CustomCursor.vue";
-import MatrixRain from "./components/MatrixRain.vue";
-import TerminalModal from "./components/TerminalModal.vue";
-import ContextMenu from "./components/ContextMenu.vue";
+import {
+  defineAsyncComponent,
+  onMounted,
+  onUnmounted,
+  ref,
+  watch,
+} from "vue";
 import BootSequence from "./components/BootSequence.vue";
 import LiquidIdentityCard from "./components/LiquidIdentityCard.vue";
-
-import UserProfile from "./components/dashboard/UserProfile.vue";
-import MainContent from "./components/dashboard/MainContent.vue";
-import SkillRack from "./components/dashboard/SkillRack.vue";
-import GlobalCommandBar from "./components/dashboard/GlobalCommandBar.vue";
 
 import { usePortfolio } from "./composables/usePortfolio";
 import { useTheme } from "./composables/useTheme";
 import { useAudioSynth } from "./composables/useAudioSynth";
+import {
+  getNoteSlug,
+  getProjectPath,
+  useNavigation,
+} from "./composables/useNavigation";
+import { useSEO } from "./composables/useSEO";
+
+const CustomCursor = defineAsyncComponent(() => import("./components/CustomCursor.vue"));
+const MatrixRain = defineAsyncComponent(() => import("./components/MatrixRain.vue"));
+const TerminalModal = defineAsyncComponent(() => import("./components/TerminalModal.vue"));
+const UserProfile = defineAsyncComponent(() => import("./components/dashboard/UserProfile.vue"));
+const MainContent = defineAsyncComponent(() => import("./components/dashboard/MainContent.vue"));
+const SkillRack = defineAsyncComponent(() => import("./components/dashboard/SkillRack.vue"));
+const GlobalCommandBar = defineAsyncComponent(
+  () => import("./components/dashboard/GlobalCommandBar.vue"),
+);
 
 // --- Composables ---
 const {
   projects,
+  notes,
   mySkills,
   userGithub,
   fetchData,
   selectedNote,
+  openNote,
   closeNote,
+  activeTab,
   profile,
   resumeUrl
 } = usePortfolio();
 
 const { currentThemeColor } = useTheme();
 const { playBootChime } = useAudioSynth();
+const { currentPath, route, navigateTo } = useNavigation();
+const { setSEO, siteUrl } = useSEO();
 
 // --- App State ---
-const appVersion = "1.6.1";
-const showBoot = ref(true);
+const appVersion = __APP_VERSION__;
+const prefersReducedMotion =
+  typeof window !== "undefined" &&
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const showBoot = ref(
+  typeof window !== "undefined" &&
+    window.location.pathname === "/" &&
+    !prefersReducedMotion &&
+    !window.sessionStorage.getItem("portfolio-boot-seen"),
+);
 const isBooted = ref(false);
-const showIdentityCard = ref(true);
+const showIdentityCard = ref(route.value.isHome);
 const isEnteringDashboard = ref(false);
 const isMatrixMode = ref(false);
 const showTerminal = ref(false);
 const isZenMode = ref(false);
-const contextMenu = ref({ visible: false, x: 0, y: 0 });
 const terminalInitialCommand = ref('');
 
 // --- Methods ---
@@ -50,6 +75,7 @@ const handleRunCommand = (cmd) => {
 };
 
 const handleBootComplete = () => {
+  window.sessionStorage.setItem("portfolio-boot-seen", "true");
   showBoot.value = false;
   setTimeout(() => {
     isBooted.value = true;
@@ -65,20 +91,6 @@ const handleMouseMove = (e) => {
     card.style.setProperty("--x", `${e.clientX - rect.left}px`);
     card.style.setProperty("--y", `${e.clientY - rect.top}px`);
   });
-};
-
-const onContextMenu = (e) => {
-  e.preventDefault();
-  contextMenu.value = { visible: true, x: e.clientX, y: e.clientY };
-};
-
-const handleMenuAction = (action) => {
-  contextMenu.value.visible = false;
-  if (action === "terminal") showTerminal.value = true;
-  if (action === "matrix") isMatrixMode.value = !isMatrixMode.value;
-  if (action === "source")
-    window.open(`https://github.com/${userGithub.value}`, "_blank");
-  if (action === "email") navigator.clipboard.writeText(profile.value.contact?.email || "");
 };
 
 const handleKeydown = (e) => {
@@ -105,50 +117,234 @@ const enterDashboard = () => {
   window.setTimeout(() => {
     showIdentityCard.value = false;
     isEnteringDashboard.value = false;
-  }, 420);
+    navigateTo("/projects/");
+  }, prefersReducedMotion ? 0 : 420);
 };
 
-// --- Lifecycle ---
-let typeTimeout = null; // Used in UserProfile, but logic moved there. App.vue doesn't need it.
+const goHome = () => {
+  closeNote();
+  isZenMode.value = false;
+  showIdentityCard.value = true;
+  navigateTo("/");
+};
+
+const routeToTab = {
+  projects: "projects",
+  interests: "interests",
+  roadmap: "roadmap",
+  experience: "history",
+  guestbook: "guestbook",
+  notes: "notes",
+};
+
+const plainText = (value) =>
+  String(value || "")
+    .replace(/[`*_>#\[\]()!-]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+const updateRouteState = () => {
+  const nextRoute = route.value;
+  if (nextRoute.isHome) {
+    showIdentityCard.value = true;
+    closeNote();
+    return;
+  }
+
+  showIdentityCard.value = false;
+  activeTab.value = routeToTab[nextRoute.section] || "projects";
+
+  if (nextRoute.isNote) {
+    const note = notes.value.find((item) => getNoteSlug(item) === nextRoute.slug);
+    if (note && selectedNote.value?.id !== note.id) openNote(note);
+  } else if (selectedNote.value) {
+    closeNote();
+  }
+};
+
+const updateRouteSEO = () => {
+  const nextRoute = route.value;
+  const person = {
+    "@type": "Person",
+    "@id": `${siteUrl}/#person`,
+    name: "Alireza Lotfi Moghaddam",
+    alternateName: ["علیرضا لطفی مقدم", "Alireza Lotfi", "Damoon"],
+    url: siteUrl,
+    image: `${siteUrl}/Damoon-d.jpg`,
+    jobTitle: "Software Engineer",
+    sameAs: [
+      `https://github.com/${userGithub.value}`,
+      profile.value.contact?.linkedin,
+    ].filter(Boolean),
+    knowsAbout: [
+      "C#",
+      ".NET",
+      "ASP.NET Core",
+      "WPF",
+      "Distributed Systems",
+      "API Design",
+      "SQL Server",
+    ],
+  };
+
+  if (nextRoute.isProject) {
+    const project = projects.value.find(
+      (item) => getProjectPath(item) === nextRoute.path,
+    );
+    if (project) {
+      setSEO({
+        title: `${project.name} | پروژه‌های علیرضا لطفی مقدم`,
+        description: plainText(project.description).slice(0, 160),
+        path: nextRoute.path,
+        type: "article",
+        structuredData: {
+          "@context": "https://schema.org",
+          "@type": "SoftwareSourceCode",
+          name: project.name,
+          description: plainText(project.description),
+          codeRepository: project.html_url !== "#" ? project.html_url : undefined,
+          programmingLanguage: project.language,
+          author: person,
+          dateModified: project.updatedAt,
+          url: `${siteUrl}${nextRoute.path}`,
+        },
+      });
+      return;
+    }
+  }
+
+  if (nextRoute.isNote) {
+    const note = notes.value.find((item) => getNoteSlug(item) === nextRoute.slug);
+    if (note) {
+      setSEO({
+        title: `${note.title} | یادداشت‌های علیرضا لطفی مقدم`,
+        description: plainText(note.body).slice(0, 160),
+        path: nextRoute.path,
+        type: "article",
+        structuredData: {
+          "@context": "https://schema.org",
+          "@type": "Article",
+          headline: note.title,
+          description: plainText(note.body).slice(0, 200),
+          datePublished: note.created_at,
+          dateModified:
+            note.comments?.at(-1)?.created_at || note.created_at,
+          author: person,
+          mainEntityOfPage: `${siteUrl}${nextRoute.path}`,
+        },
+      });
+      return;
+    }
+  }
+
+  const sectionSEO = {
+    home: {
+      title:
+        "علیرضا لطفی مقدم | Alireza Lotfi Moghaddam — Software Engineer",
+      description:
+        "مهندس نرم‌افزار متخصص در C#، ASP.NET Core، WPF، طراحی API و سیستم‌های توزیع‌شده.",
+    },
+    projects: {
+      title: "پروژه‌ها | علیرضا لطفی مقدم",
+      description:
+        "مطالعات موردی پروژه‌های بک‌اند، دسکتاپ، بلادرنگ و سازمانی علیرضا لطفی مقدم.",
+    },
+    experience: {
+      title: "سوابق کاری | علیرضا لطفی مقدم",
+      description:
+        "سوابق کاری و تجربه مهندسی نرم‌افزار علیرضا لطفی مقدم در توسعه API، WPF و سامانه‌های عملیاتی.",
+    },
+    notes: {
+      title: "یادداشت‌ها | علیرضا لطفی مقدم",
+      description:
+        "یادداشت‌های فنی و تاریخچه توسعه پروژه‌های علیرضا لطفی مقدم.",
+    },
+    interests: {
+      title: "علاقه‌مندی‌های فنی | علیرضا لطفی مقدم",
+      description:
+        "علاقه‌مندی‌های علیرضا لطفی مقدم در معماری نرم‌افزار، سیستم‌های توزیع‌شده و تعامل سخت‌افزار و نرم‌افزار.",
+    },
+    roadmap: {
+      title: "مسیر یادگیری | علیرضا لطفی مقدم",
+      description:
+        "مسیر یادگیری و اهداف فنی علیرضا لطفی مقدم در معماری، داده و هوش مصنوعی.",
+    },
+    guestbook: {
+      title: "دفترچه یادگاری | علیرضا لطفی مقدم",
+      description: "پیام‌ها و بازخوردهای بازدیدکنندگان پورتفولیوی علیرضا لطفی مقدم.",
+    },
+  };
+  const meta = sectionSEO[nextRoute.section] || sectionSEO.home;
+
+  setSEO({
+    ...meta,
+    path: nextRoute.path,
+    structuredData:
+      nextRoute.isHome
+        ? {
+            "@context": "https://schema.org",
+            "@type": "ProfilePage",
+            "@id": `${siteUrl}/#profile`,
+            url: siteUrl,
+            name: meta.title,
+            mainEntity: person,
+          }
+        : {
+            "@context": "https://schema.org",
+            "@type": "CollectionPage",
+            name: meta.title,
+            description: meta.description,
+            url: `${siteUrl}${nextRoute.path}`,
+            author: person,
+          },
+  });
+};
+
+let konamiIndex = 0;
+const konamiCode = [
+  "ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown",
+  "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight",
+  "b", "a",
+];
+const handleKonami = (event) => {
+  if (event.key === konamiCode[konamiIndex]) {
+    konamiIndex += 1;
+    if (konamiIndex === konamiCode.length) {
+      document.documentElement.style.setProperty("--neon", "#ff00ff");
+      konamiIndex = 0;
+    }
+  } else {
+    konamiIndex = 0;
+  }
+};
+
+watch([currentPath, notes, projects, profile], () => {
+  updateRouteState();
+  updateRouteSEO();
+});
 
 onMounted(() => {
   fetchData();
   window.addEventListener("keydown", handleKeydown);
-  document.addEventListener("contextmenu", onContextMenu);
+  window.addEventListener("keydown", handleKonami);
+  updateRouteState();
+  updateRouteSEO();
 
   console.log(
     "%c Hello from Damoon! 🌲💻 \n Looking for bugs? Good luck! ",
     "background: #0a0a0a; color: #67FF64; font-size: 14px; padding: 15px; border-radius: 5px; border: 2px solid #67FF64; font-family: monospace;",
   );
 
-  // Konami Code
-  const konamiCode = [
-    "ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown",
-    "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight",
-    "b", "a",
-  ];
-  let konamiIndex = 0;
-  window.addEventListener("keydown", (e) => {
-    if (e.key === konamiCode[konamiIndex]) {
-      konamiIndex++;
-      if (konamiIndex === konamiCode.length) {
-        alert("🎉 System Hacked by Damoon! God Mode Enabled. 🚀");
-        document.documentElement.style.setProperty("--neon", "#ff00ff");
-        konamiIndex = 0;
-      }
-    } else {
-      konamiIndex = 0;
-    }
-  });
 });
 
 onUnmounted(() => {
   window.removeEventListener("keydown", handleKeydown);
-  document.removeEventListener("contextmenu", onContextMenu);
+  window.removeEventListener("keydown", handleKonami);
 });
 </script>
 
 <template>
+  <a class="skip-link" href="#main-content">رفتن به محتوای اصلی</a>
   <CustomCursor />
   <Transition name="fade">
     <BootSequence v-if="showBoot" @completed="handleBootComplete" />
@@ -170,9 +366,6 @@ onUnmounted(() => {
       telegram: profile.contact?.telegramId,
     }" :learning="profile.learning" :version="appVersion" username="Damoon" role="Software Engineer" @close="showTerminal = false; terminalInitialCommand = ''" @toggle-matrix="isMatrixMode = !isMatrixMode" />
 
-    <ContextMenu :visible="contextMenu.visible" :x="contextMenu.x" :y="contextMenu.y" @action="handleMenuAction"
-      @close="contextMenu.visible = false" />
-
     <div class="dashboard" @mousemove="handleMouseMove" :class="{ 'zen-mode': isZenMode }">
       <Transition name="identity-card">
         <LiquidIdentityCard
@@ -186,10 +379,10 @@ onUnmounted(() => {
         />
       </Transition>
 
-      <div class="layout-grid" :class="{ 'zen-active': isZenMode, 'intro-active': showIdentityCard, 'intro-leaving': isEnteringDashboard }">
+      <div v-if="!showIdentityCard" class="layout-grid" :class="{ 'zen-active': isZenMode, 'intro-leaving': isEnteringDashboard }">
 
         <!-- Profile Column -->
-        <UserProfile @open-terminal="showTerminal = true" @go-home="showIdentityCard = true" />
+        <UserProfile @open-terminal="showTerminal = true" @go-home="goHome" />
 
         <!-- Main Content Column (Command Bar + Tabbed Content) -->
         <div class="col-main-wrapper">
@@ -201,6 +394,7 @@ onUnmounted(() => {
             @open-terminal="showTerminal = true"
           />
           <MainContent
+            id="main-content"
             :is-zen-mode="isZenMode"
             @toggle-zen="toggleZenMode"
             @open-terminal="showTerminal = true"
@@ -232,8 +426,8 @@ onUnmounted(() => {
 /* We keep the layout grid and footer here as they define the page structure. */
 
 .dashboard {
-  height: 100vh;
-  width: 100vw;
+  height: 100dvh;
+  width: 100%;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -431,7 +625,7 @@ onUnmounted(() => {
   .dashboard {
     display: block;
     padding: 14px;
-    min-height: 100vh;
+    min-height: 100dvh;
     height: auto;
     overflow-x: hidden;
     overflow-y: auto;
@@ -462,7 +656,7 @@ onUnmounted(() => {
     text-align: center;
   }
   .dashboard.zen-mode {
-    height: 100vh !important;
+    height: 100dvh !important;
     overflow: hidden !important;
     display: flex !important;
     flex-direction: column;

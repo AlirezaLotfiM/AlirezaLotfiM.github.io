@@ -1,6 +1,5 @@
 <script setup>
-import { ref, watch, nextTick, onMounted } from 'vue';
-import mermaid from 'mermaid';
+import { nextTick, onUnmounted, ref, watch } from 'vue';
 
 const props = defineProps({
   visible: Boolean,
@@ -10,23 +9,30 @@ const props = defineProps({
 
 const emit = defineEmits(['close']);
 const containerRef = ref(null);
+const closeButtonRef = ref(null);
+let mermaidApi = null;
+let previousActiveElement = null;
 
-onMounted(() => {
-  mermaid.initialize({
+const getMermaid = async () => {
+  if (mermaidApi) return mermaidApi;
+  const module = await import('mermaid');
+  mermaidApi = module.default;
+  mermaidApi.initialize({
     startOnLoad: false,
     theme: 'dark',
-    securityLevel: 'loose',
+    securityLevel: 'strict',
     fontFamily: 'monospace',
   });
-});
+  return mermaidApi;
+};
 
 const renderDiagram = async () => {
   if (!props.diagram || !containerRef.value) return;
   containerRef.value.innerHTML = '<div class="loading">Generating Diagram...</div>';
 
   try {
-    // Unique ID for each render to avoid conflicts
-    const id = 'mermaid-' + Math.random().toString(36).substr(2, 9);
+    const mermaid = await getMermaid();
+    const id = `mermaid-${crypto.randomUUID?.() || Math.random().toString(36).slice(2)}`;
     const { svg } = await mermaid.render(id, props.diagram);
     containerRef.value.innerHTML = svg;
   } catch (e) {
@@ -35,27 +41,42 @@ const renderDiagram = async () => {
   }
 };
 
+const closeModal = () => emit('close');
+const handleKeydown = (event) => {
+  if (event.key === 'Escape') closeModal();
+  if (event.key === 'Tab') {
+    event.preventDefault();
+    closeButtonRef.value?.focus();
+  }
+};
+
 watch(() => props.visible, async (val) => {
   if (val) {
+    previousActiveElement = document.activeElement;
+    document.addEventListener('keydown', handleKeydown);
     await nextTick();
-    // Small delay to ensure DOM is ready and transition started
+    closeButtonRef.value?.focus();
     setTimeout(renderDiagram, 100);
   } else {
+    document.removeEventListener('keydown', handleKeydown);
     if (containerRef.value) containerRef.value.innerHTML = '';
+    previousActiveElement?.focus?.();
   }
 });
+
+onUnmounted(() => document.removeEventListener('keydown', handleKeydown));
 </script>
 
 <template>
   <Transition name="fade">
-    <div v-if="visible" class="modal-overlay" @click.self="$emit('close')">
-      <div class="modal-window glass-panel">
+    <div v-if="visible" class="modal-overlay" @click.self="closeModal">
+      <div class="modal-window glass-panel" role="dialog" aria-modal="true" aria-labelledby="architecture-title">
         <header class="modal-header">
           <div class="header-title">
             <span class="icon">🏗️</span>
-            <h3>Architecture: {{ title }}</h3>
+            <h3 id="architecture-title">Architecture: {{ title }}</h3>
           </div>
-          <button class="close-btn" @click="$emit('close')">✕</button>
+          <button ref="closeButtonRef" class="close-btn" @click="closeModal" aria-label="بستن نمودار معماری">✕</button>
         </header>
 
         <div class="diagram-wrapper">

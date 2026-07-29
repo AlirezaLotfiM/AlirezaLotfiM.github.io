@@ -5,7 +5,7 @@ const emit = defineEmits(['completed']);
 const progress = ref(0);
 
 onMounted(() => {
-  const duration = 2200; // total duration of the animation (2.2s)
+  const duration = 700;
   const start = performance.now();
   
   const updateProgress = (now) => {
@@ -19,7 +19,7 @@ onMounted(() => {
     if (pct < 1) {
       requestAnimationFrame(updateProgress);
     } else {
-      setTimeout(() => emit('completed'), 300);
+      setTimeout(() => emit('completed'), 100);
     }
   };
   
@@ -33,6 +33,7 @@ onMounted(() => {
     <div class="ambient-glow" :style="{ transform: `scale(${1 + progress * 0.005})`, opacity: 0.15 + (progress * 0.002) }"></div>
 
     <div class="loader-container">
+      <button class="skip-boot" type="button" @click="emit('completed')">رد کردن</button>
       <!-- Glowing Abstract Diamond Logo -->
       <div class="logo-container">
         <svg viewBox="0 0 100 100" class="logo-svg">
@@ -89,6 +90,18 @@ onMounted(() => {
   gap: 24px;
   position: relative;
   z-index: 2;
+}
+
+.skip-boot {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 999px;
+  padding: 8px 14px;
+  color: #f8fafc;
+  background: rgba(15, 23, 42, 0.72);
+  cursor: pointer;
 }
 
 .logo-container {

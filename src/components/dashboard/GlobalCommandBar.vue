@@ -20,6 +20,18 @@ const props = defineProps({
 
 const emit = defineEmits(['toggle-zen', 'open-terminal', 'toggle-matrix']);
 
+const normalizeLinkedInUrl = (value) => {
+  if (!value) return '';
+  if (/^https?:\/\//i.test(value)) return value;
+  return `https://www.linkedin.com/in/${value.replace(/^\/?in\//, '')}`;
+};
+
+const normalizeTelegramUrl = (value) => {
+  if (!value) return '';
+  if (/^https?:\/\//i.test(value)) return value;
+  return `https://t.me/${value.replace(/^@/, '')}`;
+};
+
 // Command Palette & Suggestions State
 const shellInputValue = ref('');
 const shellInputRef = ref(null);
@@ -625,25 +637,25 @@ onUnmounted(() => {
                   <span class="contact-val">{{ profile.contact.email }}</span>
                 </div>
               </a>
-              <a v-if="profile.contact?.linkedin" :href="'https://linkedin.com/in/' + profile.contact.linkedin" target="_blank" class="contact-card-link">
+              <a v-if="profile.contact?.linkedin" :href="normalizeLinkedInUrl(profile.contact.linkedin)" target="_blank" rel="noopener noreferrer" class="contact-card-link">
                 <span class="contact-icon">🔗</span>
                 <div class="contact-details">
                   <span class="contact-title">لینکدین</span>
-                  <span class="contact-val">/in/{{ profile.contact.linkedin }}</span>
+                  <span class="contact-val">{{ profile.contact.linkedin }}</span>
                 </div>
               </a>
-              <a v-if="userGithub" :href="'https://github.com/' + userGithub" target="_blank" class="contact-card-link">
+              <a v-if="userGithub" :href="'https://github.com/' + userGithub" target="_blank" rel="noopener noreferrer" class="contact-card-link">
                 <span class="contact-icon">🐙</span>
                 <div class="contact-details">
                   <span class="contact-title">گیت‌هاب</span>
                   <span class="contact-val">@{{ userGithub }}</span>
                 </div>
               </a>
-              <a v-if="profile.contact?.telegramId" :href="'https://t.me/' + profile.contact.telegramId" target="_blank" class="contact-card-link">
+              <a v-if="profile.contact?.telegramId" :href="normalizeTelegramUrl(profile.contact.telegramId)" target="_blank" rel="noopener noreferrer" class="contact-card-link">
                 <span class="contact-icon">✈️</span>
                 <div class="contact-details">
                   <span class="contact-title">تلگرام</span>
-                  <span class="contact-val">@{{ profile.contact.telegramId }}</span>
+                  <span class="contact-val">{{ profile.contact.telegramId }}</span>
                 </div>
               </a>
             </div>

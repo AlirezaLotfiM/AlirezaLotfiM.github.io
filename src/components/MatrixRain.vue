@@ -5,13 +5,19 @@ const props = defineProps(['color']);
 const canvasRef = ref(null);
 let ctx = null;
 let intervalId = null;
+const handleResize = () => {
+  const canvas = canvasRef.value;
+  if (!canvas) return;
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+};
 
 onMounted(() => {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const canvas = canvasRef.value;
   ctx = canvas.getContext('2d');
   
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  handleResize();
 
   const columns = Math.floor(canvas.width / 20);
   const drops = Array(columns).fill(1);
@@ -41,13 +47,13 @@ onMounted(() => {
   const isMobile = window.innerWidth < 768;
   intervalId = setInterval(draw, isMobile ? 80 : 45); // Slower on mobile to save battery
 
-  window.addEventListener('resize', () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  });
+  window.addEventListener('resize', handleResize);
 });
 
-onUnmounted(() => clearInterval(intervalId));
+onUnmounted(() => {
+  clearInterval(intervalId);
+  window.removeEventListener('resize', handleResize);
+});
 </script>
 
 <template>
