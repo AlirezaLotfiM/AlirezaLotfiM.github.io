@@ -1,8 +1,8 @@
 <script setup>
-import { defineAsyncComponent } from 'vue';
+import { ref, onMounted, onUnmounted, defineAsyncComponent } from 'vue';
 import { usePortfolio } from '../../composables/usePortfolio';
 import { useAudioSynth } from '../../composables/useAudioSynth';
-import { useNavigation } from '../../composables/useNavigation';
+import { useNavigation, getProjectPath } from '../../composables/useNavigation';
 
 const ProjectsTab = defineAsyncComponent(() => import('./tabs/ProjectsTab.vue'));
 const InterestsTab = defineAsyncComponent(() => import('./tabs/InterestsTab.vue'));
@@ -22,6 +22,7 @@ const {
   availableLanguages,
   projects,
   closeNote,
+  profile,
 } = usePortfolio();
 
 const { playClick } = useAudioSynth();
@@ -32,10 +33,62 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['toggle-zen']);
+
+const activeSection = ref('about');
+const contentBodyRef = ref(null);
+let observer = null;
+
+const navItems = [
+  { id: 'about', label: 'درباره من', num: '۰۰' },
+  { id: 'experience', label: 'سوابق کاری', num: '۰۱' },
+  { id: 'projects', label: 'پروژه‌ها', num: '۰۲' },
+  { id: 'interests', label: 'علاقه‌مندی‌ها', num: '۰۳' },
+  { id: 'roadmap', label: 'مسیر من', num: '۰۴' },
+  { id: 'notes', label: 'یادداشت‌ها', num: '۰۵' },
+];
+
+onMounted(() => {
+  if (!contentBodyRef.value) return;
+
+  const sections = contentBodyRef.value.querySelectorAll('.minimal-section');
+  if (!sections.length) return;
+
+  observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          activeSection.value = entry.target.id;
+        }
+      });
+    },
+    {
+      root: contentBodyRef.value,
+      threshold: 0.15,
+      rootMargin: '-10% 0px -40% 0px',
+    }
+  );
+
+  sections.forEach((sec) => observer.observe(sec));
+});
+
+onUnmounted(() => {
+  if (observer) observer.disconnect();
+});
+
+const scrollToSection = (sectionId, event) => {
+  playClick();
+  closeNote();
+  if (event) event.preventDefault();
+
+  const target = document.getElementById(sectionId);
+  if (target) {
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+};
 </script>
 
 <template>
-  <main class="col-main glass-panel main-box">
+  <main class="col-main minimalist-canvas main-box">
     <!-- Floating Exit Zen Button -->
     <button v-if="isZenMode" @click="playClick(); emit('toggle-zen')" class="exit-zen-btn" title="خروج از حالت تمرکز (Ctrl + Z)" dir="rtl">
       <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -44,147 +97,196 @@ const emit = defineEmits(['toggle-zen']);
       <span>خروج از حالت تمرکز</span>
     </button>
 
-    <header class="tabs-header" :class="{ hidden: isZenMode }">
-      <nav class="main-tabs" aria-label="بخش‌های اصلی">
-        <a :href="tabPaths.projects"
-          @click="playClick(); closeNote(); navigateFromEvent($event, tabPaths.projects)"
-          :aria-current="!selectedNote && activeTab === 'projects' ? 'page' : undefined"
-          :class="{ active: !selectedNote && activeTab === 'projects' }">
-          پروژه‌ها
-        </a>
-        <a :href="tabPaths.interests"
-          @click="playClick(); closeNote(); navigateFromEvent($event, tabPaths.interests)"
-          :aria-current="!selectedNote && activeTab === 'interests' ? 'page' : undefined"
-          :class="{ active: !selectedNote && activeTab === 'interests' }">
-          علاقه‌مندی
-        </a>
-        <a :href="tabPaths.roadmap"
-          @click="playClick(); closeNote(); navigateFromEvent($event, tabPaths.roadmap)"
-          :aria-current="!selectedNote && activeTab === 'roadmap' ? 'page' : undefined"
-          :class="{ active: !selectedNote && activeTab === 'roadmap' }">
-          مسیر من
-        </a>
-        <a :href="tabPaths.history"
-          @click="playClick(); closeNote(); navigateFromEvent($event, tabPaths.history)"
-          :aria-current="!selectedNote && activeTab === 'history' ? 'page' : undefined"
-          :class="{ active: !selectedNote && activeTab === 'history' }">
-          سوابق
-        </a>
-        <a :href="tabPaths.guestbook"
-          @click="playClick(); closeNote(); navigateFromEvent($event, tabPaths.guestbook)"
-          :aria-current="!selectedNote && activeTab === 'guestbook' ? 'page' : undefined"
-          :class="{ active: !selectedNote && activeTab === 'guestbook' }">
-          یادگاری
-        </a>
-        <a :href="tabPaths.notes"
-          @click="playClick(); closeNote(); navigateFromEvent($event, tabPaths.notes)"
-          :aria-current="activeTab === 'notes' || selectedNote ? 'page' : undefined"
-          :class="{ active: activeTab === 'notes' || selectedNote }">
-          یادداشت
+    <!-- Minimalist Navigation Bar -->
+    <header class="minimal-nav-bar" :class="{ hidden: isZenMode }">
+      <nav class="minimal-nav-list" aria-label="ناوبری اصلی">
+        <a
+          v-for="item in navItems"
+          :key="item.id"
+          :href="`#${item.id}`"
+          @click="scrollToSection(item.id, $event)"
+          :class="{ active: !selectedNote && activeSection === item.id }"
+        >
+          <span class="nav-num mono-ui" dir="ltr">{{ item.num }}</span>
+          <span class="nav-label">{{ item.label }}</span>
         </a>
       </nav>
 
-      <div v-if="activeTab === 'projects' && !selectedNote" class="header-controls">
-        <div class="project-controls">
-          <div class="filter-chips">
-            <button v-for="lang in availableLanguages" :key="lang" @click="activeFilter = lang"
-              :class="{ 'active-filter': activeFilter === lang }" class="filter-btn">
-              <span>{{ lang === 'All' ? 'همه' : lang }}</span>
-              <span class="chip-count">
-                {{ lang === 'All' ? projects.length : projects.filter(p => p.language && p.language.includes(lang)).length }}
-              </span>
-            </button>
-          </div>
+      <div v-if="(activeSection === 'projects' || activeTab === 'projects') && !selectedNote" class="minimal-filter-row">
+        <div class="filter-chips">
+          <button v-for="lang in availableLanguages" :key="lang" @click="activeFilter = lang"
+            :class="{ 'active-filter': activeFilter === lang }" class="filter-btn">
+            <span>{{ lang === 'All' ? 'همه' : lang }}</span>
+            <span class="chip-count">
+              {{ lang === 'All' ? projects.length : projects.filter(p => p.language && p.language.includes(lang)).length }}
+            </span>
+          </button>
         </div>
       </div>
     </header>
 
-    <div class="content-body">
+    <div class="content-body minimal-scroll-pane" ref="contentBodyRef">
       <div v-if="loading" class="loading-skeletons">
         <SkeletonGrid v-if="activeTab === 'projects' || activeTab === 'interests'" />
         <SkeletonList v-else />
       </div>
 
-      <Transition name="fade-slide" mode="out-in">
-        <div v-if="!loading && selectedNote" class="thread-view-wrapper" key="thread">
-          <NotesTab :is-detail="true" @toggle-zen="emit('toggle-zen')" :is-zen-mode="isZenMode" />
-        </div>
+      <div v-else-if="selectedNote" class="thread-view-wrapper">
+        <NotesTab :is-detail="true" @toggle-zen="emit('toggle-zen')" :is-zen-mode="isZenMode" />
+      </div>
 
-        <ProjectsTab v-else-if="!loading && activeTab === 'projects'" key="projects" />
-        <InterestsTab v-else-if="!loading && activeTab === 'interests'" key="interests" />
-        <RoadmapTab v-else-if="!loading && activeTab === 'roadmap'" key="roadmap" />
-        <HistoryTab v-else-if="!loading && activeTab === 'history'" key="history" />
-        <GuestbookTab v-else-if="!loading && activeTab === 'guestbook'" key="guestbook" />
-        <NotesTab v-else-if="!loading && activeTab === 'notes'" key="notes" />
-      </Transition>
+      <!-- Pure Minimalist Canvas Content Stream -->
+      <div v-else class="minimal-canvas-stream">
+        <!-- 00 // ABOUT ME -->
+        <section id="about" class="minimal-section">
+          <div class="section-title-line">
+            <span class="sec-num mono-ui" dir="ltr">00 //</span>
+            <h2>درباره من</h2>
+          </div>
+          <div class="about-text-block">
+            <p class="lead-paragraph">
+              من <strong>علیرضا لطفی مقدم</strong> هستم؛ مهندس نرم‌افزار ارشد و معمار سیستم متمرکز بر <strong>C#، ASP.NET Core، سیستم‌های توزیع‌شده و WPF</strong>.
+            </p>
+            <p>
+              بیش از ۶ سال است که در زمینه طراحی سامانه‌های با کارایی بالا (High-Performance)، یکپارچه‌سازی سخت‌افزاری و بیومتریک (Suprema/WIA)، معمار سرویس‌های بلادرنگ (SignalR) و توسعه ابزارهای هوشمند دسکتاپ فعالیت می‌کنم.
+            </p>
+          </div>
+        </section>
+
+        <!-- 01 // EXPERIENCE -->
+        <section id="experience" class="minimal-section">
+          <div class="section-title-line">
+            <span class="sec-num mono-ui" dir="ltr">01 //</span>
+            <h2>سوابق کاری</h2>
+          </div>
+          <HistoryTab />
+        </section>
+
+        <!-- 02 // PROJECTS -->
+        <section id="projects" class="minimal-section">
+          <div class="section-title-line">
+            <span class="sec-num mono-ui" dir="ltr">02 //</span>
+            <h2>پروژه‌های برجسته</h2>
+          </div>
+          <ProjectsTab />
+        </section>
+
+        <!-- 03 // INTERESTS -->
+        <section id="interests" class="minimal-section">
+          <div class="section-title-line">
+            <span class="sec-num mono-ui" dir="ltr">03 //</span>
+            <h2>علاقه‌مندی‌ها و حوزه‌های تخصصی</h2>
+          </div>
+          <InterestsTab />
+        </section>
+
+        <!-- 04 // ROADMAP -->
+        <section id="roadmap" class="minimal-section">
+          <div class="section-title-line">
+            <span class="sec-num mono-ui" dir="ltr">04 //</span>
+            <h2>مسیر من و یادگیری</h2>
+          </div>
+          <RoadmapTab />
+        </section>
+
+        <!-- 05 // NOTES -->
+        <section id="notes" class="minimal-section">
+          <div class="section-title-line">
+            <span class="sec-num mono-ui" dir="ltr">05 //</span>
+            <h2>یادداشت‌های فنی</h2>
+          </div>
+          <NotesTab />
+        </section>
+
+        <!-- 06 // GUESTBOOK -->
+        <section id="guestbook" class="minimal-section">
+          <div class="section-title-line">
+            <span class="sec-num mono-ui" dir="ltr">06 //</span>
+            <h2>یادگاری</h2>
+          </div>
+          <GuestbookTab />
+        </section>
+      </div>
     </div>
   </main>
 </template>
 
 <style scoped>
-.col-main {
+.minimalist-canvas {
   height: 100%;
   min-height: 0;
-  transition: 0.3s;
+  display: flex;
+  flex-direction: column;
+  background: transparent;
+  border: none;
+  box-shadow: none;
 }
 
-.tabs-header.hidden {
+.minimal-nav-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 16px;
+  background: var(--item-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.minimal-nav-bar.hidden {
   display: none !important;
 }
 
-.main-tabs {
+.minimal-nav-list {
   display: flex;
-  width: 100%;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.44);
+  gap: 8px;
   overflow-x: auto;
   scrollbar-width: none;
 }
 
-.main-tabs::-webkit-scrollbar {
+.minimal-nav-list::-webkit-scrollbar {
   display: none;
 }
 
-.main-tabs a {
-  flex: 1;
-  padding: 15px 12px;
-  font-size: 0.86rem;
+.minimal-nav-list a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 12px;
+  font-size: 0.84rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: all 0.2s ease;
   white-space: nowrap;
   background: transparent;
-  border: none;
-  border-bottom: 2px solid transparent;
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  margin-bottom: -1px;
-  text-align: center;
-  min-width: fit-content;
-  position: relative;
+  border: 1px solid transparent;
 }
 
-.main-tabs a:hover {
+.minimal-nav-list a:hover {
   color: var(--text-main);
   background: var(--item-hover-bg);
+  border-color: var(--panel-border);
 }
 
-.main-tabs a.active {
-  color: var(--text-main);
-  border-bottom: 2px solid var(--neon);
-  background: var(--item-bg);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    0 8px 18px rgba(0, 0, 0, 0.15);
+.minimal-nav-list a.active {
+  color: var(--neon);
+  background: rgba(56, 189, 248, 0.1);
+  border-color: var(--neon);
+  font-weight: 700;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.2);
 }
 
-.header-controls {
-  border-top: 1px solid rgba(255, 255, 255, 0.26);
-  padding: 10px 24px 0;
+.nav-num {
+  font-size: 0.72rem;
+  opacity: 0.7;
 }
 
-.project-controls {
+.minimal-filter-row {
   display: flex;
-  width: 100%;
-  align-items: center;
-  min-height: 36px;
+  padding-top: 8px;
+  border-top: 1px solid var(--panel-border);
 }
 
 .filter-chips {
@@ -205,7 +307,6 @@ const emit = defineEmits(['toggle-zen']);
   border-radius: 999px;
   cursor: pointer;
   transition: 0.2s;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 .filter-btn:hover {
@@ -219,7 +320,6 @@ const emit = defineEmits(['toggle-zen']);
   color: var(--neon);
   border-color: var(--neon);
   font-weight: 700;
-  box-shadow: 0 0 10px rgba(56, 189, 248, 0.25);
 }
 
 .chip-count {
@@ -232,18 +332,66 @@ const emit = defineEmits(['toggle-zen']);
   font-family: var(--font-mono, monospace);
 }
 
-.filter-btn.active-filter .chip-count {
-  background: var(--neon);
-  color: #040814;
-  border-color: var(--neon);
+.minimal-scroll-pane {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 4px;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+.minimal-canvas-stream {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+}
+
+.minimal-section {
+  scroll-margin-top: 20px;
+}
+
+.section-title-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--panel-border);
+}
+
+.sec-num {
+  font-size: 0.9rem;
+  color: var(--neon);
   font-weight: 700;
 }
 
-.content-body {
-  padding: 22px 24px 24px;
-  overflow-y: auto;
-  height: 100%;
-  -webkit-overflow-scrolling: touch;
+.section-title-line h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: var(--text-main);
+  font-weight: 700;
+}
+
+.about-text-block {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 22px 24px;
+  background: var(--item-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 18px;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.lead-paragraph {
+  color: var(--text-main);
+  font-size: 1.05rem;
+}
+
+.about-text-block strong {
+  color: var(--neon);
 }
 
 .exit-zen-btn {
@@ -263,86 +411,5 @@ const emit = defineEmits(['toggle-zen']);
   cursor: pointer;
   transition: all 0.25s ease;
   backdrop-filter: blur(10px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  font-family: inherit;
-}
-
-.exit-zen-btn:hover {
-  border-color: var(--neon);
-  color: var(--text-main);
-  box-shadow: 0 0 10px rgba(var(--neon-rgb), 0.2);
-  transform: translateY(-1px);
-}
-
-.exit-zen-btn:active {
-  transform: translateY(0) scale(0.97);
-}
-
-.tabs-header {
-  position: relative;
-}
-
-@media (max-width: 1024px) {
-  .col-main {
-    order: 2;
-    height: auto;
-    min-height: 420px;
-  }
-
-  .tabs-header {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .header-controls,
-  .content-body {
-    padding-left: 14px;
-    padding-right: 14px;
-  }
-
-  .content-body {
-    overflow: visible;
-    height: auto;
-  }
-
-  .main-tabs {
-    padding: 0 6px;
-    gap: 4px;
-    border-bottom: none;
-    flex-wrap: nowrap;
-    scroll-padding-inline: 14px;
-  }
-
-  .main-tabs a {
-    flex: 0 0 auto;
-    padding: 12px 14px;
-    border: 1px solid rgba(214, 229, 243, 0.78);
-    border-radius: 14px;
-    margin-bottom: 0;
-    background: rgba(255, 255, 255, 0.4);
-  }
-
-  .main-tabs a.active {
-    border-bottom: 1px solid rgba(179, 202, 225, 1);
-  }
-}
-
-@media (max-width: 640px) {
-  .col-main {
-    min-height: 0;
-  }
-
-  .header-controls,
-  .content-body {
-    padding-left: 12px;
-    padding-right: 12px;
-  }
-  
-  .exit-zen-btn {
-    top: 14px;
-    right: 14px;
-    padding: 6px 10px;
-    font-size: 0.72rem;
-  }
 }
 </style>
