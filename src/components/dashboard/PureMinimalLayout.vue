@@ -56,8 +56,11 @@ const getTechList = (langString) => {
 const formatStatus = (st) => {
   if (!st) return null;
   const lower = st.toLowerCase();
-  if (lower.includes('live') || lower.includes('prod')) return { text: 'عملیاتی', type: 'prod' };
-  if (lower.includes('ship') || lower.includes('dev')) return { text: 'در حال توسعه', type: 'dev' };
+  if (lower.includes('عملیاتی') || lower.includes('live') || lower.includes('prod')) return { text: 'عملیاتی', type: 'prod' };
+  if (lower.includes('فعال') || lower.includes('active')) return { text: 'فعال', type: 'prod' };
+  if (lower.includes('پایدار') || lower.includes('stable')) return { text: 'پایدار', type: 'prod' };
+  if (lower.includes('توسعه') || lower.includes('طراحی') || lower.includes('ship') || lower.includes('dev')) return { text: 'در حال توسعه', type: 'dev' };
+  if (lower.includes('پشتیبانی') || lower.includes('maintained')) return { text: 'در حال پشتیبانی', type: 'neutral' };
   return { text: st, type: 'neutral' };
 };
 
@@ -384,7 +387,7 @@ const scrollToSection = (sectionId, event) => {
               <div class="meta-line">
                 <span class="tech-stack mono-ui" dir="ltr">{{ p.language }}</span>
                 <button v-if="p.architecture" class="arch-btn mono-ui" @click="openArchitecture(p)">
-                  architecture ↗
+                  نمودار معماری ↗
                 </button>
               </div>
             </article>
