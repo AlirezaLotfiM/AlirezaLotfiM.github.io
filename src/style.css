@@ -80,6 +80,14 @@ html {
   scroll-behavior: smooth;
 }
 
+html.resume-active,
+body.resume-active {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  height: auto !important;
+  min-height: 100vh !important;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -255,5 +263,48 @@ pre,
   body::before,
   body::after {
     display: none !important;
+  }
+}
+
+@media print {
+  html,
+  body,
+  #app,
+  .main-wrapper,
+  .dashboard,
+  .resume-mode-container,
+  .cv-wrapper {
+    overflow: visible !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    width: 100% !important;
+    max-width: none !important;
+    position: static !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+    box-shadow: none !important;
+    transform: none !important;
+    filter: none !important;
+  }
+
+  body::before,
+  body::after,
+  #app::before,
+  .ambient-backdrop,
+  .ambient-orb,
+  .cyber-bg,
+  canvas,
+  .cursor-wrapper,
+  .skip-link,
+  .no-print,
+  .cv-toolbar,
+  .app-footer,
+  #app-update-toast {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
   }
 }

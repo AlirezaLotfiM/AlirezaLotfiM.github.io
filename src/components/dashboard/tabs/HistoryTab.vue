@@ -1,236 +1,248 @@
 <script setup>
-import { onMounted, onUnmounted, ref, nextTick } from 'vue';
 import { useWorkExperience } from '../../../composables/useWorkExperience';
 
 const { workExperiences } = useWorkExperience();
-
-const observer = ref(null);
-
-onMounted(async () => {
-  await nextTick();
-
-  observer.value = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      // Toggle active class based on intersection
-      if (entry.isIntersecting) {
-        entry.target.classList.add('active');
-      } else {
-        // Optional: remove active class when scrolling away to re-trigger effect
-        entry.target.classList.remove('active');
-      }
-    });
-  }, {
-    threshold: 0.2, // Trigger when 20% visible
-    rootMargin: "-100px 0px -100px 0px" // Trigger slightly inwards
-  });
-
-  const items = document.querySelectorAll('.timeline-item');
-  items.forEach(el => observer.value.observe(el));
-});
-
-onUnmounted(() => {
-  if (observer.value) observer.value.disconnect();
-});
 </script>
 
 <template>
-  <div class="timeline-container">
-    <div class="neon-line"></div>
-
-    <div v-for="(job, index) in workExperiences" :key="job.id" class="timeline-item">
-
-      <!-- Right Side: Header (In RTL context, first child is Right) -->
-      <div class="time-header glass-panel">
-        <h3>{{ job.title }}</h3>
-        <div class="company-row">
-           <span class="company-badge">{{ job.company }}</span>
-           <span class="period">{{ job.period }}</span>
-        </div>
+  <div class="history-shell">
+    <div class="history-header-bar">
+      <div class="header-title-block">
+        <h3>💼 سوابق شغلی و تجربیات کلیدی</h3>
+        <p class="subtitle">مسیر فعالیت‌های حرفه‌ای و پروژه‌های اجرا شده در مجموعه شرکت‌ها و تیم‌ها</p>
       </div>
+    </div>
 
-      <!-- Center: Marker -->
-      <div class="time-marker">
-        <div class="neon-dot"></div>
-      </div>
+    <div class="timeline-container">
+      <div class="neon-line"></div>
 
-      <!-- Left Side: Content -->
-      <div class="time-body glass-panel">
-        <div class="desc-content">
-          <ul v-if="Array.isArray(job.description)" class="desc-list">
-            <li v-for="(line, i) in job.description" :key="i">{{ line }}</li>
-          </ul>
-          <p v-else>{{ job.description }}</p>
+      <div v-for="(job, index) in workExperiences" :key="job.id || index" class="timeline-item">
+        <!-- Right Side: Header (RTL Right side) -->
+        <div class="time-header glass-panel">
+          <div class="job-meta-head">
+            <h4 class="job-title">{{ job.title }}</h4>
+            <span class="company-badge">{{ job.company }}</span>
+          </div>
+          <span class="period-tag" dir="ltr">{{ job.period }}</span>
         </div>
 
-        <div class="tech-stack" v-if="job.technologies">
-          <span v-for="t in job.technologies" :key="t" class="tech-pill">{{ t }}</span>
+        <!-- Center: Marker Dot -->
+        <div class="time-marker">
+          <div class="neon-dot"></div>
+        </div>
+
+        <!-- Left Side: Content & Responsibilities -->
+        <div class="time-body glass-panel">
+          <div class="desc-content">
+            <ul v-if="Array.isArray(job.description)" class="desc-list">
+              <li v-for="(line, i) in job.description" :key="i">{{ line }}</li>
+            </ul>
+            <p v-else class="desc-text">{{ job.description }}</p>
+          </div>
+
+          <div class="tech-stack" v-if="job.technologies && job.technologies.length > 0">
+            <span v-for="t in job.technologies" :key="t" class="tech-pill" dir="ltr">{{ t }}</span>
+          </div>
         </div>
       </div>
-
     </div>
   </div>
 </template>
 
 <style scoped>
-.timeline-container {
-  position: relative;
-  padding: 40px 10px;
-  max-width: 1000px;
-  margin: 0 auto;
+.history-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-/* The vertical neon line */
+.history-header-bar {
+  padding: 16px 20px;
+  background: var(--item-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 16px;
+}
+
+.header-title-block h3 {
+  margin: 0 0 4px 0;
+  font-size: 1.1rem;
+  color: var(--text-main);
+}
+
+.header-title-block .subtitle {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.timeline-container {
+  position: relative;
+  padding: 20px 0;
+  max-width: 1000px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* The vertical timeline line */
 .neon-line {
   position: absolute;
   top: 0;
   bottom: 0;
-  left: 50%; /* Centered */
+  left: 50%;
   width: 2px;
-  background: rgba(255, 255, 255, 0.1);
+  background: linear-gradient(180deg, var(--neon) 0%, rgba(56, 189, 248, 0.2) 100%);
   transform: translateX(-50%);
   z-index: 0;
-  box-shadow: 0 0 5px rgba(255, 255, 255, 0.05);
 }
 
 .timeline-item {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start; /* Align top */
-  margin-bottom: 60px;
+  align-items: stretch;
+  margin-bottom: 24px;
   position: relative;
   z-index: 1;
-  opacity: 0.3; /* Dimmed by default */
-  filter: blur(2px);
-  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-  transform: scale(0.95);
-}
-
-.timeline-item.active {
   opacity: 1;
-  filter: blur(0);
-  transform: scale(1);
+  transition: all 0.3s ease;
 }
 
-.timeline-item.active .neon-dot {
+.timeline-item:hover {
+  transform: translateY(-2px);
+}
+
+.timeline-item:hover .neon-dot {
   background: var(--neon);
-  box-shadow: 0 0 10px var(--neon), 0 0 20px var(--neon);
-  border-color: #fff;
+  box-shadow: 0 0 12px var(--neon);
+  border-color: #ffffff;
 }
 
-.timeline-item.active .glass-panel {
+.timeline-item:hover .glass-panel {
   border-color: var(--neon);
+  background: var(--item-hover-bg);
 }
 
 /* Columns */
 .time-header, .time-body {
   width: 45%;
-  padding: 20px;
+  padding: 18px 20px;
   border: 1px solid var(--panel-border);
-  border-radius: 12px;
+  border-radius: 16px;
   background: var(--item-bg);
   transition: 0.3s;
-}
-
-.time-header::after, .time-body::after {
-  border-radius: 11px !important;
 }
 
 .time-header {
   text-align: right;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   gap: 10px;
+}
+
+.job-meta-head {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.job-title {
+  margin: 0;
+  color: var(--text-main);
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.company-badge {
+  font-weight: 700;
+  color: var(--neon);
+  font-size: 0.9rem;
+}
+
+.period-tag {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  font-family: var(--font-mono, monospace);
+  background: rgba(15, 23, 42, 0.6);
+  padding: 4px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--panel-border);
+  align-self: flex-start;
 }
 
 .time-body {
   text-align: right;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .time-marker {
   width: 10%;
   display: flex;
   justify-content: center;
-  padding-top: 20px; /* Align dot with content roughly */
+  align-items: center;
 }
 
 .neon-dot {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: #222;
-  border: 2px solid #555;
-  transition: 0.5s;
-}
-
-/* Header Styles */
-.time-header h3 {
-  margin: 0;
-  color: var(--text-main);
-  font-size: 1.1rem;
-}
-
-.company-row {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.company-badge {
-  font-weight: bold;
-  color: var(--neon);
-}
-
-.period {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  font-family: monospace;
+  background: var(--bg-main);
+  border: 2px solid var(--neon);
+  transition: 0.3s;
 }
 
 /* Body Styles */
 .desc-list {
   margin: 0;
-  padding-right: 20px;
-  font-size: 0.9rem;
-  color: var(--text-muted);
-  line-height: 1.6;
+  padding-right: 18px;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
 }
 
 .desc-list li {
-  margin-bottom: 5px;
+  margin-bottom: 6px;
+}
+
+.desc-text {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
 }
 
 .tech-stack {
-  margin-top: 15px;
+  margin-top: 14px;
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
 }
 
 .tech-pill {
-  font-size: 0.7rem;
-  background: rgba(255, 255, 255, 0.05);
-  padding: 2px 8px;
-  border-radius: 4px;
-  color: var(--text-secondary);
+  font-size: 0.74rem;
+  background: rgba(56, 189, 248, 0.08);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  padding: 3px 10px;
+  border-radius: 6px;
+  color: var(--text-main);
+  font-weight: 500;
 }
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .timeline-container {
-    padding: 20px 0;
+    padding: 10px 0;
   }
 
   .neon-line {
-    left: 20px; /* Move line to right/left side depending on RTL? */
-    /* Assuming RTL: Left side of screen is "Left". */
-    /* Actually let's just stack them and remove the central line complexity */
     display: none;
   }
 
   .timeline-item {
     flex-direction: column;
-    gap: 15px;
-    margin-bottom: 40px;
+    gap: 12px;
+    margin-bottom: 20px;
   }
 
   .time-marker {
@@ -239,10 +251,6 @@ onUnmounted(() => {
 
   .time-header, .time-body {
     width: 100%;
-  }
-
-  .timeline-item.active {
-    transform: none;
   }
 }
 </style>

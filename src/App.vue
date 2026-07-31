@@ -28,6 +28,9 @@ const SkillRack = defineAsyncComponent(() => import("./components/dashboard/Skil
 const GlobalCommandBar = defineAsyncComponent(
   () => import("./components/dashboard/GlobalCommandBar.vue"),
 );
+const PrintResumeView = defineAsyncComponent(
+  () => import("./components/PrintResumeView.vue"),
+);
 
 // --- Composables ---
 const {
@@ -145,6 +148,16 @@ const plainText = (value) =>
 
 const updateRouteState = () => {
   const nextRoute = route.value;
+  if (typeof document !== "undefined") {
+    if (nextRoute.isResume) {
+      document.documentElement.classList.add("resume-active");
+      document.body.classList.add("resume-active");
+    } else {
+      document.documentElement.classList.remove("resume-active");
+      document.body.classList.remove("resume-active");
+    }
+  }
+
   if (nextRoute.isHome) {
     showIdentityCard.value = true;
     closeNote();
@@ -273,6 +286,10 @@ const updateRouteSEO = () => {
       title: "دفترچه یادگاری | علیرضا لطفی مقدم",
       description: "پیام‌ها و بازخوردهای بازدیدکنندگان پورتفولیوی علیرضا لطفی مقدم.",
     },
+    resume: {
+      title: "رزومه علیرضا لطفی مقدم | Printable Resume",
+      description: "نسخه قابل چاپ و متنی رزومه علیرضا لطفی مقدم، ارشد نرم‌افزار.",
+    },
   };
   const meta = sectionSEO[nextRoute.section] || sectionSEO.home;
 
@@ -366,7 +383,7 @@ onUnmounted(() => {
       telegram: profile.contact?.telegramId,
     }" :learning="profile.learning" :version="appVersion" username="Damoon" role="Software Engineer" @close="showTerminal = false; terminalInitialCommand = ''" @toggle-matrix="isMatrixMode = !isMatrixMode" />
 
-    <div class="dashboard" @mousemove="handleMouseMove" :class="{ 'zen-mode': isZenMode }">
+    <div class="dashboard" @mousemove="handleMouseMove" :class="{ 'zen-mode': isZenMode, 'resume-active': route.isResume }">
       <Transition name="identity-card">
         <LiquidIdentityCard
           v-if="showIdentityCard"
@@ -379,7 +396,11 @@ onUnmounted(() => {
         />
       </Transition>
 
-      <div v-if="!showIdentityCard" class="layout-grid" :class="{ 'zen-active': isZenMode, 'intro-leaving': isEnteringDashboard }">
+      <div v-if="route.isResume" class="resume-mode-container">
+        <PrintResumeView />
+      </div>
+
+      <div v-else-if="!showIdentityCard" class="layout-grid" :class="{ 'zen-active': isZenMode, 'intro-leaving': isEnteringDashboard }">
 
         <!-- Profile Column -->
         <UserProfile @open-terminal="showTerminal = true" @go-home="goHome" />
@@ -441,6 +462,19 @@ onUnmounted(() => {
 
 .dashboard.zen-mode {
   padding: 0 !important;
+}
+
+.dashboard.resume-active {
+  overflow-y: auto !important;
+  height: auto !important;
+  min-height: 100dvh;
+}
+
+.resume-mode-container {
+  flex: 1;
+  width: 100%;
+  overflow-y: auto;
+  min-height: 0;
 }
 
 .layout-grid {

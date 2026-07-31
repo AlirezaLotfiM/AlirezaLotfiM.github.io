@@ -4,7 +4,7 @@ import { usePortfolio } from '../../../composables/usePortfolio';
 import { useTilt } from '../../../composables/useTilt';
 import { getProjectPath, useNavigation } from '../../../composables/useNavigation';
 
-const { projects, filteredProjects, getTechDetails } = usePortfolio();
+const { projects, filteredProjects, availableLanguages, activeFilter, getTechDetails } = usePortfolio();
 const { handleCardTilt, resetCard } = useTilt();
 const { route, tabPaths, navigateFromEvent } = useNavigation();
 const ArchitectureModal = defineAsyncComponent(() => import('../../ArchitectureModal.vue'));
@@ -12,6 +12,18 @@ const ArchitectureModal = defineAsyncComponent(() => import('../../ArchitectureM
 const showArchModal = ref(false);
 const currentArchDiagram = ref('');
 const currentArchTitle = ref('');
+const copiedLink = ref(false);
+
+const copyProjectLink = (project) => {
+  if (!project) return;
+  const path = getProjectPath(project);
+  const fullUrl = `${window.location.origin}${path}`;
+  navigator.clipboard.writeText(fullUrl);
+  copiedLink.value = true;
+  setTimeout(() => {
+    copiedLink.value = false;
+  }, 2000);
+};
 
 const tooltip = ref({
   visible: false,
@@ -68,6 +80,13 @@ const selectedProject = computed(() =>
           <p>{{ selectedProject.description }}</p>
         </div>
         <div class="project-actions">
+          <button
+            class="share-btn mono-ui"
+            @click="copyProjectLink(selectedProject)"
+            :title="copiedLink ? 'کپی شد' : 'کپی لینک پروژه'"
+          >
+            {{ copiedLink ? 'کپی شد! ✅' : '🔗 کپی لینک' }}
+          </button>
           <a
             v-if="selectedProject.html_url && selectedProject.html_url !== '#'"
             :href="selectedProject.html_url"
@@ -495,18 +514,91 @@ const selectedProject = computed(() =>
   opacity: 1;
 }
 
-.arch-btn {
+.arch-btn, .share-btn {
   border: 1px solid var(--panel-border);
   background: var(--item-bg);
   color: var(--accent-strong);
   border-radius: 12px;
-  padding: 8px 10px;
+  padding: 8px 12px;
   cursor: pointer;
   transition: all 0.2s;
+  font-size: 0.85rem;
 }
-.arch-btn:hover {
+.arch-btn:hover, .share-btn:hover {
   background: var(--item-hover-bg);
   border-color: var(--neon);
+}
+
+.filter-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 18px;
+  background: var(--item-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 16px;
+  margin-bottom: 16px;
+}
+
+.filter-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 10px;
+  background: var(--bar-bg);
+  border: 1px solid var(--panel-border);
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.filter-chip:hover {
+  border-color: var(--neon);
+  color: var(--text-main);
+  background: var(--item-hover-bg);
+}
+
+.filter-chip.active {
+  background: rgba(56, 189, 248, 0.15);
+  border-color: var(--neon);
+  color: var(--neon);
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.25);
+}
+
+.chip-count {
+  font-size: 0.72rem;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--panel-border);
+  color: var(--text-soft);
+  font-family: var(--font-mono, monospace);
+}
+
+.filter-chip.active .chip-count {
+  background: var(--neon);
+  color: #040814;
+  border-color: var(--neon);
+  font-weight: 700;
 }
 
 @media (max-width: 1024px) {

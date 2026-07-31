@@ -70,14 +70,29 @@ const staleWhileRevalidate = async (request, cacheName) => {
   const cache = await caches.open(cacheName);
   const cached = await cache.match(request);
 
-  const networkFetch = fetch(request).then((response) => {
+  if (cached) {
+    fetch(request)
+      .then((response) => {
+        if (response && response.ok && request.method === 'GET') {
+          cache.put(request, response.clone());
+        }
+      })
+      .catch(() => {});
+    return cached;
+  }
+
+  try {
+    const response = await fetch(request);
     if (response && response.ok && request.method === 'GET') {
       cache.put(request, response.clone());
     }
     return response;
-  }).catch(() => cached);
-
-  return cached || networkFetch;
+  } catch (error) {
+    if (isNavigationRequest(request)) {
+      return (await caches.match('/offline.html')) || (await caches.match('/index.html'));
+    }
+    throw error;
+  }
 };
 
 self.addEventListener('fetch', (event) => {

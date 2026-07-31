@@ -6,34 +6,52 @@ const { roadmapItems } = usePortfolio();
 const { handleCardTilt, resetCard } = useTilt();
 
 const statusMap = {
-  done: 'stable',
-  progress: 'shipping',
-  todo: 'queued',
+  done: 'ارتقا یافته',
+  progress: 'در حال یادگیری',
+  todo: 'در برنامه آینده',
 };
 </script>
 
 <template>
   <div class="roadmap-shell">
+    <div class="roadmap-header-bar">
+      <div class="header-title-block">
+        <h3>🗺️ مسیر یادگیری و توسعه اهداف فنی</h3>
+        <p class="subtitle">اهداف کوتاه مدت و بلندمدت در معماری نرم‌افزار، هوش مصنوعی و توسعه ابزارها</p>
+      </div>
+    </div>
+
     <div class="roadmap-list">
-      <div v-for="(step, index) in roadmapItems" :key="index" class="roadmap-item spotlight-card"
-        :class="step.status" @mousemove="handleCardTilt" @mouseleave="resetCard">
+      <div
+        v-for="(step, index) in roadmapItems"
+        :key="index"
+        class="roadmap-item spotlight-card"
+        :class="step.status"
+        @mousemove="handleCardTilt"
+        @mouseleave="resetCard"
+      >
         <div class="spotlight-bg"></div>
-        <div class="step-line"></div>
-        <div class="step-dot"></div>
+        <div class="step-indicator">
+          <div class="step-dot"></div>
+          <div class="step-line" v-if="index < roadmapItems.length - 1"></div>
+        </div>
+
         <div class="step-content">
-          <div class="item-topline mono-ui" dir="ltr">
-            <span>step_{{ index + 1 }}</span>
-            <span>{{ statusMap[step.status] }}</span>
+          <div class="item-topline">
+            <span class="step-badge mono-ui" dir="ltr">STEP {{ index + 1 }}</span>
+            <span class="status-badge" :class="step.status">
+              {{
+                step.status === 'done'
+                  ? 'انجام شده ✅'
+                  : step.status === 'progress'
+                    ? 'در حال پیشرفت 🚧'
+                    : 'در برنامه آینده 📅'
+              }}
+            </span>
           </div>
+
           <h4>{{ step.title }}</h4>
           <p>{{ step.desc }}</p>
-          <span class="status-badge">{{
-            step.status === 'done'
-              ? 'انجام شده ✅'
-              : step.status === 'progress'
-                ? 'در حال کار 🚧'
-                : 'در برنامه 📅'
-          }}</span>
         </div>
       </div>
     </div>
@@ -44,106 +62,150 @@ const statusMap = {
 .roadmap-shell {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 20px;
 }
 
+.roadmap-header-bar {
+  padding: 16px 20px;
+  background: var(--item-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 16px;
+}
 
+.header-title-block h3 {
+  margin: 0 0 4px 0;
+  font-size: 1.1rem;
+  color: var(--text-main);
+}
 
+.header-title-block .subtitle {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
 
 .roadmap-list {
   display: flex;
   flex-direction: column;
-  gap: 18px;
-  padding: 4px 0;
+  gap: 16px;
 }
 
 .roadmap-item {
   position: relative;
-  padding: 22px 60px 22px 22px;
+  display: flex;
+  gap: 20px;
+  padding: 20px 22px;
   background: var(--item-bg);
   border: 1px solid var(--panel-border);
-  border-radius: 20px;
+  border-radius: 18px;
   overflow: hidden;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    0 12px 28px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 10px 24px rgba(0, 0, 0, 0.15);
 }
 
 .roadmap-item:hover {
   border-color: var(--neon);
   background: var(--item-hover-bg);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.08),
-    0 18px 34px rgba(0, 0, 0, 0.22);
+  transform: translateY(-2px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 16px 30px rgba(0, 0, 0, 0.22);
 }
 
-.step-line {
-  position: absolute;
-  right: 30px;
-  top: 0;
-  bottom: 0;
-  width: 2px;
-  background: var(--panel-border);
+.step-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  min-width: 24px;
 }
 
 .step-dot {
-  position: absolute;
-  right: 24px;
-  top: 25px;
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   border: 2px solid var(--text-secondary);
   background: var(--bg-main);
   z-index: 2;
+  margin-top: 4px;
+  transition: 0.3s;
 }
 
 .roadmap-item.done .step-dot {
-  border-color: var(--accent-strong);
-  background: var(--accent-strong);
-  box-shadow: 0 0 10px var(--accent-strong);
+  border-color: var(--neon);
+  background: var(--neon);
+  box-shadow: 0 0 10px var(--neon);
 }
 
 .roadmap-item.progress .step-dot {
-  border-color: #d3a22c;
-  background: #d3a22c;
-  box-shadow: 0 0 10px rgba(211, 162, 44, 0.38);
+  border-color: #f59e0b;
+  background: #f59e0b;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
 }
 
-.roadmap-item.todo .step-dot {
-  border-color: var(--panel-border);
+.step-line {
+  flex: 1;
+  width: 2px;
+  background: var(--panel-border);
+  margin-top: 6px;
+}
+
+.step-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .item-topline {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   gap: 12px;
-  color: var(--text-soft);
-  font-size: 0.7rem;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 
-.step-content h4 {
-  margin: 0 0 5px;
-  color: var(--text-main);
-  font-size: 1.1rem;
-}
-
-.step-content p {
-  margin: 0 0 10px;
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-  line-height: 1.72;
+.step-badge {
+  font-size: 0.72rem;
+  color: var(--neon);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  background: rgba(56, 189, 248, 0.08);
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(56, 189, 248, 0.2);
 }
 
 .status-badge {
-  font-size: 0.75rem;
-  padding: 5px 10px;
-  border-radius: 999px;
+  font-size: 0.76rem;
+  padding: 3px 10px;
+  border-radius: 8px;
   background: var(--item-bg);
   border: 1px solid var(--panel-border);
   color: var(--text-secondary);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  font-weight: 600;
 }
 
+.status-badge.done {
+  border-color: var(--neon);
+  color: var(--neon);
+}
+
+.status-badge.progress {
+  border-color: #f59e0b;
+  color: #f59e0b;
+}
+
+.step-content h4 {
+  margin: 0;
+  color: var(--text-main);
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.step-content p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+  line-height: 1.7;
+  text-align: justify;
+}
 </style>

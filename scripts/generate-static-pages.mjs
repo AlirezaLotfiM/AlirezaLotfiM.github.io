@@ -398,6 +398,18 @@ const collectionRoutes = [
       },
     ],
   },
+  {
+    routePath: "/resume/",
+    title: "رزومه علیرضا لطفی مقدم | Printable Resume",
+    description: "نسخه قابل چاپ و متنی رزومه علیرضا لطفی مقدم، ارشد نرم‌افزار.",
+    heading: "رزومه علیرضا لطفی مقدم",
+    items: [
+      {
+        title: "ارشد نرم‌افزار | Senior .NET & Backend Engineer",
+        description: "توسعه‌دهنده ارشد نرم‌افزار با تمرکز بر C#، ASP.NET Core، سیستم‌های دسکتاپ WPF، طراحی API و معماری پایگاه داده.",
+      },
+    ],
+  },
 ];
 
 for (const collection of collectionRoutes) {

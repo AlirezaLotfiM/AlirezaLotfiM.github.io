@@ -18,6 +18,7 @@ const tabPaths = {
   history: "/experience/",
   guestbook: "/guestbook/",
   notes: "/notes/",
+  resume: "/resume/",
 };
 
 const getSlugFromLegacyUrl = (url) => {
@@ -41,6 +42,8 @@ export const getProjectPath = (project) =>
 
 export const getNotePath = (note) => `/notes/${getNoteSlug(note)}/`;
 
+const lastNonResumePath = ref(initialPath !== "/resume/" ? initialPath : "/");
+
 export function useNavigation() {
   const route = computed(() => {
     const segments = currentPath.value.split("/").filter(Boolean);
@@ -54,6 +57,7 @@ export function useNavigation() {
       isHome: section === "home",
       isProject: section === "projects" && Boolean(slug),
       isNote: section === "notes" && Boolean(slug),
+      isResume: section === "resume",
     };
   });
 
@@ -61,6 +65,10 @@ export function useNavigation() {
     if (typeof window === "undefined") return;
     const normalizedPath = normalizePath(path);
     const method = options.replace ? "replaceState" : "pushState";
+
+    if (currentPath.value !== "/resume/" && normalizedPath === "/resume/") {
+      lastNonResumePath.value = currentPath.value;
+    }
 
     if (normalizedPath !== currentPath.value || options.replace) {
       window.history[method]({}, "", normalizedPath);
@@ -88,6 +96,16 @@ export function useNavigation() {
     navigateTo(path);
   };
 
+  const goBackFromResume = (event) => {
+    if (event) event.preventDefault();
+    if (typeof window === "undefined") return;
+    if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      navigateTo(lastNonResumePath.value || "/");
+    }
+  };
+
   const handlePopState = () => {
     currentPath.value = normalizePath(window.location.pathname);
   };
@@ -97,9 +115,11 @@ export function useNavigation() {
 
   return {
     currentPath,
+    lastNonResumePath,
     route,
     tabPaths,
     navigateTo,
     navigateFromEvent,
+    goBackFromResume,
   };
 }

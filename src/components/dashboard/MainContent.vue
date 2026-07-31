@@ -20,6 +20,7 @@ const {
   loading,
   activeFilter,
   availableLanguages,
+  projects,
   closeNote,
 } = usePortfolio();
 
@@ -88,7 +89,10 @@ const emit = defineEmits(['toggle-zen']);
           <div class="filter-chips">
             <button v-for="lang in availableLanguages" :key="lang" @click="activeFilter = lang"
               :class="{ 'active-filter': activeFilter === lang }" class="filter-btn">
-              {{ lang === 'All' ? 'همه' : lang }}
+              <span>{{ lang === 'All' ? 'همه' : lang }}</span>
+              <span class="chip-count">
+                {{ lang === 'All' ? projects.length : projects.filter(p => p.language && p.language.includes(lang)).length }}
+              </span>
             </button>
           </div>
         </div>
@@ -190,6 +194,9 @@ const emit = defineEmits(['toggle-zen']);
 }
 
 .filter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   background: var(--item-bg);
   border: 1px solid var(--panel-border);
   color: var(--text-secondary);
@@ -204,11 +211,30 @@ const emit = defineEmits(['toggle-zen']);
 .filter-btn:hover {
   background: var(--item-hover-bg);
   color: var(--text-main);
+  border-color: var(--neon);
 }
 
 .filter-btn.active-filter {
-  background: var(--item-hover-bg);
-  color: var(--text-main);
+  background: rgba(56, 189, 248, 0.15);
+  color: var(--neon);
+  border-color: var(--neon);
+  font-weight: 700;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.25);
+}
+
+.chip-count {
+  font-size: 0.7rem;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--panel-border);
+  color: var(--text-soft);
+  font-family: var(--font-mono, monospace);
+}
+
+.filter-btn.active-filter .chip-count {
+  background: var(--neon);
+  color: #040814;
   border-color: var(--neon);
   font-weight: 700;
 }
