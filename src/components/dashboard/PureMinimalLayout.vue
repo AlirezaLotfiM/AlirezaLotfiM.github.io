@@ -101,32 +101,44 @@ const specializationPillars = [
   }
 ];
 
+const updateActiveSectionOnScroll = () => {
+  if (!contentPaneRef.value) return;
+  const containerRect = contentPaneRef.value.getBoundingClientRect();
+  const sections = contentPaneRef.value.querySelectorAll('.editorial-section');
+
+  let activeId = 'about';
+
+  // Check if scrolled near bottom of content stream
+  const isAtBottom = contentPaneRef.value.scrollHeight - contentPaneRef.value.scrollTop - contentPaneRef.value.clientHeight < 100;
+
+  if (isAtBottom) {
+    activeSection.value = 'notes';
+    return;
+  }
+
+  sections.forEach((sec) => {
+    const secRect = sec.getBoundingClientRect();
+    const relativeTop = secRect.top - containerRect.top;
+    
+    if (relativeTop <= 180 && secRect.bottom - containerRect.top > 60) {
+      activeId = sec.id;
+    }
+  });
+
+  activeSection.value = activeId;
+};
+
 onMounted(() => {
   if (!contentPaneRef.value) return;
 
-  const sections = contentPaneRef.value.querySelectorAll('.editorial-section');
-  if (!sections.length) return;
-
-  observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          activeSection.value = entry.target.id;
-        }
-      });
-    },
-    {
-      root: contentPaneRef.value,
-      threshold: 0.1,
-      rootMargin: '-5% 0px -15% 0px',
-    }
-  );
-
-  sections.forEach((sec) => observer.observe(sec));
+  contentPaneRef.value.addEventListener('scroll', updateActiveSectionOnScroll, { passive: true });
+  updateActiveSectionOnScroll();
 });
 
 onUnmounted(() => {
-  if (observer) observer.disconnect();
+  if (contentPaneRef.value) {
+    contentPaneRef.value.removeEventListener('scroll', updateActiveSectionOnScroll);
+  }
 });
 
 // Precise container scrolling without affecting outer window scroll position
@@ -134,6 +146,8 @@ const scrollToSection = (sectionId, event) => {
   playClick();
   closeNote();
   if (event) event.preventDefault();
+
+  activeSection.value = sectionId;
 
   const target = document.getElementById(sectionId);
   if (target && contentPaneRef.value) {
