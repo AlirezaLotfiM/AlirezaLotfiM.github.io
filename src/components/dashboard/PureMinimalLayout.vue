@@ -12,6 +12,7 @@ const {
   profile,
   workExperience,
   interests,
+  mySkills,
   userGithub,
   selectedNote,
   activeFilter,
@@ -50,9 +51,9 @@ const getTechList = (langString) => {
 
 const navItems = [
   { id: 'about', label: 'درباره من' },
-  { id: 'projects', label: 'پروژه‌ها' },
   { id: 'experience', label: 'سوابق کاری' },
-  { id: 'interests', label: 'تخصص‌ها' },
+  { id: 'projects', label: 'پروژه‌ها' },
+  { id: 'skills', label: 'تخصص‌ها و مهارت‌ها' },
   { id: 'notes', label: 'یادداشت‌ها' },
 ];
 
@@ -72,7 +73,7 @@ onMounted(() => {
     },
     {
       root: contentPaneRef.value,
-      threshold: 0.2,
+      threshold: 0.15,
       rootMargin: '-10% 0px -40% 0px',
     }
   );
@@ -105,7 +106,7 @@ const scrollToSection = (sectionId, event) => {
       @close="showArchModal = false"
     />
 
-    <!-- RIGHT SIDEBAR (ULTRA MINIMAL & CLEAN) -->
+    <!-- RIGHT SIDEBAR (SWISS MINIMALIST & CLEAN OUTLINE ICONS) -->
     <aside v-if="!isZenMode" class="ultra-sidebar">
       <div class="sidebar-top">
         <div class="avatar-circle" @click="emit('go-home')" title="صفحه نخست">
@@ -139,17 +140,42 @@ const scrollToSection = (sectionId, event) => {
         <a :href="tabPaths.resume" @click="navigateFromEvent($event, tabPaths.resume)" class="resume-btn">
           📄 مشاهده رزومه رسمی A4 ↗
         </a>
-        <div class="social-row" dir="ltr">
-          <a :href="`mailto:${profile.contact?.email}`" title="Email">✉️ Email</a>
-          <span>·</span>
-          <a :href="`https://github.com/${userGithub}`" target="_blank" rel="noopener" title="GitHub">🐙 GitHub</a>
-          <span>·</span>
-          <a :href="profile.contact?.linkedin" target="_blank" rel="noopener" title="LinkedIn">💼 LinkedIn</a>
+
+        <!-- OUTLINE SVG SOCIAL ICONS -->
+        <div class="outline-social-bar" dir="ltr">
+          <a :href="`mailto:${profile.contact?.email}`" title="ایمیل" class="outline-icon-btn">
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="4" width="20" height="16" rx="3"/>
+              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+            </svg>
+          </a>
+
+          <a :href="`https://github.com/${userGithub}`" target="_blank" rel="noopener" title="گیت‌هاب" class="outline-icon-btn">
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/>
+              <path d="M9 18c-4.51 2-5-2-7-2"/>
+            </svg>
+          </a>
+
+          <a :href="profile.contact?.linkedin" target="_blank" rel="noopener" title="لینکدین" class="outline-icon-btn">
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+              <rect x="2" y="9" width="4" height="12"/>
+              <circle cx="4" cy="4" r="2"/>
+            </svg>
+          </a>
+
+          <button @click="emit('open-terminal')" title="ترمینال دستورات (Ctrl+K)" class="outline-icon-btn cli">
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="4 17 10 11 4 5"/>
+              <line x1="12" y1="19" x2="20" y2="19"/>
+            </svg>
+          </button>
         </div>
       </div>
     </aside>
 
-    <!-- LEFT STREAM (PURE TEXT & TYPOGRAPHY — NO BOX CARDS) -->
+    <!-- LEFT STREAM (SWISS MINIMALIST TYPOGRAPHY) -->
     <main class="ultra-content" ref="contentPaneRef">
       <!-- 00 // ABOUT -->
       <section id="about" class="simple-section">
@@ -159,12 +185,39 @@ const scrollToSection = (sectionId, event) => {
             من <strong>علیرضا لطفی مقدم</strong> هستم؛ معمار ارشد نرم‌افزار با <strong>+۶ سال سابقه تخصصی</strong> در توسعه سیستم‌های توزیع‌شده با کارایی بالا، موتورهای C# و .NET Core، و اپلیکیشن‌های دسکتاپ صنعتی (WPF).
           </p>
           <p>
-            تخصص کاری من بر پایه‌ی طراحی سیستم‌های بلادرنگ با SignalR، یکپارچه‌سازی سخت‌افزارهای بیومتریک (دستگاه اثر انگشت Suprema و اسکنر WIA) و مدیریت بانک‌های اطلاعاتی سنگین شکل گرفته است.
+            تخصص اصلی من بر پایه‌ی طراحی سیستم‌های بلادرنگ با SignalR، یکپارچه‌سازی سخت‌افزارهای بیومتریک (دستگاه اثر انگشت Suprema و اسکنر WIA) و مدیریت بانک‌های اطلاعاتی سنگین شکل گرفته است.
           </p>
         </div>
       </section>
 
-      <!-- 01 // PROJECTS -->
+      <!-- 01 // EXPERIENCE -->
+      <section id="experience" class="simple-section">
+        <h2 class="sec-title">سوابق کاری و دستاوردهای اجرایی</h2>
+
+        <div class="experience-enhanced-stream">
+          <article v-for="(job, index) in workExperience" :key="index" class="job-card-block">
+            <div class="job-header">
+              <div class="job-main-title">
+                <h3>{{ job.role }}</h3>
+                <span class="company-name">@ {{ job.company }}</span>
+              </div>
+              <span class="period-pill mono-ui" dir="ltr">{{ job.period }}</span>
+            </div>
+
+            <p class="job-desc">{{ job.desc }}</p>
+
+            <ul v-if="job.highlights?.length" class="job-bullets">
+              <li v-for="hl in job.highlights" :key="hl">{{ hl }}</li>
+            </ul>
+
+            <div v-if="job.tech?.length" class="job-tech-row">
+              <span v-for="t in job.tech" :key="t" class="tech-tag-item mono-ui" dir="ltr">{{ t }}</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- 02 // PROJECTS -->
       <section id="projects" class="simple-section">
         <h2 class="sec-title">پروژه‌های برجسته</h2>
 
@@ -209,34 +262,16 @@ const scrollToSection = (sectionId, event) => {
         </div>
       </section>
 
-      <!-- 02 // EXPERIENCE -->
-      <section id="experience" class="simple-section">
-        <h2 class="sec-title">سوابق کاری</h2>
+      <!-- 03 // SKILLS & SPECIALIZATIONS -->
+      <section id="skills" class="simple-section">
+        <h2 class="sec-title">تخصص‌ها و حوزه‌های تمرکز فنی</h2>
 
-        <div class="experience-stream">
-          <article v-for="(job, index) in workExperience" :key="index" class="job-row">
-            <div class="job-date mono-ui" dir="ltr">{{ job.period }}</div>
-            <div class="job-detail">
-              <h3>{{ job.role }} <span class="company">@ {{ job.company }}</span></h3>
-              <p class="desc">{{ job.desc }}</p>
-              <ul v-if="job.highlights?.length" class="bullets">
-                <li v-for="hl in job.highlights" :key="hl">{{ hl }}</li>
-              </ul>
-            </div>
-          </article>
-        </div>
-      </section>
-
-      <!-- 03 // INTERESTS -->
-      <section id="interests" class="simple-section">
-        <h2 class="sec-title">حوزه‌های تمرکز فنی</h2>
-
-        <div class="interests-simple-grid">
-          <div v-for="(item, index) in interests" :key="index" class="interest-item">
-            <span class="icon">{{ item.icon || '⚡' }}</span>
-            <div>
-              <h4>{{ item.title }}</h4>
-              <p>{{ item.desc }}</p>
+        <div class="skills-enhanced-grid">
+          <div v-for="(skill, index) in (mySkills.length ? mySkills : interests)" :key="index" class="skill-item-card">
+            <div class="skill-icon-wrap">{{ skill.icon || '⚡' }}</div>
+            <div class="skill-info">
+              <h4>{{ skill.title || skill.name }}</h4>
+              <p>{{ skill.desc || skill.level }}</p>
             </div>
           </div>
         </div>
@@ -258,7 +293,7 @@ const scrollToSection = (sectionId, event) => {
 </template>
 
 <style scoped>
-/* ULTRA MINIMAL & CLEAN — ZERO BOXES, ZERO GLASS */
+/* SWISS MINIMALIST & CLEAN OUTLINE ICONS */
 .ultra-simple-layout {
   display: grid;
   grid-template-columns: 280px 1fr;
@@ -382,7 +417,7 @@ const scrollToSection = (sectionId, event) => {
   justify-content: center;
   padding: 10px 16px;
   border-radius: 10px;
-  background: rgba(56, 189, 248, 0.1);
+  background: rgba(79, 70, 229, 0.08);
   border: 1px solid var(--neon);
   color: var(--neon);
   font-size: 0.84rem;
@@ -393,27 +428,39 @@ const scrollToSection = (sectionId, event) => {
 
 .resume-btn:hover {
   background: var(--neon);
-  color: #040814;
+  color: #ffffff;
 }
 
-.social-row {
+/* OUTLINE SVG SOCIAL ICONS */
+.outline-social-bar {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 0.8rem;
-  color: var(--text-secondary);
+  gap: 10px;
 }
 
-.social-row a {
+.outline-icon-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: #ffffff;
+  border: 1px solid var(--panel-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: var(--text-secondary);
   text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-.social-row a:hover {
+.outline-icon-btn:hover {
+  border-color: var(--neon);
   color: var(--neon);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
 }
 
-/* CONTENT STREAM — NO CARD BOXES */
+/* CONTENT STREAM */
 .ultra-content {
   overflow-y: auto;
   max-height: calc(100vh - 96px);
@@ -449,6 +496,86 @@ const scrollToSection = (sectionId, event) => {
 
 .text-content strong {
   color: var(--neon);
+}
+
+/* EXPERIENCE ENHANCED STREAM */
+.experience-enhanced-stream {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.job-card-block {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-bottom: 24px;
+  border-bottom: 1px dashed var(--panel-border);
+}
+
+.job-card-block:last-child {
+  border-bottom: none;
+}
+
+.job-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.job-main-title h3 {
+  margin: 0 0 2px 0;
+  font-size: 1.1rem;
+  color: var(--text-main);
+  font-weight: 700;
+}
+
+.company-name {
+  font-size: 0.88rem;
+  color: var(--neon);
+  font-weight: 600;
+}
+
+.period-pill {
+  font-size: 0.78rem;
+  color: var(--neon);
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 8px;
+  background: rgba(79, 70, 229, 0.08);
+  border: 1px solid rgba(79, 70, 229, 0.2);
+}
+
+.job-desc {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.job-bullets {
+  margin: 4px 0 0 0;
+  padding-right: 18px;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.75;
+}
+
+.job-tech-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.tech-tag-item {
+  font-size: 0.74rem;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: #f1f5f9;
+  border: 1px solid var(--panel-border);
+  color: var(--text-secondary);
 }
 
 /* PROJECTS */
@@ -552,75 +679,44 @@ const scrollToSection = (sectionId, event) => {
   border-color: var(--neon);
 }
 
-/* EXPERIENCE */
-.experience-stream {
-  display: flex;
-  flex-direction: column;
-  gap: 28px;
-}
-
-.job-row {
+/* SKILLS ENHANCED GRID */
+.skills-enhanced-grid {
   display: grid;
-  grid-template-columns: 120px 1fr;
-  gap: 20px;
-  padding-bottom: 20px;
-  border-bottom: 1px dashed var(--panel-border);
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
 }
 
-.job-row:last-child {
-  border-bottom: none;
-}
-
-.job-date {
-  font-size: 0.8rem;
-  color: var(--neon);
-  font-weight: 700;
-}
-
-.job-detail h3 {
-  margin: 0 0 6px 0;
-  font-size: 1.05rem;
-  color: var(--text-main);
-}
-
-.company {
-  color: var(--neon);
-}
-
-.bullets {
-  margin: 8px 0 0 0;
-  padding-right: 18px;
-  font-size: 0.86rem;
-  color: var(--text-secondary);
-  line-height: 1.7;
-}
-
-/* INTERESTS GRID */
-.interests-simple-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 20px;
-}
-
-.interest-item {
+.skill-item-card {
   display: flex;
   align-items: flex-start;
   gap: 12px;
+  padding: 14px;
+  background: #ffffff;
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  transition: all 0.2s ease;
 }
 
-.interest-item .icon {
-  font-size: 1.4rem;
+.skill-item-card:hover {
+  border-color: var(--neon);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.1);
 }
 
-.interest-item h4 {
+.skill-icon-wrap {
+  font-size: 1.3rem;
+}
+
+.skill-info h4 {
   margin: 0 0 2px 0;
-  font-size: 0.95rem;
+  font-size: 0.94rem;
   color: var(--text-main);
+  font-weight: 700;
 }
 
-.interest-item p {
+.skill-info p {
   margin: 0;
-  font-size: 0.84rem;
+  font-size: 0.82rem;
   color: var(--text-secondary);
   line-height: 1.5;
 }
@@ -663,9 +759,9 @@ const scrollToSection = (sectionId, event) => {
     overflow: visible;
   }
 
-  .job-row {
-    grid-template-columns: 1fr;
-    gap: 6px;
+  .job-header {
+    flex-direction: column;
+    gap: 4px;
   }
 }
 </style>
