@@ -37,7 +37,6 @@ const appVersion = typeof __APP_VERSION__ !== 'undefined' ? __APP_VERSION__ : '1
 
 const activeSection = ref('about');
 const contentPaneRef = ref(null);
-let observer = null;
 
 const showArchModal = ref(false);
 const currentArchDiagram = ref('');
@@ -216,39 +215,16 @@ const scrollToSection = (sectionId, event) => {
         @close="showArchModal = false"
       />
 
-      <!-- RIGHT SIDEBAR (REDESIGNED LUXURY EDITORIAL SIDEBAR) -->
+      <!-- RIGHT SIDEBAR (PURE SWISS EDITORIAL - NO BOXES, NO SCROLLING) -->
       <aside v-if="!isZenMode" class="editorial-sidebar">
         <div class="sidebar-top">
-          <!-- LIVE STATUS BEACON -->
-          <div class="status-beacon-bar">
-            <span class="beacon-dot"></span>
-            <span class="beacon-text mono-ui">AVAILABLE FOR LEAD & ARCHITECT ROLES</span>
-          </div>
-
-          <!-- INTRO PROFILE CARD -->
-          <div class="intro-typographic-card">
-            <div class="card-badge mono-ui" dir="ltr">◈ SYSTEM ARCHITECT</div>
+          <!-- PURE TYPOGRAPHIC IDENTITY (BORDERLESS) -->
+          <div class="sidebar-identity">
             <h1 class="author-name">علیرضا لطفی مقدم</h1>
-            <span class="role-pill mono-ui" dir="ltr">Senior Software Engineer & .NET Architect</span>
+            <p class="role-subtitle mono-ui" dir="ltr">Senior Software Engineer & .NET Architect</p>
             <p class="concise-bio">
-              معمار ارشد نرم‌افزار متمرکز بر توسعه سیستم‌های توزیع‌شده C#، ASP.NET Core و اپلیکیشن‌های دسکتاپ صنعتی (WPF).
+              معمار ارشد نرم‌افزار متمرکز بر سیستم‌های توزیع‌شده C#، ASP.NET Core و اپلیکیشن‌های دسکتاپ صنعتی (WPF).
             </p>
-          </div>
-
-          <!-- QUICK METRIC SPECS BAR -->
-          <div class="sidebar-specs-grid">
-            <div class="spec-item">
-              <span class="spec-num mono-ui">+۶</span>
-              <span class="spec-label">سال سابقه</span>
-            </div>
-            <div class="spec-item">
-              <span class="spec-num mono-ui">۱۶+</span>
-              <span class="spec-label">پروژه عملیاتی</span>
-            </div>
-            <div class="spec-item">
-              <span class="spec-num mono-ui">C#</span>
-              <span class="spec-label">استک اصلی</span>
-            </div>
           </div>
 
           <!-- NAVIGATION MENU -->
@@ -266,9 +242,10 @@ const scrollToSection = (sectionId, event) => {
           </nav>
         </div>
 
-        <div class="sidebar-links">
-          <a :href="tabPaths.resume" @click="navigateFromEvent($event, tabPaths.resume)" class="resume-btn">
-            📄 مشاهده رزومه رسمی A4 ↗
+        <div class="sidebar-bottom">
+          <a :href="tabPaths.resume" @click="navigateFromEvent($event, tabPaths.resume)" class="editorial-resume-btn">
+            <span>مشاهده رزومه رسمی A4</span>
+            <span class="btn-arrow mono-ui">PDF ↗</span>
           </a>
         </div>
       </aside>
@@ -288,6 +265,24 @@ const scrollToSection = (sectionId, event) => {
             <p>
               تخصص اصلی من بر پایه‌ی طراحی سیستم‌های بلادرنگ با SignalR، یکپارچه‌سازی سخت‌افزارهای بیومتریک (دستگاه اثر انگشت Suprema و اسکنر WIA) و مدیریت بانک‌های اطلاعاتی سنگین شکل گرفته است.
             </p>
+
+            <!-- EDITORIAL SPECS STRIP (RELOCATED FROM SIDEBAR FOR CLEAN ELEGANT PRESENTATION) -->
+            <div class="editorial-specs-strip">
+              <div class="spec-strip-item">
+                <span class="spec-num mono-ui" dir="ltr">+۶ سال</span>
+                <span class="spec-lbl">سابقه تخصصی</span>
+              </div>
+              <div class="spec-strip-divider"></div>
+              <div class="spec-strip-item">
+                <span class="spec-num mono-ui" dir="ltr">۱۶+</span>
+                <span class="spec-lbl">پروژه عملیاتی</span>
+              </div>
+              <div class="spec-strip-divider"></div>
+              <div class="spec-strip-item">
+                <span class="spec-num mono-ui" dir="ltr">.NET / C#</span>
+                <span class="spec-lbl">استک اصلی معماری</span>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -546,7 +541,7 @@ const scrollToSection = (sectionId, event) => {
 /* EDITORIAL LAYOUT */
 .editorial-layout {
   display: grid;
-  grid-template-columns: 320px 1fr;
+  grid-template-columns: 290px 1fr;
   gap: 72px;
   max-width: 1380px;
   margin: 0 auto;
@@ -561,17 +556,17 @@ const scrollToSection = (sectionId, event) => {
   padding: 0;
 }
 
-/* SIDEBAR (RIGHT ALIGNED) */
+/* SIDEBAR (RIGHT ALIGNED - STRICTLY NO SCROLLBAR, FITS VIEWPORT PERFECTLY) */
 .editorial-sidebar {
   position: sticky;
   top: 100px;
-  max-height: calc(100vh - 120px);
+  height: fit-content;
+  max-height: calc(100vh - 130px);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 20px;
-  overflow-y: auto;
-  scrollbar-width: thin;
+  gap: 28px;
+  overflow: hidden; /* ZERO SCROLLBAR */
 }
 
 .sidebar-top {
@@ -579,140 +574,63 @@ const scrollToSection = (sectionId, event) => {
   flex-direction: column;
   align-items: flex-start;
   text-align: right;
-  gap: 16px;
+  gap: 24px;
 }
 
-/* STATUS BEACON BAR */
-.status-beacon-bar {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 12px;
-  border-radius: 999px;
-  background: rgba(16, 185, 129, 0.08);
-  border: 1px solid rgba(16, 185, 129, 0.25);
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.beacon-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #10b981;
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
-}
-
-.beacon-text {
-  font-size: 0.65rem;
-  color: #059669;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-}
-
-/* REDESIGNED TYPOGRAPHIC INTRO CARD (NO FACE PHOTO) */
-.intro-typographic-card {
+/* PURE TYPOGRAPHIC IDENTITY (NO BOXED CONTAINERS) */
+.sidebar-identity {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   text-align: right;
-  gap: 10px;
-  padding: 22px;
-  background: #ffffff;
-  border: 1px solid var(--panel-border);
-  border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
-  width: 100%;
-  box-sizing: border-box;
+  gap: 8px;
 }
 
-.intro-typographic-card .card-badge {
-  font-size: 0.72rem;
-  color: var(--neon);
-  font-weight: 700;
-  letter-spacing: 0.5px;
-}
-
-.intro-typographic-card .author-name {
+.sidebar-identity .author-name {
   margin: 0;
-  font-size: 1.45rem;
+  font-size: 1.55rem;
   color: var(--text-main);
   font-weight: 800;
-  line-height: 1.3;
+  line-height: 1.25;
+  letter-spacing: -0.3px;
 }
 
-.intro-typographic-card .role-pill {
+.sidebar-identity .role-subtitle {
   margin: 0;
-  font-size: 0.76rem;
+  font-size: 0.78rem;
   color: var(--neon);
   font-weight: 700;
-  padding: 4px 10px;
-  background: rgba(79, 70, 229, 0.08);
-  border-radius: 6px;
-  border: 1px solid rgba(79, 70, 229, 0.15);
 }
 
-.intro-typographic-card .concise-bio {
+.sidebar-identity .concise-bio {
   margin: 4px 0 0 0;
-  font-size: 0.84rem;
+  font-size: 0.85rem;
   color: var(--text-secondary);
   line-height: 1.7;
-}
-
-/* SIDEBAR METRIC SPECS GRID */
-.sidebar-specs-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  width: 100%;
-  padding: 12px;
-  background: #ffffff;
-  border: 1px solid var(--panel-border);
-  border-radius: 14px;
-  box-sizing: border-box;
-}
-
-.spec-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 2px;
-}
-
-.spec-num {
-  font-size: 0.95rem;
-  color: var(--neon);
-  font-weight: 800;
-}
-
-.spec-label {
-  font-size: 0.7rem;
-  color: var(--text-soft);
 }
 
 .editorial-nav {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-top: 4px;
+  gap: 10px;
   width: 100%;
+  margin-top: 4px;
 }
 
 .editorial-nav a {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   text-decoration: none;
   color: var(--text-secondary);
-  font-size: 0.88rem;
+  font-size: 0.9rem;
   padding: 6px 0;
   transition: all 0.2s ease;
   border-right: 2px solid transparent;
 }
 
 .nav-num {
-  font-size: 0.75rem;
+  font-size: 0.76rem;
   color: var(--text-soft);
 }
 
@@ -722,40 +640,59 @@ const scrollToSection = (sectionId, event) => {
 
 .editorial-nav a.active {
   color: var(--neon);
-  font-weight: 700;
+  font-weight: 800;
   border-right-color: var(--neon);
-  padding-right: 8px;
+  padding-right: 10px;
 }
 
 .editorial-nav a.active .nav-num {
   color: var(--neon);
 }
 
-.sidebar-links {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
+.sidebar-bottom {
+  margin-top: 8px;
 }
 
-.resume-btn {
-  display: inline-flex;
+/* HIGH-END SWISS EDITORIAL RESUME BUTTON */
+.editorial-resume-btn {
+  display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 10px 16px;
-  border-radius: 10px;
-  background: rgba(79, 70, 229, 0.08);
-  border: 1px solid var(--neon);
-  color: var(--neon);
-  font-size: 0.84rem;
+  justify-content: space-between;
+  width: 100%;
+  padding: 12px 18px;
+  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid var(--panel-border);
+  color: var(--text-main);
+  font-size: 0.86rem;
   font-weight: 700;
   text-decoration: none;
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.04);
+  transition: all 0.25s ease;
+  box-sizing: border-box;
+}
+
+.editorial-resume-btn .btn-arrow {
+  font-size: 0.74rem;
+  color: var(--neon);
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(79, 70, 229, 0.08);
+  border: 1px solid rgba(79, 70, 229, 0.18);
   transition: all 0.2s ease;
 }
 
-.resume-btn:hover {
+.editorial-resume-btn:hover {
+  border-color: var(--neon);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(79, 70, 229, 0.12);
+  color: var(--neon);
+}
+
+.editorial-resume-btn:hover .btn-arrow {
   background: var(--neon);
   color: #ffffff;
-  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.2);
 }
 
 /* CONTENT STREAM */
@@ -806,6 +743,46 @@ const scrollToSection = (sectionId, event) => {
 
 .text-content strong {
   color: var(--neon);
+}
+
+/* EDITORIAL SPECS STRIP (EMBEDDED IN ABOUT SECTION) */
+.editorial-specs-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 16px;
+  margin-top: 28px;
+  padding: 18px 24px;
+  background: #ffffff;
+  border: 1px solid var(--panel-border);
+  border-radius: 14px;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.03);
+}
+
+.spec-strip-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 4px;
+}
+
+.spec-strip-item .spec-num {
+  font-size: 1.15rem;
+  color: var(--neon);
+  font-weight: 800;
+}
+
+.spec-strip-item .spec-lbl {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.spec-strip-divider {
+  width: 1px;
+  height: 28px;
+  background: var(--panel-border);
 }
 
 /* REDESIGNED EXPERIENCE TIMELINE STREAM */
@@ -1262,7 +1239,17 @@ const scrollToSection = (sectionId, event) => {
     overflow: visible;
   }
 
-  .job-header {
+  .editorial-specs-strip {
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .spec-strip-divider {
+    width: 100%;
+    height: 1px;
+  }
+
+  .job-header-row {
     flex-direction: column;
     gap: 4px;
   }
