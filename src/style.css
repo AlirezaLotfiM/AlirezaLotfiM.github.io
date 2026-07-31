@@ -152,7 +152,7 @@ body::after {
   min-height: 260px;
   right: -10%;
   bottom: -12%;
-  background: rgba(30, 41, 59, 0.3);
+  background: rgba(79, 70, 229, 0.05);
   animation: ambientFloat 24s ease-in-out infinite reverse;
 }
 
