@@ -33,6 +33,8 @@ const props = defineProps({
   isZenMode: Boolean,
 });
 
+const appVersion = typeof __APP_VERSION__ !== 'undefined' ? __APP_VERSION__ : '1.7.0';
+
 const activeSection = ref('about');
 const contentPaneRef = ref(null);
 let observer = null;
@@ -66,6 +68,37 @@ const navItems = [
   { id: 'projects', label: 'پروژه‌ها', num: '۰۲' },
   { id: 'skills', label: 'تخصص‌ها', num: '۰۳' },
   { id: 'notes', label: 'یادداشت‌ها', num: '۰۴' },
+];
+
+const specializationPillars = [
+  {
+    category: 'BACKEND ARCHITECTURE',
+    title: 'معماری بک‌اند و سیستم‌های توزیع‌شده',
+    desc: 'طراحی موتورهای همزمان با کارایی بالا، معماری بلادرنگ با SignalR و پیاده‌سازی الگوهای CQRS و Clean Architecture.',
+    techs: ['C# / .NET 9', 'ASP.NET Core', 'SignalR', 'RabbitMQ', 'Clean Architecture', 'CQRS'],
+    icon: '⚙️'
+  },
+  {
+    category: 'DESKTOP & INTEGRATION',
+    title: 'دسکتاپ صنعتی و یکپارچه‌سازی سخت‌افزار',
+    desc: 'توسعه اپلیکیشن‌های دسکتاپ مقیاس‌پذیر با WPF و اتصال مستقیم نرم‌افزار به اسکنرهای بیومتریک و تجهیزات جانبی.',
+    techs: ['WPF / MVVM', 'Win32 API', 'Suprema Biometric SDK', 'WIA Scanner SDK', 'Multithreading'],
+    icon: '🔌'
+  },
+  {
+    category: 'DATABASE & DATA ENGINE',
+    title: 'بانک‌های اطلاعاتی و بهینه‌سازی داده',
+    desc: 'طراحی ساختارهای پایگاه داده ارتباطی، بهینه‌سازی کوئری‌های سنگین T-SQL و مدیریت تراکنش‌های با حجم بالا.',
+    techs: ['SQL Server', 'EF Core', 'Dapper', 'T-SQL Tuning', 'Indexing Strategy'],
+    icon: '💾'
+  },
+  {
+    category: 'INTERACTIVE FRONTEND & AI',
+    title: 'تکنولوژی‌های وب و ابزارهای هوش مصنوعی',
+    desc: 'خلق دشبوردهای تعاملی وب و یکپارچه‌سازی مدل‌های هوش مصنوعی محلی در برنامه‌های دسکتاپ و سازمانی.',
+    techs: ['Vue.js 3', 'Vite / JavaScript', 'LLamaSharp (Local AI)', 'Tesseract OCR'],
+    icon: '🚀'
+  }
 ];
 
 onMounted(() => {
@@ -118,12 +151,13 @@ const scrollToSection = (sectionId, event) => {
 
 <template>
   <div class="master-shell">
-    <!-- TOP BAR (RIGHT: DAMOON LOGO / LEFT: OUTLINE SOCIAL ICONS NO BG) -->
+    <!-- TOP BAR (RIGHT: DAMOON LOGO + VERSION / LEFT: OUTLINE SOCIAL ICONS NO BG) -->
     <header class="swiss-top-bar" :class="{ hidden: isZenMode }">
       <div class="top-bar-inner">
-        <!-- RIGHT: Damoon Full Written-out Typographic Logo -->
-        <div class="header-logo-wrap" title="Damoon">
+        <!-- RIGHT: Damoon Full Written-out Typographic Logo + Version Pill -->
+        <div class="header-logo-wrap" title="Damoon Portfolio">
           <img src="/monogram-damoon.png" alt="Damoon" class="damoon-full-logo-img" />
+          <span class="header-version-pill mono-ui" dir="ltr">v{{ appVersion }}</span>
         </div>
 
         <!-- LEFT: Outline Social Icons (WITHOUT BACKGROUND BOXES) -->
@@ -302,19 +336,26 @@ const scrollToSection = (sectionId, event) => {
           </div>
         </section>
 
-        <!-- 03 // SKILLS & SPECIALIZATIONS -->
+        <!-- 03 // SKILLS & SPECIALIZATIONS (REDESIGNED ARCHITECTURAL PILLARS) -->
         <section id="skills" class="editorial-section">
           <div class="sec-title-bar">
             <span class="num mono-ui" dir="ltr">03 //</span>
             <h2>تخصص‌ها و حوزه‌های تمرکز فنی</h2>
           </div>
 
-          <div class="skills-editorial-grid">
-            <div v-for="(skill, index) in (mySkills.length ? mySkills : interests)" :key="index" class="skill-card-item">
-              <div class="skill-icon">{{ skill.icon || '⚡' }}</div>
-              <div class="skill-info">
-                <h4>{{ skill.title || skill.name }}</h4>
-                <p>{{ skill.desc || skill.level }}</p>
+          <div class="specialization-pillars-grid">
+            <div v-for="(pillar, index) in specializationPillars" :key="index" class="pillar-card">
+              <div class="pillar-top-bar">
+                <span class="pillar-category mono-ui" dir="ltr">{{ pillar.category }}</span>
+                <span class="pillar-icon">{{ pillar.icon }}</span>
+              </div>
+              <h3 class="pillar-title">{{ pillar.title }}</h3>
+              <p class="pillar-desc">{{ pillar.desc }}</p>
+
+              <div class="pillar-tech-tags">
+                <span v-for="tech in pillar.techs" :key="tech" class="pillar-tag-item mono-ui" dir="ltr">
+                  {{ tech }}
+                </span>
               </div>
             </div>
           </div>
@@ -382,6 +423,7 @@ const scrollToSection = (sectionId, event) => {
 .header-logo-wrap {
   display: flex;
   align-items: center;
+  gap: 10px;
 }
 
 .damoon-full-logo-img {
@@ -390,6 +432,16 @@ const scrollToSection = (sectionId, event) => {
   object-fit: contain;
   filter: drop-shadow(0 2px 8px rgba(79, 70, 229, 0.15));
   display: block;
+}
+
+.header-version-pill {
+  font-size: 0.68rem;
+  color: var(--neon);
+  font-weight: 700;
+  padding: 2px 8px;
+  background: rgba(79, 70, 229, 0.08);
+  border-radius: 6px;
+  border: 1px solid rgba(79, 70, 229, 0.18);
 }
 
 .header-logo-wrap:hover {
@@ -843,46 +895,100 @@ const scrollToSection = (sectionId, event) => {
   border-color: var(--neon);
 }
 
-/* SKILLS GRID */
-.skills-editorial-grid {
+/* REDESIGNED SPECIALIZATION PILLARS GRID */
+.specialization-pillars-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
 }
 
-.skill-card-item {
+.pillar-card {
   display: flex;
-  align-items: flex-start;
+  flex-direction: column;
+  justify-content: space-between;
   gap: 12px;
-  padding: 14px;
+  padding: 22px;
   background: #ffffff;
   border: 1px solid var(--panel-border);
-  border-radius: 12px;
-  transition: all 0.2s ease;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.03);
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
 }
 
-.skill-card-item:hover {
+.pillar-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 3px;
+  background: var(--neon);
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.pillar-card:hover {
   border-color: var(--neon);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.1);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(79, 70, 229, 0.12);
 }
 
-.skill-icon {
-  font-size: 1.3rem;
+.pillar-card:hover::before {
+  opacity: 1;
 }
 
-.skill-info h4 {
-  margin: 0 0 2px 0;
-  font-size: 0.94rem;
-  color: var(--text-main);
+.pillar-top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pillar-category {
+  font-size: 0.72rem;
+  color: var(--neon);
   font-weight: 700;
+  letter-spacing: 0.5px;
 }
 
-.skill-info p {
+.pillar-icon {
+  font-size: 1.25rem;
+}
+
+.pillar-title {
+  margin: 2px 0 0 0;
+  font-size: 1.08rem;
+  color: var(--text-main);
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.pillar-desc {
   margin: 0;
-  font-size: 0.82rem;
+  font-size: 0.86rem;
   color: var(--text-secondary);
-  line-height: 1.5;
+  line-height: 1.7;
+  flex-grow: 1;
+}
+
+.pillar-tech-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--panel-border);
+}
+
+.pillar-tag-item {
+  font-size: 0.74rem;
+  padding: 3px 9px;
+  border-radius: 6px;
+  background: rgba(79, 70, 229, 0.06);
+  border: 1px solid rgba(79, 70, 229, 0.15);
+  color: var(--neon);
+  font-weight: 600;
 }
 
 /* NOTES LIST */

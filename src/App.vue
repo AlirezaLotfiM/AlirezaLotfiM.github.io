@@ -412,15 +412,6 @@ onUnmounted(() => {
           @go-home="goHome"
         />
       </div>
-
-      <footer class="app-footer" dir="ltr" :class="{ dimmed: showIdentityCard }">
-        <span class="made-by">Handcrafted by
-          <strong class="brand-signature" style="color: var(--neon)">Damoon</strong></span>
-        <span class="divider">|</span>
-        <span class="version-tag">v{{ appVersion }}</span>
-        <span class="divider">|</span>
-        <span class="ai-credit">Co-piloted by <span class="gemini-text">Gemini</span></span>
-      </footer>
     </div>
   </div>
 </template>
