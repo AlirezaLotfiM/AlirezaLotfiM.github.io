@@ -103,6 +103,38 @@ const specializationPillars = [
   }
 ];
 
+const sectionRoutes = {
+  about: '/',
+  experience: '/experience/',
+  projects: '/projects/',
+  skills: '/skills/',
+  notes: '/notes/'
+};
+
+const getSectionFromUrl = () => {
+  if (typeof window === 'undefined') return 'about';
+  const path = window.location.pathname.toLowerCase().replace(/\/$/, '') || '/';
+  const hash = window.location.hash.toLowerCase().replace('#', '');
+
+  if (hash && ['about', 'experience', 'projects', 'skills', 'notes'].includes(hash)) {
+    return hash;
+  }
+
+  if (path.includes('experience')) return 'experience';
+  if (path.includes('projects')) return 'projects';
+  if (path.includes('skills')) return 'skills';
+  if (path.includes('notes')) return 'notes';
+  return 'about';
+};
+
+const syncUrlWithSection = (sectionId) => {
+  if (typeof window === 'undefined') return;
+  const targetRoute = sectionRoutes[sectionId] || '/';
+  if (window.location.pathname !== targetRoute && window.location.pathname + '/' !== targetRoute) {
+    window.history.replaceState(null, '', targetRoute);
+  }
+};
+
 const updateActiveSectionOnScroll = () => {
   if (!contentPaneRef.value) return;
   const containerRect = contentPaneRef.value.getBoundingClientRect();
@@ -114,27 +146,39 @@ const updateActiveSectionOnScroll = () => {
   const isAtBottom = contentPaneRef.value.scrollHeight - contentPaneRef.value.scrollTop - contentPaneRef.value.clientHeight < 100;
 
   if (isAtBottom) {
-    activeSection.value = 'notes';
-    return;
+    activeId = 'notes';
+  } else {
+    sections.forEach((sec) => {
+      const secRect = sec.getBoundingClientRect();
+      const relativeTop = secRect.top - containerRect.top;
+      
+      if (relativeTop <= 180 && secRect.bottom - containerRect.top > 60) {
+        activeId = sec.id;
+      }
+    });
   }
 
-  sections.forEach((sec) => {
-    const secRect = sec.getBoundingClientRect();
-    const relativeTop = secRect.top - containerRect.top;
-    
-    if (relativeTop <= 180 && secRect.bottom - containerRect.top > 60) {
-      activeId = sec.id;
-    }
-  });
-
-  activeSection.value = activeId;
+  if (activeSection.value !== activeId) {
+    activeSection.value = activeId;
+    syncUrlWithSection(activeId);
+  }
 };
 
 onMounted(() => {
   if (!contentPaneRef.value) return;
 
   contentPaneRef.value.addEventListener('scroll', updateActiveSectionOnScroll, { passive: true });
-  updateActiveSectionOnScroll();
+
+  const initialSection = getSectionFromUrl();
+  activeSection.value = initialSection;
+
+  if (initialSection !== 'about') {
+    setTimeout(() => {
+      scrollToSection(initialSection);
+    }, 150);
+  } else {
+    updateActiveSectionOnScroll();
+  }
 });
 
 onUnmounted(() => {
@@ -143,13 +187,14 @@ onUnmounted(() => {
   }
 });
 
-// Precise container scrolling without affecting outer window scroll position
+// Precise container scrolling with dynamic URL & SEO route syncing
 const scrollToSection = (sectionId, event) => {
   playClick();
   closeNote();
   if (event) event.preventDefault();
 
   activeSection.value = sectionId;
+  syncUrlWithSection(sectionId);
 
   const target = document.getElementById(sectionId);
   if (target && contentPaneRef.value) {
@@ -235,7 +280,7 @@ const scrollToSection = (sectionId, event) => {
             <a
               v-for="item in navItems"
               :key="item.id"
-              :href="`#${item.id}`"
+              :href="sectionRoutes[item.id]"
               @click="scrollToSection(item.id, $event)"
               :class="{ active: !selectedNote && activeSection === item.id }"
             >
