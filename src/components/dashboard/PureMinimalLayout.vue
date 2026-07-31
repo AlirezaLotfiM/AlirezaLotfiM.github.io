@@ -37,12 +37,11 @@ const activeSection = ref('about');
 const contentPaneRef = ref(null);
 let observer = null;
 
-const avatarMode = ref('svg-damoon'); // 'svg-damoon' | 'svg-alm' | 'png-damoon' | 'real-photo'
+const avatarMode = ref('svg-damoon'); // 'svg-damoon' | 'svg-alm' | 'real-photo'
 const toggleAvatarMode = () => {
   playClick();
   if (avatarMode.value === 'svg-damoon') avatarMode.value = 'svg-alm';
-  else if (avatarMode.value === 'svg-alm') avatarMode.value = 'png-damoon';
-  else if (avatarMode.value === 'png-damoon') avatarMode.value = 'real-photo';
+  else if (avatarMode.value === 'svg-alm') avatarMode.value = 'real-photo';
   else avatarMode.value = 'svg-damoon';
 };
 
@@ -118,69 +117,35 @@ const scrollToSection = (sectionId, event) => {
 </script>
 
 <template>
-  <div class="editorial-layout" :class="{ 'zen-mode': isZenMode }">
-    <ArchitectureModal
-      :visible="showArchModal"
-      :diagram="currentArchDiagram"
-      :title="currentArchTitle"
-      @close="showArchModal = false"
-    />
-
-    <!-- RIGHT SIDEBAR (SWISS EDITORIAL & CLEAN OUTLINE ICONS) -->
-    <aside v-if="!isZenMode" class="editorial-sidebar">
-      <div class="sidebar-top">
-        <div class="frameless-outline-avatar" @click="toggleAvatarMode" title="کلیک برای تغییر حالت (مونوگرام Damoon / مونوگرام ALM / لوگوی PNG / عکس پرتره)">
-          <DamoonMonogram v-if="avatarMode === 'svg-damoon'" :size="84" />
-          <MonogramLogo v-else-if="avatarMode === 'svg-alm'" :size="84" />
-          <img v-else-if="avatarMode === 'png-damoon'" src="/monogram-damoon.png" alt="Damoon Monogram Logo" />
-          <img v-else :src="profile.avatarUrl || '/Damoon-d.jpg'" alt="علیرضا لطفی مقدم" class="real-photo-avatar" />
+  <div class="master-shell">
+    <!-- SUBTLE BLURRED TOP BAR (RIGHT: DAMOON MONOGRAM / LEFT: OUTLINE SOCIAL ICONS NO BG) -->
+    <header class="swiss-top-bar" :class="{ hidden: isZenMode }">
+      <div class="top-bar-inner">
+        <!-- RIGHT: Damoon Monogram (Click to toggle SVG / ALM / Real Photo) -->
+        <div class="header-logo-wrap" @click="toggleAvatarMode" title="کلیک برای تغییر حالت لوگو (Damoon / ALM)">
+          <DamoonMonogram v-if="avatarMode === 'svg-damoon'" :size="48" />
+          <MonogramLogo v-else-if="avatarMode === 'svg-alm'" :size="48" />
+          <img v-else :src="profile.avatarUrl || '/Damoon-d.jpg'" alt="علیرضا لطفی مقدم" class="top-mini-avatar" />
+          <span class="brand-name-text mono-ui">Damoon</span>
         </div>
 
-        <div class="header-titles">
-          <h1>علیرضا لطفی مقدم</h1>
-          <p class="role mono-ui" dir="ltr">Senior Software Engineer & .NET Architect</p>
-        </div>
-
-        <p class="concise-bio">
-          معمار ارشد نرم‌افزار متمرکز بر توسعه سیستم‌های توزیع‌شده C#، ASP.NET Core و اپلیکیشن‌های دسکتاپ صنعتی (WPF).
-        </p>
-
-        <nav class="editorial-nav" aria-label="ناوبری اصلی">
-          <a
-            v-for="item in navItems"
-            :key="item.id"
-            :href="`#${item.id}`"
-            @click="scrollToSection(item.id, $event)"
-            :class="{ active: !selectedNote && activeSection === item.id }"
-          >
-            <span class="nav-num mono-ui" dir="ltr">{{ item.num }}</span>
-            <span class="nav-label">{{ item.label }}</span>
-          </a>
-        </nav>
-      </div>
-
-      <div class="sidebar-links">
-        <a :href="tabPaths.resume" @click="navigateFromEvent($event, tabPaths.resume)" class="resume-btn">
-          📄 مشاهده رزومه رسمی A4 ↗
-        </a>
-
-        <!-- OUTLINE SVG SOCIAL ICONS -->
-        <div class="outline-social-bar" dir="ltr">
-          <a :href="`mailto:${profile.contact?.email}`" title="ایمیل" class="outline-icon-btn">
+        <!-- LEFT: Outline Social Icons (WITHOUT BACKGROUND BOXES) -->
+        <div class="header-social-icons" dir="ltr">
+          <a :href="`mailto:${profile.contact?.email}`" title="ایمیل" class="header-icon-link">
             <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
               <rect x="2" y="4" width="20" height="16" rx="3"/>
               <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
             </svg>
           </a>
 
-          <a :href="`https://github.com/${userGithub}`" target="_blank" rel="noopener" title="گیت‌هاب" class="outline-icon-btn">
+          <a :href="`https://github.com/${userGithub}`" target="_blank" rel="noopener" title="گیت‌هاب" class="header-icon-link">
             <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
               <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/>
               <path d="M9 18c-4.51 2-5-2-7-2"/>
             </svg>
           </a>
 
-          <a :href="profile.contact?.linkedin" target="_blank" rel="noopener" title="لینکدین" class="outline-icon-btn">
+          <a :href="profile.contact?.linkedin" target="_blank" rel="noopener" title="لینکدین" class="header-icon-link">
             <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
               <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
               <rect x="2" y="9" width="4" height="12"/>
@@ -188,7 +153,7 @@ const scrollToSection = (sectionId, event) => {
             </svg>
           </a>
 
-          <button @click="emit('open-terminal')" title="ترمینال دستورات (Ctrl+K)" class="outline-icon-btn cli">
+          <button @click="emit('open-terminal')" title="ترمینال دستورات (Ctrl+K)" class="header-icon-link cli">
             <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="4 17 10 11 4 5"/>
               <line x1="12" y1="19" x2="20" y2="19"/>
@@ -196,155 +161,287 @@ const scrollToSection = (sectionId, event) => {
           </button>
         </div>
       </div>
-    </aside>
+    </header>
 
-    <!-- LEFT STREAM (SWISS EDITORIAL TYPOGRAPHY) -->
-    <main class="editorial-content" ref="contentPaneRef">
-      <!-- 00 // ABOUT -->
-      <section id="about" class="editorial-section">
-        <div class="sec-title-bar">
-          <span class="num mono-ui" dir="ltr">00 //</span>
-          <h2>درباره من</h2>
-        </div>
-        <div class="text-content">
-          <p class="lead">
-            من <strong>علیرضا لطفی مقدم</strong> هستم؛ معمار ارشد نرم‌افزار با <strong>+۶ سال سابقه تخصصی</strong> در توسعه سیستم‌های توزیع‌شده با کارایی بالا، موتورهای C# و .NET Core، و اپلیکیشن‌های دسکتاپ صنعتی (WPF).
+    <div class="editorial-layout" :class="{ 'zen-mode': isZenMode }">
+      <ArchitectureModal
+        :visible="showArchModal"
+        :diagram="currentArchDiagram"
+        :title="currentArchTitle"
+        @close="showArchModal = false"
+      />
+
+      <!-- RIGHT SIDEBAR (RIGHT ALIGNED) -->
+      <aside v-if="!isZenMode" class="editorial-sidebar">
+        <div class="sidebar-top">
+          <div class="avatar-ring-box" @click="emit('go-home')" title="صفحه نخست">
+            <img :src="profile.avatarUrl || '/Damoon-d.jpg'" alt="علیرضا لطفی مقدم" />
+          </div>
+
+          <div class="header-titles">
+            <h1>علیرضا لطفی مقدم</h1>
+            <p class="role mono-ui" dir="ltr">Senior Software Engineer & .NET Architect</p>
+          </div>
+
+          <p class="concise-bio">
+            معمار ارشد نرم‌افزار متمرکز بر توسعه سیستم‌های توزیع‌شده C#، ASP.NET Core و اپلیکیشن‌های دسکتاپ صنعتی (WPF).
           </p>
-          <p>
-            تخصص اصلی من بر پایه‌ی طراحی سیستم‌های بلادرنگ با SignalR، یکپارچه‌سازی سخت‌افزارهای بیومتریک (دستگاه اثر انگشت Suprema و اسکنر WIA) و مدیریت بانک‌های اطلاعاتی سنگین شکل گرفته است.
-          </p>
-        </div>
-      </section>
 
-      <!-- 01 // EXPERIENCE -->
-      <section id="experience" class="editorial-section">
-        <div class="sec-title-bar">
-          <span class="num mono-ui" dir="ltr">01 //</span>
-          <h2>سوابق کاری و دستاوردهای اجرایی</h2>
+          <nav class="editorial-nav" aria-label="ناوبری اصلی">
+            <a
+              v-for="item in navItems"
+              :key="item.id"
+              :href="`#${item.id}`"
+              @click="scrollToSection(item.id, $event)"
+              :class="{ active: !selectedNote && activeSection === item.id }"
+            >
+              <span class="nav-num mono-ui" dir="ltr">{{ item.num }}</span>
+              <span class="nav-label">{{ item.label }}</span>
+            </a>
+          </nav>
         </div>
 
-        <div class="experience-editorial-stream">
-          <article v-for="(job, index) in workExperience" :key="index" class="job-card-row">
-            <div class="job-header">
-              <div class="job-main-title">
-                <h3>{{ job.role }}</h3>
-                <span class="company-name">@ {{ job.company }}</span>
+        <div class="sidebar-links">
+          <a :href="tabPaths.resume" @click="navigateFromEvent($event, tabPaths.resume)" class="resume-btn">
+            📄 مشاهده رزومه رسمی A4 ↗
+          </a>
+        </div>
+      </aside>
+
+      <!-- LEFT STREAM (SWISS EDITORIAL TYPOGRAPHY) -->
+      <main class="editorial-content" ref="contentPaneRef">
+        <!-- 00 // ABOUT -->
+        <section id="about" class="editorial-section">
+          <div class="sec-title-bar">
+            <span class="num mono-ui" dir="ltr">00 //</span>
+            <h2>درباره من</h2>
+          </div>
+          <div class="text-content">
+            <p class="lead">
+              من <strong>علیرضا لطفی مقدم</strong> هستم؛ معمار ارشد نرم‌افزار با <strong>+۶ سال سابقه تخصصی</strong> در توسعه سیستم‌های توزیع‌شده با کارایی بالا، موتورهای C# و .NET Core، و اپلیکیشن‌های دسکتاپ صنعتی (WPF).
+            </p>
+            <p>
+              تخصص اصلی من بر پایه‌ی طراحی سیستم‌های بلادرنگ با SignalR، یکپارچه‌سازی سخت‌افزارهای بیومتریک (دستگاه اثر انگشت Suprema و اسکنر WIA) و مدیریت بانک‌های اطلاعاتی سنگین شکل گرفته است.
+            </p>
+          </div>
+        </section>
+
+        <!-- 01 // EXPERIENCE -->
+        <section id="experience" class="editorial-section">
+          <div class="sec-title-bar">
+            <span class="num mono-ui" dir="ltr">01 //</span>
+            <h2>سوابق کاری و دستاوردهای اجرایی</h2>
+          </div>
+
+          <div class="experience-editorial-stream">
+            <article v-for="(job, index) in workExperience" :key="index" class="job-card-row">
+              <div class="job-header">
+                <div class="job-main-title">
+                  <h3>{{ job.role }}</h3>
+                  <span class="company-name">@ {{ job.company }}</span>
+                </div>
+                <span class="period-pill mono-ui" dir="ltr">{{ job.period }}</span>
               </div>
-              <span class="period-pill mono-ui" dir="ltr">{{ job.period }}</span>
-            </div>
 
-            <p class="job-desc">{{ job.desc }}</p>
+              <p class="job-desc">{{ job.desc }}</p>
 
-            <ul v-if="job.highlights?.length" class="job-bullets">
-              <li v-for="hl in job.highlights" :key="hl">{{ hl }}</li>
-            </ul>
+              <ul v-if="job.highlights?.length" class="job-bullets">
+                <li v-for="hl in job.highlights" :key="hl">{{ hl }}</li>
+              </ul>
 
-            <div v-if="job.tech?.length" class="job-tech-row">
-              <span v-for="t in job.tech" :key="t" class="tech-tag-item mono-ui" dir="ltr">{{ t }}</span>
-            </div>
-          </article>
-        </div>
-      </section>
+              <div v-if="job.tech?.length" class="job-tech-row">
+                <span v-for="t in job.tech" :key="t" class="tech-tag-item mono-ui" dir="ltr">{{ t }}</span>
+              </div>
+            </article>
+          </div>
+        </section>
 
-      <!-- 02 // PROJECTS -->
-      <section id="projects" class="editorial-section">
-        <div class="sec-title-bar">
-          <span class="num mono-ui" dir="ltr">02 //</span>
-          <h2>پروژه‌های برجسته</h2>
-        </div>
+        <!-- 02 // PROJECTS -->
+        <section id="projects" class="editorial-section">
+          <div class="sec-title-bar">
+            <span class="num mono-ui" dir="ltr">02 //</span>
+            <h2>پروژه‌های برجسته</h2>
+          </div>
 
-        <!-- Filter Bar -->
-        <div class="simple-filter-bar">
-          <button
-            v-for="lang in availableLanguages"
-            :key="lang"
-            @click="activeFilter = lang"
-            :class="{ active: activeFilter === lang }"
-            class="filter-tag"
-          >
-            {{ lang === 'All' ? 'همه' : lang }}
-          </button>
-        </div>
+          <!-- Filter Bar -->
+          <div class="simple-filter-bar">
+            <button
+              v-for="lang in availableLanguages"
+              :key="lang"
+              @click="activeFilter = lang"
+              :class="{ active: activeFilter === lang }"
+              class="filter-tag"
+            >
+              {{ lang === 'All' ? 'همه' : lang }}
+            </button>
+          </div>
 
-        <div class="projects-editorial-stream">
-          <article
-            v-for="p in projects.filter(proj => activeFilter === 'All' || (proj.language && proj.language.includes(activeFilter)))"
-            :key="p.id"
-            class="project-editorial-card"
-          >
-            <div class="proj-top">
-              <h3>
-                <a v-if="p.html_url && p.html_url !== '#'" :href="p.html_url" target="_blank" rel="noopener">
-                  {{ p.name }} <span class="arrow">↗</span>
-                </a>
-                <span v-else>{{ p.name }}</span>
-              </h3>
+          <div class="projects-editorial-stream">
+            <article
+              v-for="p in projects.filter(proj => activeFilter === 'All' || (proj.language && proj.language.includes(activeFilter)))"
+              :key="p.id"
+              class="project-editorial-card"
+            >
+              <div class="proj-top">
+                <h3>
+                  <a v-if="p.html_url && p.html_url !== '#'" :href="p.html_url" target="_blank" rel="noopener">
+                    {{ p.name }} <span class="arrow">↗</span>
+                  </a>
+                  <span v-else>{{ p.name }}</span>
+                </h3>
 
-              <!-- Elegant Status Badge -->
-              <span v-if="formatStatus(p.status)" class="status-badge-pill" :class="formatStatus(p.status).type">
-                <span class="status-dot"></span>
-                <span>{{ formatStatus(p.status).text }}</span>
-              </span>
-            </div>
+                <!-- Status Badge -->
+                <span v-if="formatStatus(p.status)" class="status-badge-pill" :class="formatStatus(p.status).type">
+                  <span class="status-dot"></span>
+                  <span>{{ formatStatus(p.status).text }}</span>
+                </span>
+              </div>
 
-            <p class="desc">{{ p.description }}</p>
+              <p class="desc">{{ p.description }}</p>
 
-            <div class="meta-line">
-              <span class="tech-stack mono-ui" dir="ltr">{{ p.language }}</span>
-              <button v-if="p.architecture" class="arch-btn mono-ui" @click="openArchitecture(p)">
-                architecture ↗
-              </button>
-            </div>
-          </article>
-        </div>
-      </section>
+              <div class="meta-line">
+                <span class="tech-stack mono-ui" dir="ltr">{{ p.language }}</span>
+                <button v-if="p.architecture" class="arch-btn mono-ui" @click="openArchitecture(p)">
+                  architecture ↗
+                </button>
+              </div>
+            </article>
+          </div>
+        </section>
 
-      <!-- 03 // SKILLS & SPECIALIZATIONS -->
-      <section id="skills" class="editorial-section">
-        <div class="sec-title-bar">
-          <span class="num mono-ui" dir="ltr">03 //</span>
-          <h2>تخصص‌ها و حوزه‌های تمرکز فنی</h2>
-        </div>
+        <!-- 03 // SKILLS & SPECIALIZATIONS -->
+        <section id="skills" class="editorial-section">
+          <div class="sec-title-bar">
+            <span class="num mono-ui" dir="ltr">03 //</span>
+            <h2>تخصص‌ها و حوزه‌های تمرکز فنی</h2>
+          </div>
 
-        <div class="skills-editorial-grid">
-          <div v-for="(skill, index) in (mySkills.length ? mySkills : interests)" :key="index" class="skill-card-item">
-            <div class="skill-icon">{{ skill.icon || '⚡' }}</div>
-            <div class="skill-info">
-              <h4>{{ skill.title || skill.name }}</h4>
-              <p>{{ skill.desc || skill.level }}</p>
+          <div class="skills-editorial-grid">
+            <div v-for="(skill, index) in (mySkills.length ? mySkills : interests)" :key="index" class="skill-card-item">
+              <div class="skill-icon">{{ skill.icon || '⚡' }}</div>
+              <div class="skill-info">
+                <h4>{{ skill.title || skill.name }}</h4>
+                <p>{{ skill.desc || skill.level }}</p>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <!-- 04 // NOTES -->
-      <section id="notes" class="editorial-section">
-        <div class="sec-title-bar">
-          <span class="num mono-ui" dir="ltr">04 //</span>
-          <h2>یادداشت‌های فنی</h2>
-        </div>
+        <!-- 04 // NOTES -->
+        <section id="notes" class="editorial-section">
+          <div class="sec-title-bar">
+            <span class="num mono-ui" dir="ltr">04 //</span>
+            <h2>یادداشت‌های فنی</h2>
+          </div>
 
-        <div class="notes-editorial-list">
-          <article v-for="note in notes" :key="note.id" class="note-editorial-item">
-            <span class="date mono-ui" dir="ltr">{{ note.created_at }}</span>
-            <h3>{{ note.title }}</h3>
-          </article>
-        </div>
-      </section>
-    </main>
+          <div class="notes-editorial-list">
+            <article v-for="note in notes" :key="note.id" class="note-editorial-item">
+              <span class="date mono-ui" dir="ltr">{{ note.created_at }}</span>
+              <h3>{{ note.title }}</h3>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
   </div>
 </template>
 
 <style scoped>
-/* SWISS EDITORIAL LUXURY DESIGN */
+/* MASTER SHELL */
+.master-shell {
+  width: 100%;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* SUBTLE BLURRED TOP BAR */
+.swiss-top-bar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  background: rgba(248, 250, 252, 0.82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--panel-border);
+  padding: 10px 32px;
+  box-sizing: border-box;
+}
+
+.swiss-top-bar.hidden {
+  display: none;
+}
+
+.top-bar-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.header-logo-wrap:hover {
+  transform: translateY(-1px);
+}
+
+.top-mini-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid var(--neon);
+}
+
+.brand-name-text {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: -0.5px;
+}
+
+/* OUTLINE SOCIAL ICONS (NO BACKGROUND BOXES) */
+.header-social-icons {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.header-icon-link {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 4px;
+  transition: all 0.2s ease;
+}
+
+.header-icon-link:hover {
+  color: var(--neon);
+  transform: translateY(-2px);
+}
+
+/* EDITORIAL LAYOUT */
 .editorial-layout {
   display: grid;
   grid-template-columns: 280px 1fr;
   gap: 56px;
   max-width: 1200px;
   margin: 0 auto;
-  min-height: 100dvh;
-  padding: 48px 24px;
+  width: 100%;
+  min-height: calc(100dvh - 60px);
+  padding: 40px 24px;
   box-sizing: border-box;
 }
 
@@ -353,11 +450,11 @@ const scrollToSection = (sectionId, event) => {
   padding: 0;
 }
 
-/* SIDEBAR */
+/* SIDEBAR (RIGHT ALIGNED) */
 .editorial-sidebar {
   position: sticky;
-  top: 48px;
-  max-height: calc(100vh - 96px);
+  top: 80px;
+  max-height: calc(100vh - 120px);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -369,46 +466,34 @@ const scrollToSection = (sectionId, event) => {
 .sidebar-top {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
+  align-items: flex-start;
+  text-align: right;
   gap: 16px;
 }
 
-.frameless-outline-avatar {
-  width: 100px;
-  height: 100px;
-  border-radius: 0;
-  overflow: visible;
-  border: none;
-  background: transparent;
-  box-shadow: none;
+.avatar-ring-box {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--neon);
   cursor: pointer;
+  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.15);
   transition: transform 0.25s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
-.frameless-outline-avatar:hover {
-  transform: scale(1.06);
+.avatar-ring-box:hover {
+  transform: scale(1.04);
 }
 
-.frameless-outline-avatar img {
+.avatar-ring-box img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  filter: drop-shadow(0 2px 8px rgba(79, 70, 229, 0.15));
-}
-
-.frameless-outline-avatar img.real-photo-avatar {
-  border-radius: 50%;
   object-fit: cover;
-  border: 2px solid var(--neon);
-  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.15);
 }
 
 .header-titles {
-  text-align: center;
+  text-align: right;
 }
 
 .header-titles h1 {
@@ -430,7 +515,7 @@ const scrollToSection = (sectionId, event) => {
   font-size: 0.84rem;
   color: var(--text-secondary);
   line-height: 1.65;
-  text-align: center;
+  text-align: right;
 }
 
 .editorial-nav {
@@ -438,6 +523,7 @@ const scrollToSection = (sectionId, event) => {
   flex-direction: column;
   gap: 8px;
   margin-top: 12px;
+  width: 100%;
 }
 
 .editorial-nav a {
@@ -499,39 +585,10 @@ const scrollToSection = (sectionId, event) => {
   box-shadow: 0 4px 14px rgba(79, 70, 229, 0.2);
 }
 
-/* OUTLINE SVG SOCIAL ICONS */
-.outline-social-bar {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.outline-icon-btn {
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
-  background: #ffffff;
-  border: 1px solid var(--panel-border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-secondary);
-  text-decoration: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.outline-icon-btn:hover {
-  border-color: var(--neon);
-  color: var(--neon);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
-}
-
 /* CONTENT STREAM */
 .editorial-content {
   overflow-y: auto;
-  max-height: calc(100vh - 96px);
+  max-height: calc(100vh - 120px);
   padding-right: 8px;
   scroll-behavior: smooth;
   scrollbar-width: thin;
