@@ -121,11 +121,9 @@ const scrollToSection = (sectionId, event) => {
     <!-- SUBTLE BLURRED TOP BAR (RIGHT: DAMOON MONOGRAM / LEFT: OUTLINE SOCIAL ICONS NO BG) -->
     <header class="swiss-top-bar" :class="{ hidden: isZenMode }">
       <div class="top-bar-inner">
-        <!-- RIGHT: Damoon Monogram (Click to toggle SVG / ALM / Real Photo) -->
-        <div class="header-logo-wrap" @click="toggleAvatarMode" title="کلیک برای تغییر حالت لوگو">
-          <DamoonMonogram v-if="avatarMode === 'svg-damoon'" :size="32" />
-          <MonogramLogo v-else-if="avatarMode === 'svg-alm'" :size="32" />
-          <img v-else :src="profile.avatarUrl || '/Damoon-d.jpg'" alt="علیرضا لطفی مقدم" class="top-mini-avatar" />
+        <!-- RIGHT: Damoon Full Written-out Typographic Logo -->
+        <div class="header-logo-wrap" title="Damoon">
+          <img src="/monogram-damoon.png" alt="Damoon" class="damoon-full-logo-img" />
         </div>
 
         <!-- LEFT: Outline Social Icons (WITHOUT BACKGROUND BOXES) -->
@@ -385,9 +383,14 @@ const scrollToSection = (sectionId, event) => {
 .header-logo-wrap {
   display: flex;
   align-items: center;
-  gap: 12px;
-  cursor: pointer;
-  transition: transform 0.2s ease;
+}
+
+.damoon-full-logo-img {
+  height: 32px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 6px rgba(79, 70, 229, 0.12));
+  display: block;
 }
 
 .header-logo-wrap:hover {
