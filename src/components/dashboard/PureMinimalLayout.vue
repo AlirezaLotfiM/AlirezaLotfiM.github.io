@@ -123,7 +123,7 @@ const scrollToSection = (sectionId, event) => {
     <!-- RIGHT SIDEBAR (SWISS EDITORIAL & CLEAN OUTLINE ICONS) -->
     <aside v-if="!isZenMode" class="editorial-sidebar">
       <div class="sidebar-top">
-        <div class="avatar-circle-ring" @click="toggleAvatarMode" title="تغییر حالت عکس پرتره / لوگوی آوت‌لاین (کلیک کنید)">
+        <div class="frameless-outline-avatar" @click="toggleAvatarMode" title="تغییر حالت عکس پرتره / لوگوی آوت‌لاین (کلیک کنید)">
           <img :src="isOutlinedAvatar ? '/outlined-avatar.png' : (profile.avatarUrl || '/Damoon-d.jpg')" alt="علیرضا لطفی مقدم" />
         </div>
 
@@ -360,33 +360,44 @@ const scrollToSection = (sectionId, event) => {
 .sidebar-top {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  text-align: center;
   gap: 16px;
 }
 
-.avatar-circle-ring {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  overflow: hidden;
-  border: 2px solid var(--neon);
+.frameless-outline-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 0;
+  overflow: visible;
+  border: none;
+  background: transparent;
+  box-shadow: none;
   cursor: pointer;
-  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.15);
   transition: transform 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.avatar-circle-ring:hover {
-  transform: scale(1.04);
+.frameless-outline-avatar:hover {
+  transform: scale(1.06);
 }
 
-.avatar-circle-ring img {
+.frameless-outline-avatar img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 8px rgba(79, 70, 229, 0.15));
+}
+
+.header-titles {
+  text-align: center;
 }
 
 .header-titles h1 {
   margin: 0 0 4px 0;
-  font-size: 1.5rem;
+  font-size: 1.45rem;
   color: var(--text-main);
   font-weight: 800;
 }
@@ -400,9 +411,10 @@ const scrollToSection = (sectionId, event) => {
 
 .concise-bio {
   margin: 0;
-  font-size: 0.86rem;
+  font-size: 0.84rem;
   color: var(--text-secondary);
   line-height: 1.65;
+  text-align: center;
 }
 
 .editorial-nav {
