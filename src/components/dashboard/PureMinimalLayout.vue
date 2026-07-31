@@ -208,6 +208,17 @@ const scrollToSection = (sectionId, event) => {
     });
   }
 };
+
+const navigateToProject = (relProj) => {
+  playClick();
+  scrollToSection('projects');
+  const targetProj = projects.value.find(p => p.id === relProj.id || p.slug === relProj.slug);
+  if (targetProj && targetProj.architecture) {
+    setTimeout(() => {
+      openArchitecture(targetProj);
+    }, 450);
+  }
+};
 </script>
 
 <template>
@@ -372,6 +383,24 @@ const scrollToSection = (sectionId, event) => {
                   <div v-for="(hl, i) in job.highlights" :key="i" class="achievement-chip-item">
                     <span class="chip-bullet">✦</span>
                     <span class="chip-text">{{ hl }}</span>
+                  </div>
+                </div>
+
+                <!-- Related Projects Box -->
+                <div v-if="job.related_projects && job.related_projects.length" class="job-related-projects-box">
+                  <span class="related-title mono-ui">پروژه‌های کلیدی مرتبط:</span>
+                  <div class="related-chips-row">
+                    <button
+                      v-for="relProj in job.related_projects"
+                      :key="relProj.id"
+                      @click="navigateToProject(relProj)"
+                      class="related-project-chip mono-ui"
+                      title="مشاهده جزئیات و معماری پروژه"
+                    >
+                      <span class="chip-icon">📂</span>
+                      <span>{{ relProj.name }}</span>
+                      <span class="chip-arrow">↗</span>
+                    </button>
                   </div>
                 </div>
 
@@ -951,6 +980,69 @@ const scrollToSection = (sectionId, event) => {
   color: var(--neon);
   font-size: 0.75rem;
   margin-top: 3px;
+}
+
+/* JOB RELATED PROJECTS BOX */
+.job-related-projects-box {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 6px;
+  padding: 12px 14px;
+  background: rgba(79, 70, 229, 0.04);
+  border: 1px dashed rgba(79, 70, 229, 0.2);
+  border-radius: 12px;
+}
+
+.related-title {
+  font-size: 0.76rem;
+  color: var(--neon);
+  font-weight: 700;
+}
+
+.related-chips-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.related-project-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid rgba(79, 70, 229, 0.25);
+  color: var(--text-main);
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.related-project-chip .chip-icon {
+  font-size: 0.85rem;
+}
+
+.related-project-chip .chip-arrow {
+  color: var(--neon);
+  font-size: 0.78rem;
+  transition: transform 0.2s ease;
+}
+
+.related-project-chip:hover {
+  border-color: var(--neon);
+  background: var(--neon);
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+}
+
+.related-project-chip:hover .chip-arrow {
+  color: #ffffff;
+  transform: translateX(-2px);
 }
 
 .job-tech-pills-row {
