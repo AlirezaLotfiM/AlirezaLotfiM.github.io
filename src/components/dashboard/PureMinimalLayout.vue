@@ -202,18 +202,42 @@ const scrollToSection = (sectionId, event) => {
         @close="showArchModal = false"
       />
 
-      <!-- RIGHT SIDEBAR (REDESIGNED TYPOGRAPHIC INTRO CARD - NO FACE PHOTO) -->
+      <!-- RIGHT SIDEBAR (REDESIGNED LUXURY EDITORIAL SIDEBAR) -->
       <aside v-if="!isZenMode" class="editorial-sidebar">
         <div class="sidebar-top">
+          <!-- LIVE STATUS BEACON -->
+          <div class="status-beacon-bar">
+            <span class="beacon-dot"></span>
+            <span class="beacon-text mono-ui">AVAILABLE FOR LEAD & ARCHITECT ROLES</span>
+          </div>
+
+          <!-- INTRO PROFILE CARD -->
           <div class="intro-typographic-card">
             <div class="card-badge mono-ui" dir="ltr">◈ SYSTEM ARCHITECT</div>
             <h1 class="author-name">علیرضا لطفی مقدم</h1>
-            <p class="role-pill mono-ui" dir="ltr">Senior Software Engineer & .NET Architect</p>
+            <span class="role-pill mono-ui" dir="ltr">Senior Software Engineer & .NET Architect</span>
             <p class="concise-bio">
               معمار ارشد نرم‌افزار متمرکز بر توسعه سیستم‌های توزیع‌شده C#، ASP.NET Core و اپلیکیشن‌های دسکتاپ صنعتی (WPF).
             </p>
           </div>
 
+          <!-- QUICK METRIC SPECS BAR -->
+          <div class="sidebar-specs-grid">
+            <div class="spec-item">
+              <span class="spec-num mono-ui">+۶</span>
+              <span class="spec-label">سال سابقه</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-num mono-ui">۱۶+</span>
+              <span class="spec-label">پروژه عملیاتی</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-num mono-ui">C#</span>
+              <span class="spec-label">استک اصلی</span>
+            </div>
+          </div>
+
+          <!-- NAVIGATION MENU -->
           <nav class="editorial-nav" aria-label="ناوبری اصلی">
             <a
               v-for="item in navItems"
@@ -253,31 +277,53 @@ const scrollToSection = (sectionId, event) => {
           </div>
         </section>
 
-        <!-- 01 // EXPERIENCE -->
+        <!-- 01 // EXPERIENCE (REDESIGNED TIMELINE STREAM) -->
         <section id="experience" class="editorial-section">
           <div class="sec-title-bar">
             <span class="num mono-ui" dir="ltr">01 //</span>
             <h2>سوابق کاری و دستاوردهای اجرایی</h2>
           </div>
 
-          <div class="experience-editorial-stream">
-            <article v-for="(job, index) in workExperience" :key="index" class="job-card-row">
-              <div class="job-header">
-                <div class="job-main-title">
-                  <h3>{{ job.role }}</h3>
-                  <span class="company-name">@ {{ job.company }}</span>
-                </div>
-                <span class="period-pill mono-ui" dir="ltr">{{ job.period }}</span>
+          <div class="experience-timeline-wrapper">
+            <article v-for="(job, index) in workExperience" :key="index" class="timeline-job-card">
+              <div class="timeline-left-node">
+                <span class="node-dot"></span>
+                <span class="node-line" v-if="index < workExperience.length - 1"></span>
               </div>
 
-              <p class="job-desc">{{ job.desc }}</p>
+              <div class="job-card-content">
+                <div class="job-header-row">
+                  <div class="job-title-group">
+                    <h3>{{ job.title || job.role }}</h3>
+                    <span class="job-company mono-ui">@ {{ job.company }}</span>
+                  </div>
+                  <span class="period-badge-pill mono-ui" dir="ltr">{{ job.period }}</span>
+                </div>
 
-              <ul v-if="job.highlights?.length" class="job-bullets">
-                <li v-for="hl in job.highlights" :key="hl">{{ hl }}</li>
-              </ul>
+                <p v-if="job.role_summary" class="job-summary-text">{{ job.role_summary }}</p>
 
-              <div v-if="job.tech?.length" class="job-tech-row">
-                <span v-for="t in job.tech" :key="t" class="tech-tag-item mono-ui" dir="ltr">{{ t }}</span>
+                <!-- Achievement Bullet Chips -->
+                <div v-if="job.description && Array.isArray(job.description)" class="job-achievements-list">
+                  <div v-for="(item, i) in job.description" :key="i" class="achievement-chip-item">
+                    <span class="chip-bullet">✦</span>
+                    <span class="chip-text">{{ item }}</span>
+                  </div>
+                </div>
+
+                <!-- Fallback highlights -->
+                <div v-else-if="job.highlights && Array.isArray(job.highlights)" class="job-achievements-list">
+                  <div v-for="(hl, i) in job.highlights" :key="i" class="achievement-chip-item">
+                    <span class="chip-bullet">✦</span>
+                    <span class="chip-text">{{ hl }}</span>
+                  </div>
+                </div>
+
+                <!-- Technologies Row -->
+                <div v-if="job.technologies?.length || job.tech?.length" class="job-tech-pills-row">
+                  <span v-for="t in (job.technologies || job.tech)" :key="t" class="tech-pill-badge mono-ui" dir="ltr">
+                    {{ t }}
+                  </span>
+                </div>
               </div>
             </article>
           </div>
@@ -376,7 +422,7 @@ const scrollToSection = (sectionId, event) => {
           </div>
         </section>
 
-        <!-- STREAM FOOTER (FOR HIGH-END SCROLL SPACE & ELEVATED TYPOGRAPHY) -->
+        <!-- STREAM FOOTER (SUPPLIES GENEROUS SCROLL SPACE SO #NOTES REACHES TOP & ACTIVE MENU HIGHLIGHTS) -->
         <footer class="editorial-stream-footer">
           <div class="footer-divider"></div>
           <div class="footer-bottom-row">
@@ -483,10 +529,10 @@ const scrollToSection = (sectionId, event) => {
   transform: translateY(-2px);
 }
 
-/* EDITORIAL LAYOUT - WIDER GRID WITH DECREASED OUTER PADDING & INCREASED COLUMN GAP */
+/* EDITORIAL LAYOUT */
 .editorial-layout {
   display: grid;
-  grid-template-columns: 310px 1fr;
+  grid-template-columns: 320px 1fr;
   gap: 72px;
   max-width: 1380px;
   margin: 0 auto;
@@ -509,7 +555,7 @@ const scrollToSection = (sectionId, event) => {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 24px;
+  gap: 20px;
   overflow-y: auto;
   scrollbar-width: thin;
 }
@@ -519,7 +565,35 @@ const scrollToSection = (sectionId, event) => {
   flex-direction: column;
   align-items: flex-start;
   text-align: right;
-  gap: 20px;
+  gap: 16px;
+}
+
+/* STATUS BEACON BAR */
+.status-beacon-bar {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.beacon-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+}
+
+.beacon-text {
+  font-size: 0.65rem;
+  color: #059669;
+  font-weight: 700;
+  letter-spacing: 0.5px;
 }
 
 /* REDESIGNED TYPOGRAPHIC INTRO CARD (NO FACE PHOTO) */
@@ -571,11 +645,43 @@ const scrollToSection = (sectionId, event) => {
   line-height: 1.7;
 }
 
+/* SIDEBAR METRIC SPECS GRID */
+.sidebar-specs-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  width: 100%;
+  padding: 12px;
+  background: #ffffff;
+  border: 1px solid var(--panel-border);
+  border-radius: 14px;
+  box-sizing: border-box;
+}
+
+.spec-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 2px;
+}
+
+.spec-num {
+  font-size: 0.95rem;
+  color: var(--neon);
+  font-weight: 800;
+}
+
+.spec-label {
+  font-size: 0.7rem;
+  color: var(--text-soft);
+}
+
 .editorial-nav {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin-top: 8px;
+  margin-top: 4px;
   width: 100%;
 }
 
@@ -688,84 +794,143 @@ const scrollToSection = (sectionId, event) => {
   color: var(--neon);
 }
 
-/* EXPERIENCE STREAM */
-.experience-editorial-stream {
+/* REDESIGNED EXPERIENCE TIMELINE STREAM */
+.experience-timeline-wrapper {
   display: flex;
   flex-direction: column;
   gap: 28px;
+  position: relative;
+  margin-top: 8px;
 }
 
-.job-card-row {
+.timeline-job-card {
+  display: flex;
+  gap: 18px;
+  position: relative;
+}
+
+.timeline-left-node {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding-bottom: 24px;
-  border-bottom: 1px dashed var(--panel-border);
+  align-items: center;
+  width: 20px;
+  flex-shrink: 0;
+  padding-top: 6px;
 }
 
-.job-card-row:last-child {
-  border-bottom: none;
+.node-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 3px solid var(--neon);
+  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12);
 }
 
-.job-header {
+.node-line {
+  width: 2px;
+  flex-grow: 1;
+  background: linear-gradient(180deg, var(--neon) 0%, rgba(203, 213, 225, 0.4) 100%);
+  margin-top: 6px;
+}
+
+.job-card-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 22px;
+  background: #ffffff;
+  border: 1px solid var(--panel-border);
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.03);
+  transition: all 0.25s ease;
+}
+
+.job-card-content:hover {
+  border-color: var(--neon);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(79, 70, 229, 0.1);
+}
+
+.job-header-row {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 12px;
+  gap: 14px;
 }
 
-.job-main-title h3 {
-  margin: 0 0 2px 0;
-  font-size: 1.1rem;
+.job-title-group h3 {
+  margin: 0 0 4px 0;
+  font-size: 1.15rem;
   color: var(--text-main);
+  font-weight: 800;
+}
+
+.job-company {
+  font-size: 0.86rem;
+  color: var(--neon);
   font-weight: 700;
 }
 
-.company-name {
-  font-size: 0.88rem;
+.period-badge-pill {
+  font-size: 0.76rem;
   color: var(--neon);
-  font-weight: 600;
-}
-
-.period-pill {
-  font-size: 0.78rem;
-  color: var(--neon);
-  font-weight: 600;
-  padding: 3px 10px;
+  font-weight: 700;
+  padding: 4px 10px;
   border-radius: 8px;
   background: rgba(79, 70, 229, 0.08);
-  border: 1px solid rgba(79, 70, 229, 0.2);
+  border: 1px solid rgba(79, 70, 229, 0.18);
+  white-space: nowrap;
 }
 
-.job-desc {
+.job-summary-text {
   margin: 0;
-  font-size: 0.9rem;
+  font-size: 0.92rem;
+  color: var(--text-main);
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+.job-achievements-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.achievement-chip-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.88rem;
   color: var(--text-secondary);
   line-height: 1.7;
 }
 
-.job-bullets {
-  margin: 4px 0 0 0;
-  padding-right: 18px;
-  font-size: 0.88rem;
-  color: var(--text-secondary);
-  line-height: 1.75;
+.chip-bullet {
+  color: var(--neon);
+  font-size: 0.75rem;
+  margin-top: 3px;
 }
 
-.job-tech-row {
+.job-tech-pills-row {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin-top: 4px;
+  margin-top: 6px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--panel-border);
 }
 
-.tech-tag-item {
+.tech-pill-badge {
   font-size: 0.74rem;
-  padding: 2px 8px;
+  padding: 3px 9px;
   border-radius: 6px;
   background: #f1f5f9;
   border: 1px solid var(--panel-border);
   color: var(--text-secondary);
+  font-weight: 600;
 }
 
 /* PROJECTS */
