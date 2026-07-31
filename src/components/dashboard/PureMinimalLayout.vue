@@ -122,11 +122,10 @@ const scrollToSection = (sectionId, event) => {
     <header class="swiss-top-bar" :class="{ hidden: isZenMode }">
       <div class="top-bar-inner">
         <!-- RIGHT: Damoon Monogram (Click to toggle SVG / ALM / Real Photo) -->
-        <div class="header-logo-wrap" @click="toggleAvatarMode" title="کلیک برای تغییر حالت لوگو (Damoon / ALM)">
-          <DamoonMonogram v-if="avatarMode === 'svg-damoon'" :size="48" />
-          <MonogramLogo v-else-if="avatarMode === 'svg-alm'" :size="48" />
+        <div class="header-logo-wrap" @click="toggleAvatarMode" title="کلیک برای تغییر حالت لوگو">
+          <DamoonMonogram v-if="avatarMode === 'svg-damoon'" :size="32" />
+          <MonogramLogo v-else-if="avatarMode === 'svg-alm'" :size="32" />
           <img v-else :src="profile.avatarUrl || '/Damoon-d.jpg'" alt="علیرضا لطفی مقدم" class="top-mini-avatar" />
-          <span class="brand-name-text mono-ui">Damoon</span>
         </div>
 
         <!-- LEFT: Outline Social Icons (WITHOUT BACKGROUND BOXES) -->
@@ -355,17 +354,18 @@ const scrollToSection = (sectionId, event) => {
   flex-direction: column;
 }
 
-/* SUBTLE BLURRED TOP BAR */
+/* ULTRA-THIN FLUSH TOP BAR */
 .swiss-top-bar {
   position: sticky;
   top: 0;
   z-index: 100;
   width: 100%;
-  background: rgba(248, 250, 252, 0.82);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  margin: 0;
+  padding: 4px 24px;
+  background: rgba(248, 250, 252, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--panel-border);
-  padding: 10px 32px;
   box-sizing: border-box;
 }
 
@@ -379,6 +379,7 @@ const scrollToSection = (sectionId, event) => {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  height: 36px;
 }
 
 .header-logo-wrap {
