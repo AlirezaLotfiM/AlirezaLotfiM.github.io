@@ -37,14 +37,6 @@ const activeSection = ref('about');
 const contentPaneRef = ref(null);
 let observer = null;
 
-const avatarMode = ref('svg-damoon'); // 'svg-damoon' | 'svg-alm' | 'real-photo'
-const toggleAvatarMode = () => {
-  playClick();
-  if (avatarMode.value === 'svg-damoon') avatarMode.value = 'svg-alm';
-  else if (avatarMode.value === 'svg-alm') avatarMode.value = 'real-photo';
-  else avatarMode.value = 'svg-damoon';
-};
-
 const showArchModal = ref(false);
 const currentArchDiagram = ref('');
 const currentArchTitle = ref('');
@@ -104,21 +96,29 @@ onUnmounted(() => {
   if (observer) observer.disconnect();
 });
 
+// Precise container scrolling without affecting outer window scroll position
 const scrollToSection = (sectionId, event) => {
   playClick();
   closeNote();
   if (event) event.preventDefault();
 
   const target = document.getElementById(sectionId);
-  if (target) {
-    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (target && contentPaneRef.value) {
+    const containerTop = contentPaneRef.value.getBoundingClientRect().top;
+    const targetTop = target.getBoundingClientRect().top;
+    const offset = targetTop - containerTop + contentPaneRef.value.scrollTop;
+
+    contentPaneRef.value.scrollTo({
+      top: Math.max(0, offset - 12),
+      behavior: 'smooth',
+    });
   }
 };
 </script>
 
 <template>
   <div class="master-shell">
-    <!-- SUBTLE BLURRED TOP BAR (RIGHT: DAMOON MONOGRAM / LEFT: OUTLINE SOCIAL ICONS NO BG) -->
+    <!-- TOP BAR (RIGHT: DAMOON LOGO / LEFT: OUTLINE SOCIAL ICONS NO BG) -->
     <header class="swiss-top-bar" :class="{ hidden: isZenMode }">
       <div class="top-bar-inner">
         <!-- RIGHT: Damoon Full Written-out Typographic Logo -->
@@ -168,21 +168,17 @@ const scrollToSection = (sectionId, event) => {
         @close="showArchModal = false"
       />
 
-      <!-- RIGHT SIDEBAR (RIGHT ALIGNED) -->
+      <!-- RIGHT SIDEBAR (REDESIGNED TYPOGRAPHIC INTRO CARD - NO FACE PHOTO) -->
       <aside v-if="!isZenMode" class="editorial-sidebar">
         <div class="sidebar-top">
-          <div class="avatar-ring-box" @click="emit('go-home')" title="صفحه نخست">
-            <img :src="profile.avatarUrl || '/Damoon-d.jpg'" alt="علیرضا لطفی مقدم" />
+          <div class="intro-typographic-card">
+            <div class="card-badge mono-ui" dir="ltr">◈ SYSTEM ARCHITECT</div>
+            <h1 class="author-name">علیرضا لطفی مقدم</h1>
+            <p class="role-pill mono-ui" dir="ltr">Senior Software Engineer & .NET Architect</p>
+            <p class="concise-bio">
+              معمار ارشد نرم‌افزار متمرکز بر توسعه سیستم‌های توزیع‌شده C#، ASP.NET Core و اپلیکیشن‌های دسکتاپ صنعتی (WPF).
+            </p>
           </div>
-
-          <div class="header-titles">
-            <h1>علیرضا لطفی مقدم</h1>
-            <p class="role mono-ui" dir="ltr">Senior Software Engineer & .NET Architect</p>
-          </div>
-
-          <p class="concise-bio">
-            معمار ارشد نرم‌افزار متمرکز بر توسعه سیستم‌های توزیع‌شده C#، ASP.NET Core و اپلیکیشن‌های دسکتاپ صنعتی (WPF).
-          </p>
 
           <nav class="editorial-nav" aria-label="ناوبری اصلی">
             <a
@@ -400,21 +396,6 @@ const scrollToSection = (sectionId, event) => {
   transform: translateY(-1px);
 }
 
-.top-mini-avatar {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 1.5px solid var(--neon);
-}
-
-.brand-name-text {
-  font-size: 1.15rem;
-  font-weight: 800;
-  color: var(--text-main);
-  letter-spacing: -0.5px;
-}
-
 /* OUTLINE SOCIAL ICONS (NO BACKGROUND BOXES) */
 .header-social-icons {
   display: flex;
@@ -439,16 +420,16 @@ const scrollToSection = (sectionId, event) => {
   transform: translateY(-2px);
 }
 
-/* EDITORIAL LAYOUT */
+/* EDITORIAL LAYOUT - WIDER GRID WITH DECREASED OUTER PADDING & INCREASED COLUMN GAP */
 .editorial-layout {
   display: grid;
-  grid-template-columns: 280px 1fr;
-  gap: 56px;
-  max-width: 1200px;
+  grid-template-columns: 310px 1fr;
+  gap: 72px;
+  max-width: 1380px;
   margin: 0 auto;
   width: 100%;
-  min-height: calc(100dvh - 60px);
-  padding: 40px 24px;
+  min-height: calc(100dvh - 110px);
+  padding: 16px;
   box-sizing: border-box;
 }
 
@@ -460,7 +441,7 @@ const scrollToSection = (sectionId, event) => {
 /* SIDEBAR (RIGHT ALIGNED) */
 .editorial-sidebar {
   position: sticky;
-  top: 80px;
+  top: 100px;
   max-height: calc(100vh - 120px);
   display: flex;
   flex-direction: column;
@@ -475,61 +456,63 @@ const scrollToSection = (sectionId, event) => {
   flex-direction: column;
   align-items: flex-start;
   text-align: right;
-  gap: 16px;
+  gap: 20px;
 }
 
-.avatar-ring-box {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  overflow: hidden;
-  border: 2px solid var(--neon);
-  cursor: pointer;
-  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.15);
-  transition: transform 0.25s ease;
-}
-
-.avatar-ring-box:hover {
-  transform: scale(1.04);
-}
-
-.avatar-ring-box img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.header-titles {
+/* REDESIGNED TYPOGRAPHIC INTRO CARD (NO FACE PHOTO) */
+.intro-typographic-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   text-align: right;
+  gap: 10px;
+  padding: 22px;
+  background: #ffffff;
+  border: 1px solid var(--panel-border);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.header-titles h1 {
-  margin: 0 0 4px 0;
+.intro-typographic-card .card-badge {
+  font-size: 0.72rem;
+  color: var(--neon);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.intro-typographic-card .author-name {
+  margin: 0;
   font-size: 1.45rem;
   color: var(--text-main);
   font-weight: 800;
+  line-height: 1.3;
 }
 
-.header-titles .role {
+.intro-typographic-card .role-pill {
   margin: 0;
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   color: var(--neon);
   font-weight: 700;
+  padding: 4px 10px;
+  background: rgba(79, 70, 229, 0.08);
+  border-radius: 6px;
+  border: 1px solid rgba(79, 70, 229, 0.15);
 }
 
-.concise-bio {
-  margin: 0;
+.intro-typographic-card .concise-bio {
+  margin: 4px 0 0 0;
   font-size: 0.84rem;
   color: var(--text-secondary);
-  line-height: 1.65;
-  text-align: right;
+  line-height: 1.7;
 }
 
 .editorial-nav {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin-top: 12px;
+  margin-top: 8px;
   width: 100%;
 }
 
@@ -603,7 +586,6 @@ const scrollToSection = (sectionId, event) => {
 
 .editorial-section {
   margin-bottom: 56px;
-  scroll-margin-top: 20px;
 }
 
 .sec-title-bar {
@@ -931,7 +913,7 @@ const scrollToSection = (sectionId, event) => {
   .editorial-layout {
     grid-template-columns: 1fr;
     gap: 32px;
-    padding: 20px 14px;
+    padding: 16px;
   }
 
   .editorial-sidebar, .editorial-content {
