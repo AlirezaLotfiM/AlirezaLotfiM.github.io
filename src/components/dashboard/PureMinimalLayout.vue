@@ -34,6 +34,12 @@ const activeSection = ref('about');
 const contentPaneRef = ref(null);
 let observer = null;
 
+const isOutlinedAvatar = ref(true);
+const toggleAvatarMode = () => {
+  playClick();
+  isOutlinedAvatar.value = !isOutlinedAvatar.value;
+};
+
 const showArchModal = ref(false);
 const currentArchDiagram = ref('');
 const currentArchTitle = ref('');
@@ -117,8 +123,8 @@ const scrollToSection = (sectionId, event) => {
     <!-- RIGHT SIDEBAR (SWISS EDITORIAL & CLEAN OUTLINE ICONS) -->
     <aside v-if="!isZenMode" class="editorial-sidebar">
       <div class="sidebar-top">
-        <div class="avatar-circle-ring" @click="emit('go-home')" title="صفحه نخست">
-          <img :src="profile.avatarUrl || '/Damoon-d.jpg'" alt="علیرضا لطفی مقدم" />
+        <div class="avatar-circle-ring" @click="toggleAvatarMode" title="تغییر حالت عکس پرتره / لوگوی آوت‌لاین (کلیک کنید)">
+          <img :src="isOutlinedAvatar ? '/outlined-avatar.png' : (profile.avatarUrl || '/Damoon-d.jpg')" alt="علیرضا لطفی مقدم" />
         </div>
 
         <div class="header-titles">
