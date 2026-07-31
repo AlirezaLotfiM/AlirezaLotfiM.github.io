@@ -49,18 +49,26 @@ const getTechList = (langString) => {
   return langString.split(/\s*\/\s*/).map((l) => getTechDetails(l));
 };
 
+const formatStatus = (st) => {
+  if (!st) return null;
+  const lower = st.toLowerCase();
+  if (lower.includes('live') || lower.includes('prod')) return { text: 'عملیاتی', type: 'prod' };
+  if (lower.includes('ship') || lower.includes('dev')) return { text: 'در حال توسعه', type: 'dev' };
+  return { text: st, type: 'neutral' };
+};
+
 const navItems = [
-  { id: 'about', label: 'درباره من' },
-  { id: 'experience', label: 'سوابق کاری' },
-  { id: 'projects', label: 'پروژه‌ها' },
-  { id: 'skills', label: 'تخصص‌ها و مهارت‌ها' },
-  { id: 'notes', label: 'یادداشت‌ها' },
+  { id: 'about', label: 'درباره من', num: '۰۰' },
+  { id: 'experience', label: 'سوابق کاری', num: '۰۱' },
+  { id: 'projects', label: 'پروژه‌ها', num: '۰۲' },
+  { id: 'skills', label: 'تخصص‌ها', num: '۰۳' },
+  { id: 'notes', label: 'یادداشت‌ها', num: '۰۴' },
 ];
 
 onMounted(() => {
   if (!contentPaneRef.value) return;
 
-  const sections = contentPaneRef.value.querySelectorAll('.simple-section');
+  const sections = contentPaneRef.value.querySelectorAll('.editorial-section');
   if (!sections.length) return;
 
   observer = new IntersectionObserver(
@@ -98,7 +106,7 @@ const scrollToSection = (sectionId, event) => {
 </script>
 
 <template>
-  <div class="ultra-simple-layout" :class="{ 'zen-mode': isZenMode }">
+  <div class="editorial-layout" :class="{ 'zen-mode': isZenMode }">
     <ArchitectureModal
       :visible="showArchModal"
       :diagram="currentArchDiagram"
@@ -106,10 +114,10 @@ const scrollToSection = (sectionId, event) => {
       @close="showArchModal = false"
     />
 
-    <!-- RIGHT SIDEBAR (SWISS MINIMALIST & CLEAN OUTLINE ICONS) -->
-    <aside v-if="!isZenMode" class="ultra-sidebar">
+    <!-- RIGHT SIDEBAR (SWISS EDITORIAL & CLEAN OUTLINE ICONS) -->
+    <aside v-if="!isZenMode" class="editorial-sidebar">
       <div class="sidebar-top">
-        <div class="avatar-circle" @click="emit('go-home')" title="صفحه نخست">
+        <div class="avatar-circle-ring" @click="emit('go-home')" title="صفحه نخست">
           <img :src="profile.avatarUrl || '/Damoon-d.jpg'" alt="علیرضا لطفی مقدم" />
         </div>
 
@@ -119,10 +127,10 @@ const scrollToSection = (sectionId, event) => {
         </div>
 
         <p class="concise-bio">
-          معمار ارشد نرم‌افزار متمرکز بر سیستم‌های توزیع‌شده C#، ASP.NET Core و اپلیکیشن‌های دسکتاپ صنعتی (WPF).
+          معمار ارشد نرم‌افزار متمرکز بر توسعه سیستم‌های توزیع‌شده C#، ASP.NET Core و اپلیکیشن‌های دسکتاپ صنعتی (WPF).
         </p>
 
-        <nav class="simple-nav" aria-label="ناوبری اصلی">
+        <nav class="editorial-nav" aria-label="ناوبری اصلی">
           <a
             v-for="item in navItems"
             :key="item.id"
@@ -130,8 +138,8 @@ const scrollToSection = (sectionId, event) => {
             @click="scrollToSection(item.id, $event)"
             :class="{ active: !selectedNote && activeSection === item.id }"
           >
-            <span class="dot"></span>
-            <span>{{ item.label }}</span>
+            <span class="nav-num mono-ui" dir="ltr">{{ item.num }}</span>
+            <span class="nav-label">{{ item.label }}</span>
           </a>
         </nav>
       </div>
@@ -175,11 +183,14 @@ const scrollToSection = (sectionId, event) => {
       </div>
     </aside>
 
-    <!-- LEFT STREAM (SWISS MINIMALIST TYPOGRAPHY) -->
-    <main class="ultra-content" ref="contentPaneRef">
+    <!-- LEFT STREAM (SWISS EDITORIAL TYPOGRAPHY) -->
+    <main class="editorial-content" ref="contentPaneRef">
       <!-- 00 // ABOUT -->
-      <section id="about" class="simple-section">
-        <h2 class="sec-title">درباره من</h2>
+      <section id="about" class="editorial-section">
+        <div class="sec-title-bar">
+          <span class="num mono-ui" dir="ltr">00 //</span>
+          <h2>درباره من</h2>
+        </div>
         <div class="text-content">
           <p class="lead">
             من <strong>علیرضا لطفی مقدم</strong> هستم؛ معمار ارشد نرم‌افزار با <strong>+۶ سال سابقه تخصصی</strong> در توسعه سیستم‌های توزیع‌شده با کارایی بالا، موتورهای C# و .NET Core، و اپلیکیشن‌های دسکتاپ صنعتی (WPF).
@@ -191,11 +202,14 @@ const scrollToSection = (sectionId, event) => {
       </section>
 
       <!-- 01 // EXPERIENCE -->
-      <section id="experience" class="simple-section">
-        <h2 class="sec-title">سوابق کاری و دستاوردهای اجرایی</h2>
+      <section id="experience" class="editorial-section">
+        <div class="sec-title-bar">
+          <span class="num mono-ui" dir="ltr">01 //</span>
+          <h2>سوابق کاری و دستاوردهای اجرایی</h2>
+        </div>
 
-        <div class="experience-enhanced-stream">
-          <article v-for="(job, index) in workExperience" :key="index" class="job-card-block">
+        <div class="experience-editorial-stream">
+          <article v-for="(job, index) in workExperience" :key="index" class="job-card-row">
             <div class="job-header">
               <div class="job-main-title">
                 <h3>{{ job.role }}</h3>
@@ -218,10 +232,13 @@ const scrollToSection = (sectionId, event) => {
       </section>
 
       <!-- 02 // PROJECTS -->
-      <section id="projects" class="simple-section">
-        <h2 class="sec-title">پروژه‌های برجسته</h2>
+      <section id="projects" class="editorial-section">
+        <div class="sec-title-bar">
+          <span class="num mono-ui" dir="ltr">02 //</span>
+          <h2>پروژه‌های برجسته</h2>
+        </div>
 
-        <!-- Simple Filter Bar -->
+        <!-- Filter Bar -->
         <div class="simple-filter-bar">
           <button
             v-for="lang in availableLanguages"
@@ -234,11 +251,11 @@ const scrollToSection = (sectionId, event) => {
           </button>
         </div>
 
-        <div class="projects-stream">
+        <div class="projects-editorial-stream">
           <article
             v-for="p in projects.filter(proj => activeFilter === 'All' || (proj.language && proj.language.includes(activeFilter)))"
             :key="p.id"
-            class="project-row"
+            class="project-editorial-card"
           >
             <div class="proj-top">
               <h3>
@@ -247,7 +264,12 @@ const scrollToSection = (sectionId, event) => {
                 </a>
                 <span v-else>{{ p.name }}</span>
               </h3>
-              <span v-if="p.status" class="status mono-ui" dir="ltr">{{ p.status }}</span>
+
+              <!-- Elegant Status Badge -->
+              <span v-if="formatStatus(p.status)" class="status-badge-pill" :class="formatStatus(p.status).type">
+                <span class="status-dot"></span>
+                <span>{{ formatStatus(p.status).text }}</span>
+              </span>
             </div>
 
             <p class="desc">{{ p.description }}</p>
@@ -263,12 +285,15 @@ const scrollToSection = (sectionId, event) => {
       </section>
 
       <!-- 03 // SKILLS & SPECIALIZATIONS -->
-      <section id="skills" class="simple-section">
-        <h2 class="sec-title">تخصص‌ها و حوزه‌های تمرکز فنی</h2>
+      <section id="skills" class="editorial-section">
+        <div class="sec-title-bar">
+          <span class="num mono-ui" dir="ltr">03 //</span>
+          <h2>تخصص‌ها و حوزه‌های تمرکز فنی</h2>
+        </div>
 
-        <div class="skills-enhanced-grid">
-          <div v-for="(skill, index) in (mySkills.length ? mySkills : interests)" :key="index" class="skill-item-card">
-            <div class="skill-icon-wrap">{{ skill.icon || '⚡' }}</div>
+        <div class="skills-editorial-grid">
+          <div v-for="(skill, index) in (mySkills.length ? mySkills : interests)" :key="index" class="skill-card-item">
+            <div class="skill-icon">{{ skill.icon || '⚡' }}</div>
             <div class="skill-info">
               <h4>{{ skill.title || skill.name }}</h4>
               <p>{{ skill.desc || skill.level }}</p>
@@ -278,11 +303,14 @@ const scrollToSection = (sectionId, event) => {
       </section>
 
       <!-- 04 // NOTES -->
-      <section id="notes" class="simple-section">
-        <h2 class="sec-title">یادداشت‌های فنی</h2>
+      <section id="notes" class="editorial-section">
+        <div class="sec-title-bar">
+          <span class="num mono-ui" dir="ltr">04 //</span>
+          <h2>یادداشت‌های فنی</h2>
+        </div>
 
-        <div class="notes-simple-list">
-          <article v-for="note in notes" :key="note.id" class="note-item">
+        <div class="notes-editorial-list">
+          <article v-for="note in notes" :key="note.id" class="note-editorial-item">
             <span class="date mono-ui" dir="ltr">{{ note.created_at }}</span>
             <h3>{{ note.title }}</h3>
           </article>
@@ -293,8 +321,8 @@ const scrollToSection = (sectionId, event) => {
 </template>
 
 <style scoped>
-/* SWISS MINIMALIST & CLEAN OUTLINE ICONS */
-.ultra-simple-layout {
+/* SWISS EDITORIAL LUXURY DESIGN */
+.editorial-layout {
   display: grid;
   grid-template-columns: 280px 1fr;
   gap: 56px;
@@ -305,13 +333,13 @@ const scrollToSection = (sectionId, event) => {
   box-sizing: border-box;
 }
 
-.ultra-simple-layout.zen-mode {
+.editorial-layout.zen-mode {
   grid-template-columns: 1fr;
   padding: 0;
 }
 
 /* SIDEBAR */
-.ultra-sidebar {
+.editorial-sidebar {
   position: sticky;
   top: 48px;
   max-height: calc(100vh - 96px);
@@ -329,16 +357,22 @@ const scrollToSection = (sectionId, event) => {
   gap: 16px;
 }
 
-.avatar-circle {
+.avatar-circle-ring {
   width: 80px;
   height: 80px;
   border-radius: 50%;
   overflow: hidden;
   border: 2px solid var(--neon);
   cursor: pointer;
+  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.15);
+  transition: transform 0.25s ease;
 }
 
-.avatar-circle img {
+.avatar-circle-ring:hover {
+  transform: scale(1.04);
+}
+
+.avatar-circle-ring img {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -365,44 +399,43 @@ const scrollToSection = (sectionId, event) => {
   line-height: 1.65;
 }
 
-.simple-nav {
+.editorial-nav {
   display: flex;
   flex-direction: column;
   gap: 8px;
   margin-top: 12px;
 }
 
-.simple-nav a {
+.editorial-nav a {
   display: flex;
   align-items: center;
   gap: 10px;
   text-decoration: none;
   color: var(--text-secondary);
   font-size: 0.88rem;
-  padding: 4px 0;
+  padding: 6px 0;
   transition: all 0.2s ease;
+  border-right: 2px solid transparent;
 }
 
-.dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--panel-border);
-  transition: all 0.2s ease;
+.nav-num {
+  font-size: 0.75rem;
+  color: var(--text-soft);
 }
 
-.simple-nav a:hover {
+.editorial-nav a:hover {
   color: var(--text-main);
 }
 
-.simple-nav a.active {
+.editorial-nav a.active {
   color: var(--neon);
   font-weight: 700;
+  border-right-color: var(--neon);
+  padding-right: 8px;
 }
 
-.simple-nav a.active .dot {
-  background: var(--neon);
-  box-shadow: 0 0 8px var(--neon);
+.editorial-nav a.active .nav-num {
+  color: var(--neon);
 }
 
 .sidebar-links {
@@ -429,6 +462,7 @@ const scrollToSection = (sectionId, event) => {
 .resume-btn:hover {
   background: var(--neon);
   color: #ffffff;
+  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.2);
 }
 
 /* OUTLINE SVG SOCIAL ICONS */
@@ -461,7 +495,7 @@ const scrollToSection = (sectionId, event) => {
 }
 
 /* CONTENT STREAM */
-.ultra-content {
+.editorial-content {
   overflow-y: auto;
   max-height: calc(100vh - 96px);
   padding-right: 8px;
@@ -469,18 +503,31 @@ const scrollToSection = (sectionId, event) => {
   scrollbar-width: thin;
 }
 
-.simple-section {
+.editorial-section {
   margin-bottom: 56px;
   scroll-margin-top: 20px;
 }
 
-.sec-title {
-  font-size: 1.2rem;
-  color: var(--text-main);
-  font-weight: 800;
+.sec-title-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   margin: 0 0 20px 0;
   padding-bottom: 8px;
   border-bottom: 1px solid var(--panel-border);
+}
+
+.sec-title-bar .num {
+  font-size: 0.86rem;
+  color: var(--neon);
+  font-weight: 700;
+}
+
+.sec-title-bar h2 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: var(--text-main);
+  font-weight: 800;
 }
 
 .text-content {
@@ -498,14 +545,14 @@ const scrollToSection = (sectionId, event) => {
   color: var(--neon);
 }
 
-/* EXPERIENCE ENHANCED STREAM */
-.experience-enhanced-stream {
+/* EXPERIENCE STREAM */
+.experience-editorial-stream {
   display: flex;
   flex-direction: column;
   gap: 28px;
 }
 
-.job-card-block {
+.job-card-row {
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -513,7 +560,7 @@ const scrollToSection = (sectionId, event) => {
   border-bottom: 1px dashed var(--panel-border);
 }
 
-.job-card-block:last-child {
+.job-card-row:last-child {
   border-bottom: none;
 }
 
@@ -602,22 +649,27 @@ const scrollToSection = (sectionId, event) => {
   color: var(--neon);
 }
 
-.projects-stream {
+.projects-editorial-stream {
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 24px;
 }
 
-.project-row {
+.project-editorial-card {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding-bottom: 20px;
-  border-bottom: 1px dashed var(--panel-border);
+  padding: 16px;
+  background: #ffffff;
+  border: 1px solid var(--panel-border);
+  border-radius: 14px;
+  transition: all 0.25s ease;
 }
 
-.project-row:last-child {
-  border-bottom: none;
+.project-editorial-card:hover {
+  border-color: var(--neon);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(79, 70, 229, 0.1);
 }
 
 .proj-top {
@@ -628,7 +680,7 @@ const scrollToSection = (sectionId, event) => {
 
 .proj-top h3 {
   margin: 0;
-  font-size: 1.1rem;
+  font-size: 1.08rem;
 }
 
 .proj-top a {
@@ -644,9 +696,41 @@ const scrollToSection = (sectionId, event) => {
   color: var(--neon);
 }
 
-.status {
-  font-size: 0.75rem;
-  color: var(--neon);
+/* STATUS BADGE PILLS */
+.status-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.74rem;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.status-badge-pill.prod {
+  background: rgba(16, 185, 129, 0.1);
+  color: #059669;
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.status-badge-pill.prod .status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+}
+
+.status-badge-pill.dev {
+  background: rgba(79, 70, 229, 0.1);
+  color: #4f46e5;
+  border: 1px solid rgba(79, 70, 229, 0.25);
+}
+
+.status-badge-pill.dev .status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #4f46e5;
 }
 
 .desc {
@@ -679,14 +763,14 @@ const scrollToSection = (sectionId, event) => {
   border-color: var(--neon);
 }
 
-/* SKILLS ENHANCED GRID */
-.skills-enhanced-grid {
+/* SKILLS GRID */
+.skills-editorial-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 16px;
 }
 
-.skill-item-card {
+.skill-card-item {
   display: flex;
   align-items: flex-start;
   gap: 12px;
@@ -697,13 +781,13 @@ const scrollToSection = (sectionId, event) => {
   transition: all 0.2s ease;
 }
 
-.skill-item-card:hover {
+.skill-card-item:hover {
   border-color: var(--neon);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(79, 70, 229, 0.1);
 }
 
-.skill-icon-wrap {
+.skill-icon {
   font-size: 1.3rem;
 }
 
@@ -722,37 +806,37 @@ const scrollToSection = (sectionId, event) => {
 }
 
 /* NOTES LIST */
-.notes-simple-list {
+.notes-editorial-list {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.note-item {
+.note-editorial-item {
   display: flex;
   align-items: center;
   gap: 16px;
 }
 
-.note-item .date {
+.note-editorial-item .date {
   font-size: 0.78rem;
   color: var(--neon);
 }
 
-.note-item h3 {
+.note-editorial-item h3 {
   margin: 0;
   font-size: 0.95rem;
   color: var(--text-main);
 }
 
 @media (max-width: 1024px) {
-  .ultra-simple-layout {
+  .editorial-layout {
     grid-template-columns: 1fr;
     gap: 32px;
     padding: 20px 14px;
   }
 
-  .ultra-sidebar, .ultra-content {
+  .editorial-sidebar, .editorial-content {
     position: relative;
     top: 0;
     max-height: none;
