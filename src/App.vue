@@ -431,12 +431,12 @@ onUnmounted(() => {
 /* We keep the layout grid and footer here as they define the page structure. */
 
 .dashboard {
-  height: 100dvh;
+  min-height: 100dvh;
   width: 100%;
-  overflow: hidden;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
-  padding: 24px;
+  padding: 0;
   box-sizing: border-box;
   transition: 0.3s;
   position: relative;

@@ -352,18 +352,20 @@ const scrollToSection = (sectionId, event) => {
   flex-direction: column;
 }
 
-/* ULTRA-THIN FLUSH TOP BAR */
+/* FULL-BLEED GRADIENT STICKY TOP BAR */
 .swiss-top-bar {
   position: sticky;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 100;
   width: 100%;
   margin: 0;
-  padding: 4px 24px;
-  background: rgba(248, 250, 252, 0.85);
+  padding: 12px 36px;
+  background: linear-gradient(180deg, rgba(248, 250, 252, 0.98) 0%, rgba(248, 250, 252, 0.75) 60%, rgba(248, 250, 252, 0) 100%);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--panel-border);
+  border-bottom: none;
   box-sizing: border-box;
 }
 
@@ -372,12 +374,13 @@ const scrollToSection = (sectionId, event) => {
 }
 
 .top-bar-inner {
-  max-width: 1200px;
-  margin: 0 auto;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 36px;
+  height: 52px;
 }
 
 .header-logo-wrap {
@@ -386,10 +389,10 @@ const scrollToSection = (sectionId, event) => {
 }
 
 .damoon-full-logo-img {
-  height: 32px;
+  height: 48px;
   width: auto;
   object-fit: contain;
-  filter: drop-shadow(0 2px 6px rgba(79, 70, 229, 0.12));
+  filter: drop-shadow(0 2px 8px rgba(79, 70, 229, 0.15));
   display: block;
 }
 
