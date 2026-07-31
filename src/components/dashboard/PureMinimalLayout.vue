@@ -117,8 +117,8 @@ onMounted(() => {
     },
     {
       root: contentPaneRef.value,
-      threshold: 0.15,
-      rootMargin: '-10% 0px -40% 0px',
+      threshold: 0.1,
+      rootMargin: '-5% 0px -15% 0px',
     }
   );
 
@@ -375,6 +375,17 @@ const scrollToSection = (sectionId, event) => {
             </article>
           </div>
         </section>
+
+        <!-- STREAM FOOTER (FOR HIGH-END SCROLL SPACE & ELEVATED TYPOGRAPHY) -->
+        <footer class="editorial-stream-footer">
+          <div class="footer-divider"></div>
+          <div class="footer-bottom-row">
+            <p class="copyright mono-ui" dir="ltr">© 2026 Alireza Lotfi Moghaddam — Systems & Architecture</p>
+            <button @click="scrollToSection('about')" class="scroll-top-btn mono-ui">
+              ↑ بازگشت به بالا
+            </button>
+          </div>
+        </footer>
       </main>
     </div>
   </div>
@@ -1013,6 +1024,49 @@ const scrollToSection = (sectionId, event) => {
   margin: 0;
   font-size: 0.95rem;
   color: var(--text-main);
+}
+
+/* STREAM FOOTER (SUPPLIES GENEROUS SCROLL SPACE SO #NOTES REACHES TOP & ACTIVE MENU HIGHLIGHTS) */
+.editorial-stream-footer {
+  margin-top: 80px;
+  padding-bottom: 240px;
+}
+
+.footer-divider {
+  width: 100%;
+  height: 1px;
+  background: var(--panel-border);
+  margin-bottom: 24px;
+}
+
+.footer-bottom-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.copyright {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--text-soft);
+}
+
+.scroll-top-btn {
+  background: transparent;
+  border: 1px solid var(--panel-border);
+  color: var(--text-secondary);
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.scroll-top-btn:hover {
+  border-color: var(--neon);
+  color: var(--neon);
 }
 
 @media (max-width: 1024px) {
