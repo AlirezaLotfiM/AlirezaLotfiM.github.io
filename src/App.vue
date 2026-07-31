@@ -31,6 +31,9 @@ const GlobalCommandBar = defineAsyncComponent(
 const PrintResumeView = defineAsyncComponent(
   () => import("./components/PrintResumeView.vue"),
 );
+const PureMinimalLayout = defineAsyncComponent(
+  () => import("./components/dashboard/PureMinimalLayout.vue"),
+);
 
 // --- Composables ---
 const {
@@ -400,33 +403,14 @@ onUnmounted(() => {
         <PrintResumeView />
       </div>
 
-      <div v-else-if="!showIdentityCard" class="layout-grid" :class="{ 'zen-active': isZenMode, 'intro-leaving': isEnteringDashboard }">
-
-        <!-- Profile Column -->
-        <UserProfile @open-terminal="showTerminal = true" @go-home="goHome" />
-
-        <!-- Main Content Column (Command Bar + Tabbed Content) -->
-        <div class="col-main-wrapper">
-          <GlobalCommandBar
-            v-if="!showIdentityCard"
-            :is-zen-mode="isZenMode"
-            @toggle-zen="toggleZenMode"
-            @toggle-matrix="isMatrixMode = !isMatrixMode"
-            @open-terminal="showTerminal = true"
-          />
-          <MainContent
-            id="main-content"
-            :is-zen-mode="isZenMode"
-            @toggle-zen="toggleZenMode"
-            @open-terminal="showTerminal = true"
-            @run-command="handleRunCommand"
-            @toggle-matrix="isMatrixMode = !isMatrixMode"
-          />
-        </div>
-
-        <!-- Skills Column -->
-        <SkillRack />
-
+      <div v-else-if="!showIdentityCard" class="pure-layout-wrapper">
+        <PureMinimalLayout
+          id="main-content"
+          :is-zen-mode="isZenMode"
+          @toggle-zen="toggleZenMode"
+          @open-terminal="showTerminal = true"
+          @go-home="goHome"
+        />
       </div>
 
       <footer class="app-footer" dir="ltr" :class="{ dimmed: showIdentityCard }">
