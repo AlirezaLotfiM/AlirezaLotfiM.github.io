@@ -4,6 +4,8 @@ import { usePortfolio } from '../../composables/usePortfolio';
 import { useAudioSynth } from '../../composables/useAudioSynth';
 import { useNavigation } from '../../composables/useNavigation';
 
+import MonogramLogo from '../MonogramLogo.vue';
+
 const ArchitectureModal = defineAsyncComponent(() => import('../ArchitectureModal.vue'));
 
 const {
@@ -34,10 +36,12 @@ const activeSection = ref('about');
 const contentPaneRef = ref(null);
 let observer = null;
 
-const isOutlinedAvatar = ref(true);
+const avatarMode = ref('svg-monogram'); // 'svg-monogram' | 'png-monogram' | 'real-photo'
 const toggleAvatarMode = () => {
   playClick();
-  isOutlinedAvatar.value = !isOutlinedAvatar.value;
+  if (avatarMode.value === 'svg-monogram') avatarMode.value = 'png-monogram';
+  else if (avatarMode.value === 'png-monogram') avatarMode.value = 'real-photo';
+  else avatarMode.value = 'svg-monogram';
 };
 
 const showArchModal = ref(false);
@@ -123,8 +127,10 @@ const scrollToSection = (sectionId, event) => {
     <!-- RIGHT SIDEBAR (SWISS EDITORIAL & CLEAN OUTLINE ICONS) -->
     <aside v-if="!isZenMode" class="editorial-sidebar">
       <div class="sidebar-top">
-        <div class="frameless-outline-avatar" @click="toggleAvatarMode" title="تغییر حالت عکس پرتره / لوگوی آوت‌لاین (کلیک کنید)">
-          <img :src="isOutlinedAvatar ? '/outlined-avatar.png' : (profile.avatarUrl || '/Damoon-d.jpg')" alt="علیرضا لطفی مقدم" />
+        <div class="frameless-outline-avatar" @click="toggleAvatarMode" title="کلیک برای تغییر حالت (مونوگرام SVG / لوگوی PNG / عکس پرتره)">
+          <MonogramLogo v-if="avatarMode === 'svg-monogram'" :size="84" />
+          <img v-else-if="avatarMode === 'png-monogram'" src="/monogram-alm.png" alt="ALM Monogram Logo" />
+          <img v-else :src="profile.avatarUrl || '/Damoon-d.jpg'" alt="علیرضا لطفی مقدم" class="real-photo-avatar" />
         </div>
 
         <div class="header-titles">
@@ -389,6 +395,13 @@ const scrollToSection = (sectionId, event) => {
   height: 100%;
   object-fit: contain;
   filter: drop-shadow(0 2px 8px rgba(79, 70, 229, 0.15));
+}
+
+.frameless-outline-avatar img.real-photo-avatar {
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--neon);
+  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.15);
 }
 
 .header-titles {
