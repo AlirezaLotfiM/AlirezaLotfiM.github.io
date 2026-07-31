@@ -5,6 +5,7 @@ import { useAudioSynth } from '../../composables/useAudioSynth';
 import { useNavigation } from '../../composables/useNavigation';
 
 import MonogramLogo from '../MonogramLogo.vue';
+import DamoonMonogram from '../DamoonMonogram.vue';
 
 const ArchitectureModal = defineAsyncComponent(() => import('../ArchitectureModal.vue'));
 
@@ -36,12 +37,13 @@ const activeSection = ref('about');
 const contentPaneRef = ref(null);
 let observer = null;
 
-const avatarMode = ref('svg-monogram'); // 'svg-monogram' | 'png-monogram' | 'real-photo'
+const avatarMode = ref('svg-damoon'); // 'svg-damoon' | 'svg-alm' | 'png-damoon' | 'real-photo'
 const toggleAvatarMode = () => {
   playClick();
-  if (avatarMode.value === 'svg-monogram') avatarMode.value = 'png-monogram';
-  else if (avatarMode.value === 'png-monogram') avatarMode.value = 'real-photo';
-  else avatarMode.value = 'svg-monogram';
+  if (avatarMode.value === 'svg-damoon') avatarMode.value = 'svg-alm';
+  else if (avatarMode.value === 'svg-alm') avatarMode.value = 'png-damoon';
+  else if (avatarMode.value === 'png-damoon') avatarMode.value = 'real-photo';
+  else avatarMode.value = 'svg-damoon';
 };
 
 const showArchModal = ref(false);
@@ -127,9 +129,10 @@ const scrollToSection = (sectionId, event) => {
     <!-- RIGHT SIDEBAR (SWISS EDITORIAL & CLEAN OUTLINE ICONS) -->
     <aside v-if="!isZenMode" class="editorial-sidebar">
       <div class="sidebar-top">
-        <div class="frameless-outline-avatar" @click="toggleAvatarMode" title="کلیک برای تغییر حالت (مونوگرام SVG / لوگوی PNG / عکس پرتره)">
-          <MonogramLogo v-if="avatarMode === 'svg-monogram'" :size="84" />
-          <img v-else-if="avatarMode === 'png-monogram'" src="/monogram-alm.png" alt="ALM Monogram Logo" />
+        <div class="frameless-outline-avatar" @click="toggleAvatarMode" title="کلیک برای تغییر حالت (مونوگرام Damoon / مونوگرام ALM / لوگوی PNG / عکس پرتره)">
+          <DamoonMonogram v-if="avatarMode === 'svg-damoon'" :size="84" />
+          <MonogramLogo v-else-if="avatarMode === 'svg-alm'" :size="84" />
+          <img v-else-if="avatarMode === 'png-damoon'" src="/monogram-damoon.png" alt="Damoon Monogram Logo" />
           <img v-else :src="profile.avatarUrl || '/Damoon-d.jpg'" alt="علیرضا لطفی مقدم" class="real-photo-avatar" />
         </div>
 
