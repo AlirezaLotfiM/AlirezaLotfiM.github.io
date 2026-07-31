@@ -1257,4 +1257,82 @@ const scrollToSection = (sectionId, event) => {
     gap: 4px;
   }
 }
+
+@media (max-width: 768px) {
+  .swiss-top-bar {
+    padding: 6px 16px;
+  }
+
+  .top-bar-inner {
+    min-height: 64px;
+  }
+
+  .damoon-full-logo-img {
+    height: 56px;
+  }
+
+  .header-version-pill {
+    font-size: 0.62rem;
+    padding: 1px 6px;
+  }
+
+  .header-social-icons {
+    gap: 12px;
+  }
+
+  .editorial-layout {
+    gap: 20px;
+    padding: 12px;
+  }
+
+  .sidebar-identity .author-name {
+    font-size: 1.35rem;
+  }
+
+  .editorial-nav {
+    flex-direction: row;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding-bottom: 8px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+  }
+
+  .editorial-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .editorial-nav a {
+    padding: 6px 12px;
+    border-right: none;
+    border-bottom: 2px solid transparent;
+    border-radius: 8px;
+    background: #ffffff;
+    border: 1px solid var(--panel-border);
+    flex-shrink: 0;
+  }
+
+  .editorial-nav a.active {
+    border-color: var(--neon);
+    background: rgba(79, 70, 229, 0.08);
+    padding-right: 12px;
+  }
+
+  .specialization-pillars-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .job-card-content {
+    padding: 16px;
+  }
+
+  .timeline-job-card {
+    gap: 12px;
+  }
+
+  .editorial-stream-footer {
+    padding-bottom: 140px;
+  }
+}
 </style>
