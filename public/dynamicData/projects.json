@@ -29,6 +29,35 @@
     "architecture": "graph TD\n    subgraph Kiosk_Nodes[\"کیوسک‌ها و ایستگاه‌ها\"]\n      RK[\"کیوسک ثبت‌نام - RegisterKiosk\"]\n      QK[\"کیوسک نظرسنجی - QuestionnaireKiosk\"]\n      RC[\"پذیرش - Reception\"]\n      DOC[\"پزشک - Doctor\"]\n      SLN[\"سالن - Salon/TV\"]\n    end\n\n    subgraph ClientAgent[\"ClientAgent — WPF + WebView2\"]\n      CA[\"عامل سخت‌افزاری - 127.0.0.1:5050\"]\n      FP[\"FingerScanner.Sdk - Suprema\"]\n      SC[\"Scanner.Sdk - WIA Document\"]\n      AU[\"Audio Service - اعلام صوتی\"]\n      CA --> FP\n      CA --> SC\n      CA --> AU\n    end\n\n    subgraph Web[\"QMS.Web — Vue 3 + TypeScript\"]\n      SPA[\"SPA - Vue Router + Pinia\"]\n    end\n\n    subgraph API[\"QMS.API — ASP.NET Core 10\"]\n      REST[\"REST Controllers\"]\n      HUB[\"SignalR QueueHub\"]\n      TS[\"TicketService\"]\n      QS[\"QuestionnaireQueueService\"]\n      JWT[\"JWT Auth Middleware\"]\n      REST --> TS\n      HUB --> TS\n      QS --> HUB\n    end\n\n    DB[(\"SQL Server\")]\n\n    Kiosk_Nodes -->|\"از طریق WebView2\"| CA\n    CA -->|\"localhost:5050\"| FP & SC\n    SPA -->|\"REST / HTTPS\"| REST\n    SPA -->|\"SignalR WS\"| HUB\n    CA -->|\"SignalR WS\"| HUB\n    REST & HUB --> DB\n    JWT --> REST\n\n    style CA fill:#374151,stroke:#9ca3af\n    style FP fill:#7c3aed,stroke:#fff\n    style SC fill:#7c3aed,stroke:#fff\n    style HUB fill:#0369a1,stroke:#fff\n    style REST fill:#1e40af,stroke:#fff\n    style TS fill:#0f766e,stroke:#fff\n    style DB fill:#166534,stroke:#fff\n    style SPA fill:#92400e,stroke:#fff"
   },
   {
+    "id": 104,
+    "name": "Enterprise Queue Platform — پلتفرم جامع نوبت‌دهی نداپرداز",
+    "slug": "legacy-queue-systems",
+    "language": "C# / WPF / WinForms / Flutter",
+    "description": "پلتفرم بومی و جامع مدیریت نوبت و روان‌سازی صف نداپرداز انفورماتیک؛ شامل نرم‌افزارهای دسکتاپ ویندوزی کیوسک‌های لمسی اخذ نوبت، کلاینت‌های تلر (Teller Unit)، موتور نمایشگرهای تلویزیونی سالن (TV Display Engine)، سیستم نوبت‌دهی جدید با پشتیبانی از استندهای دکمه‌ای فیزیکی و اپلیکیشن‌های موبایل Flutter. پیاده‌سازی و استقرار در شعب بانک‌های مطرح کشور (بانک ملت، بانک آینده، بانک شهر).",
+    "html_url": "#",
+    "isPrivate": true,
+    "status": "عملیاتی",
+    "updatedAt": "2025-11-03",
+    "stackLabel": "C# / WPF / Flutter / Hardware",
+    "role": "توسعه‌دهنده ارشد و پشتیبان سیستم‌ها",
+    "architectureSummary": "WPF Kiosks + TV Display Engine + Physical Hardware Control Units + Flutter Mobile App + SQL Server",
+    "scale": "صدها شعبه عملیاتی بانک‌های کشور (ملت، آینده، شهر) + مراکز سازمانی",
+    "impact": "دیجیتالی‌سازی کامل صف‌ها، کاهش زمان انتظار و مدیریت روزانه صدها هزار مراجعه‌کننده",
+    "details": [
+      "توسعه نرم‌افزار دسکتاپ کیوسک‌های لمسی صدور نوبت جهت احراز هویت، انتخاب سرویس و چاپ فیش نوبت",
+      "توسعه کلاینت‌های دسکتاپ باجی (Teller Units) جهت فراخوانی نوبت، انتقال، غیبت و مدیریت صف",
+      "طراحی موتور نمایشگرهای تلویزیونی (TV Display Engine) جهت پخش زنده شماره نوبت‌ها، اعلان‌های صوتی و ویدیوهای اطلاع‌رسانی",
+      "توسعه سیستم نوبت‌دهی نرم‌افزاری نسل جدید با پشتیبانی مستقیم از استندهای دکمه‌ای فیزیکی و کنترل یونیت‌های سخت‌افزاری",
+      "طراحی و پیاده‌سازی اپلیکیشن‌های کراس‌پلتفرم موبایل با فلاتر (Flutter) جهت نوبت‌دهی غیرحضوری و پیگیری وضعیت",
+      "یکپارچه‌سازی و سفارشی‌سازی بر اساس الزامات اختصاصی بانک‌های کشور (بانک ملت، بانک آینده، بانک شهر)",
+      "ارتباط بلادرنگ کلاینت‌ها با سرور نوبت‌دهی مرکزی و پایگاه داده SQL Server",
+      "ماژول گزارش‌گیری و آماری جهت تحلیل زمان انتظار مشتریان، کارایی باجی‌ها و ساعات اوج مراجعه",
+      "سیستم اعلام صوتی باگس‌گیری‌شده و هوشمند با پشتیبانی از فایل‌های صوتی دینامیک",
+      "پشتیبانی فنی مداوم، دیباگ عملیاتی و به‌روزرسانی زیرسیستم‌های فعال در شعب"
+    ],
+    "architecture": "graph TD\n    subgraph Clients[\"کلاینت‌ها و کیوسک‌های شعب\"]\n      TK[\"کیوسک لمسی اخذ نوبت - Touch Kiosk\"]\n      BS[\"استند دکمه‌ای فیزیکی - Physical Button Stand\"]\n      TEL[\"کلاینت باجی - Teller Unit\"]\n      TV[\"نمایشگر تلویزیونی سالن - TV Display\"]\n      MOB[\"اپلیکیشن موبایل - Flutter App\"]\n    end\n\n    subgraph Hardware_Bridge[\"عامل سخت‌افزاری و ارتباطی\"]\n      CU[\"کنترل یونیت سخت‌افزاری - Control Unit\"]\n      PRT[\"چاپگر حرارتی - Thermal Printer\"]\n      SND[\"ماژول اعلام صوتی - Audio Engine\"]\n      BS --> CU\n      TK --> PRT\n      TV --> SND\n    end\n\n    subgraph Server[\"سرور نوبت‌دهی مرکز / شعبه\"]\n      QS[\"Queue Management Engine\"]\n      REP[\"Reporting & Analytics\"]\n      DB[(\"SQL Server\")]\n    end\n\n    TK & TEL & TV & MOB -->|\"TCP/IP & REST\"| QS\n    CU -->|\"Serial/RS485\"| QS\n    QS --> DB & REP\n\n    style TK fill:#7c3aed,stroke:#fff\n    style TV fill:#0369a1,stroke:#fff\n    style QS fill:#1e40af,stroke:#fff\n    style DB fill:#166534,stroke:#fff\n    style MOB fill:#92400e,stroke:#fff"
+  },
+  {
     "id": 107,
     "name": "KeyMapper Desktop Pet",
     "slug": "keymapper-desktop-pet",
@@ -94,28 +123,5 @@
     "scale": "",
     "impact": "",
     "architecture": "graph LR\n    User((\"User\")) -->|HTTPS| Web[\"Vue.js Frontend\"]\n    Web -->|REST| API[\".NET Core API\"]\n    API -->|Read/Write| SQL[(\"SQL Server\")]\n    subgraph On-Premise\n    Web\n    API\n    SQL\n    end\n    style User fill:#fff,stroke:#333,color:#000\n    style Web fill:#41b883,stroke:#35495e\n    style API fill:#512bd4,stroke:#fff"
-  },
-  {
-    "id": 104,
-    "name": "Legacy & Enterprise Queue Systems",
-    "slug": "legacy-queue-systems",
-    "language": "WPF / C# / Flutter",
-    "description": "مجموعه سیستم‌ها و زیرسیستم‌های نوبت‌دهی متمرکز سازمانی نداپرداز؛ شامل نرم‌افزار کیوسک اخذ نوبت، نمایشگرهای تلویزیونی سالن، سیستم نوبت‌دهی جدید با پشتیبانی از استندهای دکمه‌ای فیزیکی و پشتیبانی از بانک‌های مطرح کشور (ملت، آینده، شهر).",
-    "html_url": "#",
-    "isPrivate": true,
-    "status": "در حال پشتیبانی",
-    "updatedAt": "2025-11-03",
-    "stackLabel": "WPF / C# / Flutter",
-    "role": "توسعه‌دهنده + پشتیبان",
-    "architectureSummary": "WPF Ticket Kiosk + TV Display + Physical Hardware Stands + Flutter App",
-    "scale": "شعب بانک‌های مطرح کشور (ملت، آینده، شهر)",
-    "impact": "مدیریت نوبت‌دهی و روان‌سازی صف در صدها شعبه عملیاتی",
-    "details": [
-      "توسعه نرم‌افزار کیوسک‌های اخذ نوبت جهت لمس و چاپ فیش نوبت",
-      "توسعه نرم‌افزار نمایشگرهای تلویزیونی (TV Display) جهت نمایش شماره‌ها و اعلام صوتی",
-      "توسعه سیستم نوبت‌دهی نرم‌افزاری جدید با قابلیت اتصال به استندهای دکمه‌ای فیزیکی",
-      "توسعه اپلیکیشن‌های موبایلی با فلاتر (Flutter)",
-      "پشتیبانی فنی و توسعه ماژول برای بانک‌های مطرح کشور (بانک ملت، بانک آینده، بانک شهر)"
-    ]
   }
 ]
