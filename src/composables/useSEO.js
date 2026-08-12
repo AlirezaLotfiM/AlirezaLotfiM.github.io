@@ -1,9 +1,9 @@
 const siteUrl = "https://alirezalotfimoghaddam.ir";
-const siteName = "Alireza Lotfi Moghaddam";
+const siteName = "علیرضا لطفی | Alireza Lotfi";
 const defaultTitle =
-  "علیرضا لطفی مقدم | Alireza Lotfi Moghaddam — Software Engineer";
+  "علیرضا لطفی (لطفی مقدم) | Alireza Lotfi — Senior Software Engineer";
 const defaultDescription =
-  "پورتفولیوی علیرضا لطفی مقدم، مهندس نرم‌افزار با تمرکز بر C#، ASP.NET Core، WPF، طراحی API و سیستم‌های توزیع‌شده.";
+  "پورتفولیوی علیرضا لطفی (لطفی مقدم)، مهندس نرم‌افزار با تمرکز بر C#، ASP.NET Core، WPF، طراحی API و سیستم‌های توزیع‌شده.";
 const defaultImage = `${siteUrl}/Damoon-d.jpg`;
 
 const upsertMeta = (selector, attributes) => {

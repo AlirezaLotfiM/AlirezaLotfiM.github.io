@@ -16,13 +16,13 @@
     "Database",
     "Distributed Systems"
   ],
-  "cardEmail": "Lotfi.moghaddam.alireza@gmail.com",
+  "cardEmail": "me@alirz.ir",
   "identityCard": {
     "eyebrow": "backend identity",
     "role": "Software Engineer",
     "bio": "توسعه‌دهنده بک‌اند با تمرکز بر سیستم‌های پایدار، طراحی داده و ساخت زیرساخت فنی تمیز، مقیاس‌پذیر و قابل اتکا.",
     "focus": "ASP.NET Core",
-    "email": "Lotfi.moghaddam.alireza@gmail.com",
+    "email": "me@alirz.ir",
     "badges": [
       "Backend",
       "API Design",
@@ -39,12 +39,21 @@
   "shipping": "Core backend and internal platform modules for operational teams.",
   "stackSummary": "C# / ASP.NET Core / SQL / WPF / Vue.js / Realtime & Messaging",
   "stackModules": [
-    { "label": "shipping", "value": "Operational backends & APIs" },
-    { "label": "core stack", "value": "C#, .NET, SQL, WPF, Vue.js" },
-    { "label": "learning", "value": "Dapr, K8s, RabbitMQ" }
+    {
+      "label": "shipping",
+      "value": "Operational backends & APIs"
+    },
+    {
+      "label": "core stack",
+      "value": "C#, .NET, SQL, WPF, Vue.js"
+    },
+    {
+      "label": "learning",
+      "value": "Dapr, K8s, RabbitMQ"
+    }
   ],
   "contact": {
-    "email": "Lotfi.moghaddam.alireza@gmail.com",
+    "email": "me@alirz.ir",
     "linkedin": "https://linkedin.com/in/alireza-lotfi-moghaddam-378a8018a",
     "telegramUrl": "https://t.me/DAMOON_X",
     "telegramId": "@DAMOON_X"

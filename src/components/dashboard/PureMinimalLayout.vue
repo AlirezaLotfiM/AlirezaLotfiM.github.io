@@ -282,7 +282,7 @@ const navigateToProject = (relProj) => {
             <h1 class="author-name">علیرضا لطفی مقدم</h1>
             <p class="role-subtitle mono-ui" dir="ltr">Senior Software Engineer & .NET Architect</p>
             <p class="concise-bio">
-              معمار ارشد نرم‌افزار متمرکز بر سیستم‌های توزیع‌شده C#، ASP.NET Core و اپلیکیشن‌های دسکتاپ صنعتی (WPF).
+              توسعه‌دهنده و معمار نرم‌افزار متمرکز بر سیستم‌های توزیع‌شده C#، ASP.NET Core و اپلیکیشن‌های دسکتاپ صنعتی (WPF).
             </p>
           </div>
 
@@ -319,7 +319,7 @@ const navigateToProject = (relProj) => {
           </div>
           <div class="text-content">
             <p class="lead">
-              من <strong>علیرضا لطفی مقدم</strong> هستم؛ معمار ارشد نرم‌افزار با <strong>+۶ سال سابقه تخصصی</strong> در توسعه سیستم‌های توزیع‌شده با کارایی بالا، موتورهای C# و .NET Core، و اپلیکیشن‌های دسکتاپ صنعتی (WPF).
+              من <strong>علیرضا لطفی</strong> (لطفی مقدم) هستم؛ توسعه‌دهنده و معمار نرم‌افزار با <strong>+۶ سال سابقه تخصصی</strong> در توسعه سیستم‌های توزیع‌شده با کارایی بالا، موتورهای C# و .NET Core، و اپلیکیشن‌های دسکتاپ صنعتی (WPF).
             </p>
             <p>
               تخصص اصلی من بر پایه‌ی طراحی سیستم‌های بلادرنگ با SignalR، یکپارچه‌سازی سخت‌افزارهای بیومتریک (دستگاه اثر انگشت Suprema و اسکنر WIA) و مدیریت بانک‌های اطلاعاتی سنگین شکل گرفته است.

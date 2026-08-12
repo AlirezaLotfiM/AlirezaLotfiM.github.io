@@ -65,7 +65,7 @@ function personSchema() {
     "@type": "Person",
     "@id": `${siteUrl}/#person`,
     name: "Alireza Lotfi Moghaddam",
-    alternateName: ["علیرضا لطفی مقدم", "Alireza Lotfi", "Damoon"],
+    alternateName: ["علیرضا لطفی", "Alireza Lotfi", "علیرضا لطفی مقدم", "Alireza Lotfi Moghaddam", "Damoon"],
     url: siteUrl,
     image: `${siteUrl}/Damoon-d.jpg`,
     jobTitle: "Software Engineer",
@@ -183,7 +183,7 @@ await writeRoute(
   "/",
   renderPage({
     routePath: "/",
-    title: "علیرضا لطفی مقدم | Alireza Lotfi Moghaddam — Software Engineer",
+    title: "علیرضا لطفی (لطفی مقدم) | Alireza Lotfi — Senior Software Engineer",
     description: homeDescription,
     content: homeContent,
     schema: {
@@ -191,7 +191,7 @@ await writeRoute(
       "@type": "ProfilePage",
       "@id": `${siteUrl}/#profile`,
       url: siteUrl,
-      name: "پروفایل علیرضا لطفی مقدم",
+      name: "پروفایل علیرضا لطفی (لطفی مقدم)",
       mainEntity: personSchema(),
     },
   }),

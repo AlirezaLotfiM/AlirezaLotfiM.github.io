@@ -184,7 +184,7 @@ const updateRouteSEO = () => {
     "@type": "Person",
     "@id": `${siteUrl}/#person`,
     name: "Alireza Lotfi Moghaddam",
-    alternateName: ["علیرضا لطفی مقدم", "Alireza Lotfi", "Damoon"],
+    alternateName: ["علیرضا لطفی", "Alireza Lotfi", "علیرضا لطفی مقدم", "Alireza Lotfi Moghaddam", "Damoon"],
     url: siteUrl,
     image: `${siteUrl}/Damoon-d.jpg`,
     jobTitle: "Software Engineer",
@@ -256,7 +256,7 @@ const updateRouteSEO = () => {
   const sectionSEO = {
     home: {
       title:
-        "علیرضا لطفی مقدم | Alireza Lotfi Moghaddam — Software Engineer",
+        "علیرضا لطفی (لطفی مقدم) | Alireza Lotfi — Senior Software Engineer",
       description:
         "مهندس نرم‌افزار متخصص در C#، ASP.NET Core، WPF، طراحی API و سیستم‌های توزیع‌شده.",
     },
