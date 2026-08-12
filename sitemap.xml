@@ -2,27 +2,31 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://alirezalotfimoghaddam.ir/</loc>
-    <lastmod>2026-07-31</lastmod>
+    <lastmod>2026-08-12</lastmod>
+  </url>
+  <url>
+    <loc>https://alirezalotfimoghaddam.ir/skills/</loc>
+    <lastmod>2026-08-12</lastmod>
   </url>
   <url>
     <loc>https://alirezalotfimoghaddam.ir/experience/</loc>
-    <lastmod>2026-07-31</lastmod>
+    <lastmod>2026-08-12</lastmod>
   </url>
   <url>
     <loc>https://alirezalotfimoghaddam.ir/interests/</loc>
-    <lastmod>2026-07-31</lastmod>
+    <lastmod>2026-08-12</lastmod>
   </url>
   <url>
     <loc>https://alirezalotfimoghaddam.ir/roadmap/</loc>
-    <lastmod>2026-07-31</lastmod>
+    <lastmod>2026-08-12</lastmod>
   </url>
   <url>
     <loc>https://alirezalotfimoghaddam.ir/guestbook/</loc>
-    <lastmod>2026-07-31</lastmod>
+    <lastmod>2026-08-12</lastmod>
   </url>
   <url>
     <loc>https://alirezalotfimoghaddam.ir/resume/</loc>
-    <lastmod>2026-07-31</lastmod>
+    <lastmod>2026-08-12</lastmod>
   </url>
   <url>
     <loc>https://alirezalotfimoghaddam.ir/projects/</loc>
@@ -33,28 +37,20 @@
     <lastmod>2026-05-20</lastmod>
   </url>
   <url>
-    <loc>https://alirezalotfimoghaddam.ir/projects/neuroflow-platform/</loc>
-    <lastmod>2025-04-18</lastmod>
-  </url>
-  <url>
-    <loc>https://alirezalotfimoghaddam.ir/projects/biodaroo-training-suite/</loc>
-    <lastmod>2025-03-22</lastmod>
+    <loc>https://alirezalotfimoghaddam.ir/projects/legacy-queue-systems/</loc>
+    <lastmod>2025-11-03</lastmod>
   </url>
   <url>
     <loc>https://alirezalotfimoghaddam.ir/projects/keymapper-desktop-pet/</loc>
     <lastmod>2026-07-29</lastmod>
   </url>
   <url>
-    <loc>https://alirezalotfimoghaddam.ir/projects/bank-monitoring-dashboard/</loc>
-    <lastmod>2024-12-10</lastmod>
+    <loc>https://alirezalotfimoghaddam.ir/projects/neuroflow-platform/</loc>
+    <lastmod>2025-04-18</lastmod>
   </url>
   <url>
-    <loc>https://alirezalotfimoghaddam.ir/projects/wordpress-designs/</loc>
-    <lastmod>2025-06-01</lastmod>
-  </url>
-  <url>
-    <loc>https://alirezalotfimoghaddam.ir/projects/legacy-queue-systems/</loc>
-    <lastmod>2025-11-03</lastmod>
+    <loc>https://alirezalotfimoghaddam.ir/projects/biodaroo-training-suite/</loc>
+    <lastmod>2025-03-22</lastmod>
   </url>
   <url>
     <loc>https://alirezalotfimoghaddam.ir/notes/</loc>
