@@ -290,8 +290,22 @@ const goToProject = (event, slug) => {
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
+  .history-shell {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .history-header-bar {
+    padding: 14px 14px;
+    box-sizing: border-box;
+  }
+
   .timeline-container {
     padding: 10px 0;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .neon-line {
@@ -302,6 +316,8 @@ const goToProject = (event, slug) => {
     flex-direction: column;
     gap: 12px;
     margin-bottom: 20px;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .time-marker {
@@ -310,6 +326,9 @@ const goToProject = (event, slug) => {
 
   .time-header, .time-body {
     width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 14px;
   }
 }
 </style>

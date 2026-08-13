@@ -1591,15 +1591,17 @@ const navigateToProject = async (relProj) => {
     flex-direction: row;
     overflow-x: auto;
     white-space: nowrap;
-    padding: 8px 10px;
-    margin: 0 -10px 12px -10px;
+    padding: 8px 4px;
+    margin: 0 0 12px 0;
     background: var(--bg-main);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--panel-border);
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
-    width: calc(100% + 20px);
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .editorial-nav::-webkit-scrollbar {
