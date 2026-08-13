@@ -6,7 +6,6 @@ import {
   ref,
   watch,
 } from "vue";
-import BootSequence from "./components/BootSequence.vue";
 import LiquidIdentityCard from "./components/LiquidIdentityCard.vue";
 
 import { usePortfolio } from "./composables/usePortfolio";
@@ -60,13 +59,8 @@ const appVersion = __APP_VERSION__;
 const prefersReducedMotion =
   typeof window !== "undefined" &&
   window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-const showBoot = ref(
-  typeof window !== "undefined" &&
-    window.location.pathname === "/" &&
-    !prefersReducedMotion &&
-    !window.sessionStorage.getItem("portfolio-boot-seen"),
-);
-const isBooted = ref(false);
+const showBoot = ref(false);
+const isBooted = ref(true);
 const showIdentityCard = ref(route.value.isHome);
 const isEnteringDashboard = ref(false);
 const isMatrixMode = ref(false);
@@ -366,11 +360,8 @@ onUnmounted(() => {
 <template>
   <a class="skip-link" href="#main-content">رفتن به محتوای اصلی</a>
   <CustomCursor />
-  <Transition name="fade">
-    <BootSequence v-if="showBoot" @completed="handleBootComplete" />
-  </Transition>
 
-  <div v-show="!showBoot" class="main-wrapper" :class="{ 'fade-in-enter': isBooted }">
+  <div class="main-wrapper" :class="{ 'fade-in-enter': isBooted }">
     <Transition name="fade">
       <MatrixRain v-if="isMatrixMode" :color="currentThemeColor" :key="currentThemeColor" />
       <div v-else class="ambient-backdrop" aria-hidden="true">
@@ -386,7 +377,7 @@ onUnmounted(() => {
       telegram: profile.contact?.telegramId,
     }" :learning="profile.learning" :version="appVersion" username="Damoon" role="Software Engineer" @close="showTerminal = false; terminalInitialCommand = ''" @toggle-matrix="isMatrixMode = !isMatrixMode" />
 
-    <div class="dashboard" @mousemove="handleMouseMove" :class="{ 'zen-mode': isZenMode, 'resume-active': route.isResume }">
+    <main id="main-content" class="dashboard" @mousemove="handleMouseMove" :class="{ 'zen-mode': isZenMode, 'resume-active': route.isResume }">
       <Transition name="identity-card">
         <LiquidIdentityCard
           v-if="showIdentityCard"
@@ -405,14 +396,13 @@ onUnmounted(() => {
 
       <div v-else-if="!showIdentityCard" class="pure-layout-wrapper">
         <PureMinimalLayout
-          id="main-content"
           :is-zen-mode="isZenMode"
           @toggle-zen="toggleZenMode"
           @open-terminal="showTerminal = true"
           @go-home="goHome"
         />
       </div>
-    </div>
+    </main>
   </div>
 </template>
 
