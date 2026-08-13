@@ -176,6 +176,7 @@ const selectedProject = computed(() =>
 
     <div class="grid-list">
       <ArchitectureModal
+        v-if="showArchModal"
         :visible="showArchModal"
         :diagram="currentArchDiagram"
         :title="currentArchTitle"

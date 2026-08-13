@@ -287,6 +287,7 @@ const navigateToProject = async (relProj) => {
 
     <div class="editorial-layout" :class="{ 'zen-mode': isZenMode }">
       <ArchitectureModal
+        v-if="showArchModal"
         :visible="showArchModal"
         :diagram="currentArchDiagram"
         :title="currentArchTitle"
