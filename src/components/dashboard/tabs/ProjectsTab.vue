@@ -620,25 +620,30 @@ const selectedProject = computed(() =>
 
 @keyframes neonPulse {
   0% {
-    box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.8);
+    box-shadow: inset 0 0 0 0 rgba(56, 189, 248, 0), 0 0 0 0 rgba(56, 189, 248, 0);
+    border-color: var(--panel-border);
+  }
+  20% {
+    box-shadow: inset 0 0 0 2px #38bdf8, 0 0 16px 2px rgba(56, 189, 248, 0.5);
     border-color: #38bdf8;
-    transform: scale(1.01);
   }
   50% {
-    box-shadow: 0 0 25px 8px rgba(56, 189, 248, 0.9);
+    box-shadow: inset 0 0 0 2px #38bdf8, 0 0 26px 6px rgba(56, 189, 248, 0.8);
     border-color: #38bdf8;
-    transform: scale(1.02);
+  }
+  80% {
+    box-shadow: inset 0 0 0 2px #38bdf8, 0 0 16px 2px rgba(56, 189, 248, 0.5);
+    border-color: #38bdf8;
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(56, 189, 248, 0);
+    box-shadow: inset 0 0 0 0 rgba(56, 189, 248, 0), 0 0 0 0 rgba(56, 189, 248, 0);
     border-color: var(--panel-border);
-    transform: scale(1);
   }
 }
 
 .highlight-pulse {
-  animation: neonPulse 1.1s ease-in-out 3 !important;
-  border-color: #38bdf8 !important;
-  z-index: 10 !important;
+  animation: neonPulse 3.2s cubic-bezier(0.4, 0, 0.2, 1) 1 forwards !important;
+  position: relative;
+  z-index: 10;
 }
 </style>

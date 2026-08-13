@@ -1478,25 +1478,34 @@ const navigateToProject = async (relProj) => {
 
 @keyframes neonPulse {
   0% {
-    box-shadow: inset 0 0 0 2px #4f46e5, 0 0 15px rgba(79, 70, 229, 0.6);
+    box-shadow: inset 0 0 0 0 rgba(79, 70, 229, 0), 0 0 0 0 rgba(79, 70, 229, 0);
+    border-color: var(--panel-border);
+    background-color: #ffffff;
+  }
+  20% {
+    box-shadow: inset 0 0 0 2px #4f46e5, 0 0 16px 2px rgba(79, 70, 229, 0.5);
     border-color: #4f46e5;
     background-color: rgba(79, 70, 229, 0.05);
   }
   50% {
-    box-shadow: inset 0 0 0 2px #4f46e5, 0 0 24px 4px rgba(79, 70, 229, 0.7);
+    box-shadow: inset 0 0 0 2px #4f46e5, 0 0 26px 6px rgba(79, 70, 229, 0.75);
     border-color: #4f46e5;
     background-color: rgba(79, 70, 229, 0.1);
   }
+  80% {
+    box-shadow: inset 0 0 0 2px #4f46e5, 0 0 16px 2px rgba(79, 70, 229, 0.5);
+    border-color: #4f46e5;
+    background-color: rgba(79, 70, 229, 0.05);
+  }
   100% {
-    box-shadow: inset 0 0 0 0 transparent, 0 0 0 0 transparent;
+    box-shadow: inset 0 0 0 0 rgba(79, 70, 229, 0), 0 0 0 0 rgba(79, 70, 229, 0);
     border-color: var(--panel-border);
     background-color: #ffffff;
   }
 }
 
 .highlight-pulse {
-  animation: neonPulse 1.1s ease-in-out 3 !important;
-  border-color: #4f46e5 !important;
+  animation: neonPulse 3.2s cubic-bezier(0.4, 0, 0.2, 1) 1 forwards !important;
   position: relative;
   z-index: 5;
 }
