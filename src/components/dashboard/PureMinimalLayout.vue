@@ -163,9 +163,13 @@ onMounted(() => {
   activeSection.value = initialSection;
 
   if (initialSection !== 'about') {
-    setTimeout(() => {
-      scrollToSection(initialSection);
-    }, 150);
+    const target = document.getElementById(initialSection);
+    if (target && contentPaneRef.value) {
+      const containerTop = contentPaneRef.value.getBoundingClientRect().top;
+      const targetTop = target.getBoundingClientRect().top;
+      const offset = targetTop - containerTop + contentPaneRef.value.scrollTop;
+      contentPaneRef.value.scrollTop = Math.max(0, offset - 12);
+    }
   } else {
     updateActiveSectionOnScroll();
   }
@@ -571,8 +575,8 @@ const navigateToProject = async (relProj) => {
 }
 
 .damoon-full-logo-img {
+  width: 90px;
   height: 90px;
-  width: auto;
   object-fit: contain;
   filter: drop-shadow(0 2px 8px rgba(79, 70, 229, 0.15));
   display: block;
@@ -608,7 +612,8 @@ const navigateToProject = async (relProj) => {
   justify-content: center;
   cursor: pointer;
   padding: 4px;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, transform 0.2s ease;
+  will-change: transform;
 }
 
 .header-icon-link:hover {
