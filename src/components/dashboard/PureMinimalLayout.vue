@@ -237,7 +237,7 @@ const navigateToProject = async (relProj) => {
       <div class="top-bar-inner">
         <!-- RIGHT: Damoon Full Written-out Typographic Logo + Version Pill -->
         <div class="header-logo-wrap" title="Damoon Portfolio">
-          <img src="/monogram-damoon.png" alt="Damoon" class="damoon-full-logo-img" />
+          <img src="/monogram-damoon.png" alt="Damoon" class="damoon-full-logo-img" width="98" height="98" />
           <span class="header-version-pill mono-ui" dir="ltr">v{{ appVersion }}</span>
         </div>
 
