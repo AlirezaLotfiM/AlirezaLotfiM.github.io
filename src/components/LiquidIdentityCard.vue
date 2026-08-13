@@ -533,28 +533,41 @@ const resumeLabel = computed(() => cardData.value.resumeLabel || 'رزومه');
 
 @media (max-width: 900px) {
   .identity-overlay {
-    padding: 16px;
+    padding: 12px;
+    align-items: center;
+    overflow-y: auto;
   }
 
   .scene {
     width: min(100%, 620px);
     aspect-ratio: auto;
+    max-height: 94vh;
   }
 
   .glass-card {
-    min-height: 560px;
+    min-height: auto;
+    max-height: 92vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .content {
-    padding: 18px;
+    padding: 20px 18px;
+    gap: 16px;
+    position: relative;
   }
 
   .card-top {
     display: flex;
     flex-direction: column-reverse;
     align-items: center;
-    gap: 16px;
+    gap: 14px;
     text-align: center;
+  }
+
+  .avatar-glow {
+    width: 96px;
+    height: 96px;
   }
 
   .identity-block {
@@ -572,67 +585,84 @@ const resumeLabel = computed(() => cardData.value.resumeLabel || 'رزومه');
     justify-content: center;
   }
 
-  .card-bottom,
+  .card-bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
   .action-strip {
-    grid-template-columns: 1fr;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    width: 100%;
+  }
+
+  .action-strip .primary-btn {
+    grid-column: 1 / -1;
+    width: 100%;
+    order: -1;
+    padding: 13px;
+    font-size: 0.88rem;
+  }
+
+  .action-strip .secondary-btn {
+    padding: 10px 6px;
+    font-size: 0.76rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
   }
 }
 
 @media (max-width: 640px) {
   .identity-overlay {
-    align-items: start;
-    overflow-y: auto;
-  }
-
-  .scene {
-    width: 100%;
+    padding: 8px;
   }
 
   .glass-card {
-    min-height: auto;
     backdrop-filter: blur(16px) saturate(130%);
     -webkit-backdrop-filter: blur(16px) saturate(130%);
+    border-radius: 24px;
   }
 
   .content {
-    position: relative;
-    gap: 14px;
-    padding: 14px;
+    padding: 16px 14px;
+    gap: 12px;
   }
 
-  .identity-block,
-  .focus-panel,
-  .contact-card,
-  .action-strip {
-    border-radius: 18px;
-  }
-
-  .identity-block,
-  .focus-panel {
-    padding: 16px;
-  }
-
-  .contact-card {
-    padding: 12px 14px;
+  .avatar-glow {
+    width: 86px;
+    height: 86px;
   }
 
   .name {
-    font-size: 1.5rem;
+    font-size: 1.35rem;
   }
 
   .title {
-    font-size: 0.82rem;
-    line-height: 1.75;
+    font-size: 0.8rem;
+    line-height: 1.7;
   }
 
-  .badge-row {
-    margin-top: 14px;
+  .eyebrow {
+    font-size: 0.6rem;
+    padding: 4px 10px;
+    margin-bottom: 8px;
   }
 
-  .primary-btn,
-  .secondary-btn {
-    width: 100%;
-    white-space: normal;
+  .contact-card {
+    padding: 10px 12px;
+  }
+
+  .action-strip {
+    gap: 6px;
+  }
+
+  .action-strip .secondary-btn {
+    font-size: 0.72rem;
+    padding: 8px 4px;
   }
 }
 

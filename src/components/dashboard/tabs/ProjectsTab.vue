@@ -606,15 +606,56 @@ const selectedProject = computed(() =>
     gap: 6px;
   }
 
-  .grid-item h4,
-  .card-summary {
-    min-height: 0;
-    display: block;
-  }
-
   .lang-container,
   .card-footer {
     min-height: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .grid-list {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .grid-item {
+    padding: 14px;
+    border-radius: 16px;
+  }
+
+  .filter-bar {
+    overflow-x: auto;
+    white-space: nowrap;
+    padding-bottom: 6px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .filter-chips {
+    flex-wrap: nowrap;
+  }
+
+  .project-hero h1 {
+    font-size: 1.35rem;
+  }
+
+  .project-facts {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .project-actions {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .project-actions button,
+  .project-actions a {
+    flex: 1;
+    text-align: center;
+    justify-content: center;
+    padding: 8px 12px;
+    font-size: 0.78rem;
   }
 }
 

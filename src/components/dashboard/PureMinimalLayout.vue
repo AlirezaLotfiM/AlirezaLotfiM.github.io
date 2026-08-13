@@ -1434,7 +1434,7 @@ const navigateToProject = async (relProj) => {
 @media (max-width: 1024px) {
   .editorial-layout {
     grid-template-columns: 1fr;
-    gap: 32px;
+    gap: 24px;
     padding: 16px;
   }
 
@@ -1446,13 +1446,14 @@ const navigateToProject = async (relProj) => {
   }
 
   .editorial-specs-strip {
-    flex-direction: column;
-    gap: 14px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 14px 16px;
   }
 
   .spec-strip-divider {
-    width: 100%;
-    height: 1px;
+    display: none;
   }
 
   .job-header-row {
@@ -1463,43 +1464,70 @@ const navigateToProject = async (relProj) => {
 
 @media (max-width: 768px) {
   .swiss-top-bar {
-    padding: 6px 16px;
+    padding: 4px 16px;
+    background: var(--bg-main);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--panel-border);
   }
 
   .top-bar-inner {
-    min-height: 64px;
+    min-height: 58px;
   }
 
   .damoon-full-logo-img {
-    height: 56px;
+    width: 48px;
+    height: 48px;
   }
 
   .header-version-pill {
-    font-size: 0.62rem;
-    padding: 1px 6px;
+    font-size: 0.6rem;
+    padding: 1px 5px;
   }
 
   .header-social-icons {
-    gap: 12px;
+    gap: 8px;
+  }
+
+  .header-icon-link {
+    padding: 6px;
+  }
+
+  .header-icon-link svg {
+    width: 18px;
+    height: 18px;
   }
 
   .editorial-layout {
-    gap: 20px;
-    padding: 12px;
+    gap: 16px;
+    padding: 10px;
   }
 
   .sidebar-identity .author-name {
-    font-size: 1.35rem;
+    font-size: 1.3rem;
+  }
+
+  .sidebar-identity .author-lead {
+    font-size: 0.84rem;
+    line-height: 1.65;
   }
 
   .editorial-nav {
+    position: sticky;
+    top: 58px;
+    z-index: 95;
     flex-direction: row;
     overflow-x: auto;
     white-space: nowrap;
-    padding-bottom: 8px;
+    padding: 8px 10px;
+    margin: 0 -10px 12px -10px;
+    background: var(--bg-main);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--panel-border);
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
-    width: 100%;
+    width: calc(100% + 20px);
   }
 
   .editorial-nav::-webkit-scrollbar {
@@ -1514,28 +1542,48 @@ const navigateToProject = async (relProj) => {
     background: var(--item-bg);
     border: 1px solid var(--panel-border);
     flex-shrink: 0;
+    font-size: 0.78rem;
   }
 
   .editorial-nav a.active {
     border-color: var(--neon);
-    background: rgba(79, 70, 229, 0.08);
-    padding-right: 12px;
+    background: rgba(79, 70, 229, 0.12);
+    color: var(--neon);
   }
 
   .specialization-pillars-grid {
     grid-template-columns: 1fr;
-  }
-
-  .job-card-content {
-    padding: 16px;
-  }
-
-  .timeline-job-card {
     gap: 12px;
   }
 
+  .pillar-card {
+    padding: 16px;
+  }
+
+  .job-card-content {
+    padding: 14px;
+  }
+
+  .timeline-job-card {
+    gap: 10px;
+  }
+
+  .editorial-specs-strip {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .spec-item .value {
+    font-size: 1.1rem;
+  }
+
+  .spec-item .label {
+    font-size: 0.65rem;
+  }
+
   .editorial-stream-footer {
-    padding-bottom: 140px;
+    padding-bottom: 100px;
   }
 }
 

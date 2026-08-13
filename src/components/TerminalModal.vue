@@ -47,22 +47,28 @@ const handleModalKeydown = (event) => {
     return;
   }
 
-  if (event.key !== 'Tab' || !terminalWindowRef.value) return;
-  const focusable = [
-    ...terminalWindowRef.value.querySelectorAll(
-      'button:not([disabled]), input:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])',
-    ),
-  ];
-  if (!focusable.length) return;
+  if (event.key === 'Tab') {
+    // When focused in terminal input, Tab should autocomplete text, never shift focus to close button
+    if (document.activeElement === inputRef.value || event.target === inputRef.value) {
+      event.preventDefault();
+      handleTabComplete();
+      return;
+    }
 
-  const first = focusable[0];
-  const last = focusable.at(-1);
-  if (event.shiftKey && document.activeElement === first) {
-    event.preventDefault();
-    last.focus();
-  } else if (!event.shiftKey && document.activeElement === last) {
-    event.preventDefault();
-    first.focus();
+    if (!terminalWindowRef.value) return;
+    const focusable = [
+      ...terminalWindowRef.value.querySelectorAll(
+        'button:not([disabled]), input:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])',
+      ),
+    ];
+    if (!focusable.length) return;
+
+    const first = focusable[0];
+    const last = focusable.at(-1);
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    }
   }
 };
 
