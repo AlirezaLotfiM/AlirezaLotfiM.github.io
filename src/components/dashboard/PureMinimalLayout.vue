@@ -578,7 +578,7 @@ const navigateToProject = async (relProj) => {
   width: 90px;
   height: 90px;
   object-fit: contain;
-  filter: drop-shadow(0 2px 8px rgba(79, 70, 229, 0.15));
+  filter: var(--logo-filter, drop-shadow(0 2px 8px rgba(79, 70, 229, 0.15)));
   display: block;
 }
 
@@ -744,7 +744,7 @@ const navigateToProject = async (relProj) => {
   width: 100%;
   padding: 12px 18px;
   border-radius: 12px;
-  background: #ffffff;
+  background: var(--item-bg);
   border: 1px solid var(--panel-border);
   color: var(--text-main);
   font-size: 0.86rem;
@@ -836,7 +836,7 @@ const navigateToProject = async (relProj) => {
   gap: 16px;
   margin-top: 28px;
   padding: 18px 24px;
-  background: #ffffff;
+  background: var(--item-bg);
   border: 1px solid var(--panel-border);
   border-radius: 14px;
   box-shadow: 0 4px 16px rgba(15, 23, 42, 0.03);
@@ -896,7 +896,7 @@ const navigateToProject = async (relProj) => {
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: #ffffff;
+  background: var(--item-bg);
   border: 3px solid var(--neon);
   box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12);
 }
@@ -914,7 +914,7 @@ const navigateToProject = async (relProj) => {
   flex-direction: column;
   gap: 12px;
   padding: 22px;
-  background: #ffffff;
+  background: var(--item-bg);
   border: 1px solid var(--panel-border);
   border-radius: 16px;
   box-shadow: 0 4px 16px rgba(15, 23, 42, 0.03);
@@ -1018,7 +1018,7 @@ const navigateToProject = async (relProj) => {
   gap: 6px;
   padding: 6px 12px;
   border-radius: 8px;
-  background: #ffffff;
+  background: var(--item-bg);
   border: 1px solid rgba(79, 70, 229, 0.25);
   color: var(--text-main);
   font-size: 0.82rem;
@@ -1064,7 +1064,7 @@ const navigateToProject = async (relProj) => {
   font-size: 0.74rem;
   padding: 3px 9px;
   border-radius: 6px;
-  background: #f1f5f9;
+  background: var(--item-hover-bg);
   border: 1px solid var(--panel-border);
   color: var(--text-secondary);
   font-weight: 600;
@@ -1107,7 +1107,7 @@ const navigateToProject = async (relProj) => {
   flex-direction: column;
   gap: 8px;
   padding: 16px;
-  background: #ffffff;
+  background: var(--item-bg);
   border: 1px solid var(--panel-border);
   border-radius: 14px;
   transition: all 0.25s ease;
@@ -1223,7 +1223,7 @@ const navigateToProject = async (relProj) => {
   justify-content: space-between;
   gap: 12px;
   padding: 22px;
-  background: #ffffff;
+  background: var(--item-bg);
   border: 1px solid var(--panel-border);
   border-radius: 16px;
   box-shadow: 0 4px 16px rgba(15, 23, 42, 0.03);
@@ -1453,7 +1453,7 @@ const navigateToProject = async (relProj) => {
     border-right: none;
     border-bottom: 2px solid transparent;
     border-radius: 8px;
-    background: #ffffff;
+    background: var(--item-bg);
     border: 1px solid var(--panel-border);
     flex-shrink: 0;
   }

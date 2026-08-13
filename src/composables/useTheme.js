@@ -19,45 +19,48 @@ const themes = [
       "--neon": "#4f46e5",
       "--accent-strong": "#4338ca",
       "--glass-panel-base": "rgba(255, 255, 255, 0.95)",
-      "--glass-panel-highlight": "rgba(79, 70, 229, 0.04)"
+      "--glass-panel-highlight": "rgba(79, 70, 229, 0.04)",
+      "--logo-filter": "drop-shadow(0 2px 8px rgba(79, 70, 229, 0.15))"
     }
   },
   {
     id: "space-glass",
     name: "Space Glass",
     colors: {
-      "--bg-main": "#0a0f1d",
-      "--text-main": "#f1f5f9",
-      "--text-secondary": "rgba(226, 232, 240, 0.82)",
+      "--bg-main": "#070c18",
+      "--text-main": "#f8fafc",
+      "--text-secondary": "#cbd5e1",
       "--text-soft": "#94a3b8",
-      "--panel-bg": "rgba(15, 23, 42, 0.62)",
-      "--panel-border": "rgba(148, 163, 184, 0.12)",
-      "--item-bg": "rgba(30, 41, 59, 0.4)",
-      "--item-hover-bg": "rgba(51, 65, 85, 0.6)",
-      "--bar-bg": "rgba(15, 23, 42, 0.8)",
+      "--panel-bg": "rgba(15, 23, 42, 0.75)",
+      "--panel-border": "rgba(148, 163, 184, 0.18)",
+      "--item-bg": "rgba(15, 23, 42, 0.72)",
+      "--item-hover-bg": "rgba(30, 41, 59, 0.85)",
+      "--bar-bg": "rgba(15, 23, 42, 0.85)",
       "--neon": "#38bdf8",
       "--accent-strong": "#0284c7",
-      "--glass-panel-base": "rgba(15, 23, 42, 0.82)",
-      "--glass-panel-highlight": "rgba(56, 189, 248, 0.04)"
+      "--glass-panel-base": "rgba(15, 23, 42, 0.85)",
+      "--glass-panel-highlight": "rgba(56, 189, 248, 0.04)",
+      "--logo-filter": "brightness(0) invert(1) drop-shadow(0 0 8px rgba(56, 189, 248, 0.5))"
     }
   },
   {
     id: "liquid-glass",
     name: "Liquid Glass",
     colors: {
-      "--bg-main": "#e8f1f9",
-      "--text-main": "#1e293b",
-      "--text-secondary": "#475569",
-      "--text-soft": "#64748b",
-      "--panel-bg": "rgba(255, 255, 255, 0.75)",
-      "--panel-border": "rgba(92, 144, 199, 0.2)",
-      "--item-bg": "rgba(255, 255, 255, 0.4)",
-      "--item-hover-bg": "rgba(92, 144, 199, 0.12)",
-      "--bar-bg": "rgba(255, 255, 255, 0.8)",
-      "--neon": "#1d4ed8",
-      "--accent-strong": "#1e40af",
-      "--glass-panel-base": "rgba(255, 255, 255, 0.85)",
-      "--glass-panel-highlight": "rgba(219, 234, 254, 0.4)"
+      "--bg-main": "#0b1329",
+      "--text-main": "#f8fafc",
+      "--text-secondary": "#cbd5e1",
+      "--text-soft": "#94a3b8",
+      "--panel-bg": "rgba(26, 38, 66, 0.75)",
+      "--panel-border": "rgba(100, 140, 200, 0.22)",
+      "--item-bg": "rgba(22, 33, 58, 0.7)",
+      "--item-hover-bg": "rgba(38, 55, 94, 0.85)",
+      "--bar-bg": "rgba(22, 33, 58, 0.85)",
+      "--neon": "#38bdf8",
+      "--accent-strong": "#0284c7",
+      "--glass-panel-base": "rgba(26, 38, 66, 0.85)",
+      "--glass-panel-highlight": "rgba(56, 189, 248, 0.04)",
+      "--logo-filter": "brightness(0) invert(1) drop-shadow(0 0 8px rgba(56, 189, 248, 0.5))"
     }
   }
 ];
