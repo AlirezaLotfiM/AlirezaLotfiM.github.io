@@ -177,6 +177,21 @@ const updateActiveSectionOnScroll = () => {
   if (activeSection.value !== activeId) {
     activeSection.value = activeId;
     syncUrlWithSection(activeId);
+    scrollActiveNavIntoView();
+  }
+};
+
+const scrollActiveNavIntoView = () => {
+  if (typeof window === 'undefined' || window.innerWidth >= 1024) return;
+  const activeNavEl = document.querySelector('.editorial-nav a.active');
+  const navContainer = document.querySelector('.editorial-nav');
+  if (activeNavEl && navContainer) {
+    const navRect = navContainer.getBoundingClientRect();
+    const elRect = activeNavEl.getBoundingClientRect();
+    if (elRect.left < navRect.left || elRect.right > navRect.right) {
+      const scrollOffset = elRect.left - navRect.left - (navRect.width / 2) + (elRect.width / 2);
+      navContainer.scrollBy({ left: scrollOffset, behavior: 'smooth' });
+    }
   }
 };
 
@@ -234,6 +249,7 @@ const scrollToSection = (sectionId, event) => {
 
   activeSection.value = sectionId;
   syncUrlWithSection(sectionId);
+  scrollActiveNavIntoView();
 
   const target = document.getElementById(sectionId);
   if (!target) return;
@@ -1218,27 +1234,47 @@ const navigateToProject = async (relProj) => {
   font-weight: 600;
 }
 
-/* PROJECTS */
+/* PROJECTS FILTER BAR (HORIZONTAL SCROLL ON MOBILE) */
 .simple-filter-bar {
   display: flex;
+  align-items: center;
   gap: 8px;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x;
+  padding: 4px 2px 8px 2px;
+}
+
+.simple-filter-bar::-webkit-scrollbar {
+  display: none;
 }
 
 .filter-tag {
   background: transparent;
   border: 1px solid var(--panel-border);
   color: var(--text-secondary);
-  padding: 4px 12px;
+  padding: 6px 14px;
   border-radius: 8px;
   font-size: 0.8rem;
+  font-weight: 600;
   cursor: pointer;
   font-family: inherit;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  white-space: nowrap;
+  user-select: none;
 }
 
 .filter-tag:hover, .filter-tag.active {
   border-color: var(--neon);
+  background: rgba(79, 70, 229, 0.1);
   color: var(--neon);
 }
 
@@ -1521,6 +1557,57 @@ const navigateToProject = async (relProj) => {
   color: var(--neon);
 }
 
+/* Base Mobile Safety & Defensiveness */
+.master-shell,
+.editorial-layout,
+.editorial-sidebar,
+.editorial-content,
+.editorial-section,
+.experience-timeline-wrapper,
+.timeline-job-card,
+.job-card-content,
+.job-header-row,
+.job-title-group,
+.job-related-projects-box,
+.projects-editorial-stream,
+.project-editorial-card,
+.specialization-pillars-grid,
+.pillar-card,
+.notes-editorial-list,
+.note-editorial-item {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.related-project-chip {
+  max-width: 100%;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  box-sizing: border-box;
+}
+
+.tech-pill-badge,
+.pillar-tag-item,
+.period-badge-pill,
+.status-badge-pill {
+  max-width: 100%;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  box-sizing: border-box;
+}
+
+.chip-text,
+.job-summary-text,
+.desc,
+.text-content p,
+.sidebar-identity p {
+  min-width: 0;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
 .mobile-action-tools {
   display: none;
 }
@@ -1530,6 +1617,10 @@ const navigateToProject = async (relProj) => {
     grid-template-columns: 1fr;
     gap: 16px;
     padding: 12px;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow-x: hidden;
   }
 
   .editorial-sidebar, .editorial-content {
@@ -1537,6 +1628,10 @@ const navigateToProject = async (relProj) => {
     top: 0;
     max-height: none;
     overflow: visible;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
   }
 
   .editorial-sidebar .concise-bio,
@@ -1556,13 +1651,17 @@ const navigateToProject = async (relProj) => {
 
   .sidebar-identity {
     margin-bottom: 4px;
+    width: 100%;
+    min-width: 0;
   }
 
   .editorial-specs-strip {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    padding: 14px 16px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    padding: 12px 8px;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .spec-strip-divider {
@@ -1577,33 +1676,47 @@ const navigateToProject = async (relProj) => {
 
 @media (max-width: 768px) {
   .swiss-top-bar {
-    padding: 4px 16px;
+    padding: 4px 10px;
     background: var(--bg-main);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--panel-border);
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
   }
 
   .top-bar-inner {
-    min-height: 58px;
+    min-height: 52px;
+    width: 100%;
+  }
+
+  .header-logo-wrap {
+    gap: 6px;
+    flex-shrink: 0;
   }
 
   .damoon-full-logo-img {
-    width: 48px;
-    height: 48px;
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
   }
 
   .header-version-pill {
     font-size: 0.6rem;
     padding: 1px 5px;
+    flex-shrink: 0;
   }
 
   .header-social-icons {
-    gap: 8px;
+    gap: 2px;
+    flex-shrink: 0;
   }
 
   .header-icon-link {
-    padding: 6px;
+    padding: 4px;
+    min-width: 34px;
+    min-height: 34px;
   }
 
   .header-icon-link svg {
@@ -1612,27 +1725,34 @@ const navigateToProject = async (relProj) => {
   }
 
   .editorial-layout {
-    gap: 16px;
-    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 8px;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow-x: hidden;
   }
 
   .sidebar-identity .author-name {
-    font-size: 1.3rem;
+    font-size: 1.25rem;
+    word-break: break-word;
   }
 
-  .sidebar-identity .author-lead {
-    font-size: 0.84rem;
-    line-height: 1.65;
+  .sidebar-identity .role-subtitle {
+    font-size: 0.74rem;
+    word-break: break-word;
   }
 
   .editorial-nav {
     position: sticky;
-    top: 58px;
+    top: 52px;
     z-index: 95;
     flex-direction: row;
     overflow-x: auto;
     white-space: nowrap;
-    padding: 8px 4px;
+    padding: 6px 4px;
     margin: 0 0 12px 0;
     background: var(--bg-main);
     backdrop-filter: blur(16px);
@@ -1641,7 +1761,7 @@ const navigateToProject = async (relProj) => {
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
     width: 100%;
-    max-width: 100%;
+    max-width: 100vw;
     box-sizing: border-box;
   }
 
@@ -1650,55 +1770,231 @@ const navigateToProject = async (relProj) => {
   }
 
   .editorial-nav a {
-    padding: 6px 12px;
+    padding: 6px 10px;
     border-right: none;
-    border-bottom: 2px solid transparent;
     border-radius: 8px;
     background: var(--item-bg);
     border: 1px solid var(--panel-border);
     flex-shrink: 0;
-    font-size: 0.78rem;
+    font-size: 0.76rem;
   }
 
   .editorial-nav a.active {
     border-color: var(--neon);
     background: rgba(79, 70, 229, 0.12);
     color: var(--neon);
+    font-weight: 700;
   }
 
-  .specialization-pillars-grid {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
-
-  .pillar-card {
-    padding: 16px;
-  }
-
-  .job-card-content {
-    padding: 14px;
+  .experience-timeline-wrapper {
+    gap: 16px;
+    width: 100%;
   }
 
   .timeline-job-card {
+    display: flex;
     gap: 10px;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .timeline-left-node {
+    width: 14px;
+    flex-shrink: 0;
+    padding-top: 4px;
+  }
+
+  .node-dot {
+    width: 10px;
+    height: 10px;
+    border-width: 2px;
+  }
+
+  .job-card-content {
+    flex: 1;
+    min-width: 0;
+    width: 100%;
+    padding: 14px 12px;
+    box-sizing: border-box;
+    border-radius: 12px;
+    border-right: 3px solid var(--neon);
+  }
+
+  .job-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    width: 100%;
+  }
+
+  .job-title-group h3 {
+    font-size: 0.98rem;
+    line-height: 1.35;
+    word-break: break-word;
+  }
+
+  .job-company {
+    font-size: 0.8rem;
+    word-break: break-word;
+  }
+
+  .period-badge-pill {
+    font-size: 0.7rem;
+    padding: 2px 7px;
+    align-self: flex-start;
+  }
+
+  .achievement-chip-item {
+    gap: 6px;
+    font-size: 0.82rem;
+    line-height: 1.6;
+    min-width: 0;
+  }
+
+  .job-related-projects-box {
+    padding: 10px 8px;
+    border-radius: 10px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .related-chips-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    width: 100%;
+  }
+
+  .related-project-chip {
+    padding: 4px 8px;
+    font-size: 0.76rem;
+    max-width: 100%;
+    white-space: normal;
+    word-break: break-word;
   }
 
   .editorial-specs-strip {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    padding: 12px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 4px;
+    padding: 10px 6px;
+    width: 100%;
+    box-sizing: border-box;
   }
 
-  .spec-item .value {
-    font-size: 1.1rem;
+  .spec-strip-item {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
   }
 
-  .spec-item .label {
-    font-size: 0.65rem;
+  .spec-strip-item .spec-num {
+    font-size: 0.88rem;
+    font-weight: 800;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .spec-strip-item .spec-lbl {
+    font-size: 0.64rem;
+    line-height: 1.25;
+    word-break: break-word;
+  }
+
+  .specialization-pillars-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .pillar-card {
+    padding: 14px 12px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .projects-editorial-stream {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  .project-editorial-card {
+    padding: 14px 12px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .proj-top {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .proj-top h3 {
+    font-size: 0.98rem;
+    word-break: break-word;
   }
 
   .editorial-stream-footer {
-    padding-bottom: 100px;
+    padding-bottom: 90px;
+    margin-top: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .timeline-left-node {
+    display: none;
+  }
+
+  .timeline-job-card {
+    gap: 0;
+    width: 100%;
+  }
+
+  .editorial-layout {
+    padding: 6px;
+  }
+
+  .job-card-content {
+    padding: 12px 10px;
+    width: 100%;
+  }
+
+  .swiss-top-bar {
+    padding: 4px 8px;
+  }
+
+  .top-bar-inner {
+    min-height: 48px;
+  }
+
+  .damoon-full-logo-img {
+    width: 34px;
+    height: 34px;
+  }
+
+  .editorial-nav {
+    top: 48px;
+    padding: 4px 2px;
+  }
+
+  .editorial-nav a {
+    padding: 4px 8px;
+    font-size: 0.72rem;
+  }
+
+  .footer-bottom-row {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
   }
 }
 

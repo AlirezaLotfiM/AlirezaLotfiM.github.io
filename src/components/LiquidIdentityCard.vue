@@ -536,18 +536,25 @@ const resumeLabel = computed(() => cardData.value.resumeLabel || 'رزومه');
   .identity-overlay {
     padding: 12px;
     align-items: center;
+    justify-content: center;
     overflow-y: auto;
   }
 
   .scene {
     width: min(100%, 620px);
     aspect-ratio: auto;
-    max-height: 94vh;
+    height: auto;
+    max-height: 92vh;
+    display: flex;
+    flex-direction: column;
   }
 
   .glass-card {
     min-height: auto;
+    height: auto;
     max-height: 92vh;
+    display: flex;
+    flex-direction: column;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
@@ -556,6 +563,12 @@ const resumeLabel = computed(() => cardData.value.resumeLabel || 'رزومه');
     padding: 20px 18px;
     gap: 16px;
     position: relative;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .card-top {
@@ -603,17 +616,21 @@ const resumeLabel = computed(() => cardData.value.resumeLabel || 'رزومه');
     grid-column: 1 / -1;
     width: 100%;
     order: -1;
-    padding: 13px;
+    padding: 12px;
     font-size: 0.88rem;
   }
 
   .action-strip .secondary-btn {
-    padding: 10px 6px;
+    padding: 9px 4px;
     font-size: 0.76rem;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 4px;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 
@@ -655,6 +672,8 @@ const resumeLabel = computed(() => cardData.value.resumeLabel || 'رزومه');
 
   .contact-card {
     padding: 10px 12px;
+    width: 100%;
+    text-align: center;
   }
 
   .action-strip {
@@ -663,7 +682,7 @@ const resumeLabel = computed(() => cardData.value.resumeLabel || 'رزومه');
 
   .action-strip .secondary-btn {
     font-size: 0.72rem;
-    padding: 8px 4px;
+    padding: 8px 2px;
   }
 }
 
