@@ -117,7 +117,7 @@ const enterDashboard = () => {
   window.setTimeout(() => {
     showIdentityCard.value = false;
     isEnteringDashboard.value = false;
-    navigateTo("/projects/");
+    navigateTo("/");
   }, prefersReducedMotion ? 0 : 420);
 };
 
