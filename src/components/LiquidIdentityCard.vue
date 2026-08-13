@@ -383,7 +383,7 @@ const resumeLabel = computed(() => cardData.value.resumeLabel || 'رزومه');
 
 .primary-btn {
   background: var(--neon);
-  color: #040814;
+  color: #ffffff !important;
   border: 1px solid var(--neon);
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
 }

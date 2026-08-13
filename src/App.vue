@@ -61,7 +61,11 @@ const prefersReducedMotion =
   window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const showBoot = ref(false);
 const isBooted = ref(true);
-const showIdentityCard = ref(route.value.isHome);
+const isDashboardEntered = ref(
+  typeof window !== "undefined" &&
+    Boolean(window.sessionStorage.getItem("portfolio-dashboard-entered"))
+);
+const showIdentityCard = ref(!isDashboardEntered.value && route.value.isHome);
 const isEnteringDashboard = ref(false);
 const isMatrixMode = ref(false);
 const showTerminal = ref(false);
@@ -114,6 +118,10 @@ const toggleZenMode = () => {
 const enterDashboard = () => {
   if (isEnteringDashboard.value) return;
   isEnteringDashboard.value = true;
+  if (typeof window !== "undefined") {
+    window.sessionStorage.setItem("portfolio-dashboard-entered", "true");
+  }
+  isDashboardEntered.value = true;
   window.setTimeout(() => {
     showIdentityCard.value = false;
     isEnteringDashboard.value = false;
@@ -124,6 +132,10 @@ const enterDashboard = () => {
 const goHome = () => {
   closeNote();
   isZenMode.value = false;
+  isDashboardEntered.value = false;
+  if (typeof window !== "undefined") {
+    window.sessionStorage.removeItem("portfolio-dashboard-entered");
+  }
   showIdentityCard.value = true;
   navigateTo("/");
 };
@@ -156,7 +168,7 @@ const updateRouteState = () => {
   }
 
   if (nextRoute.isHome) {
-    showIdentityCard.value = true;
+    showIdentityCard.value = !isDashboardEntered.value;
     closeNote();
     return;
   }

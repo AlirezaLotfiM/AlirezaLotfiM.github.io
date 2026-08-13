@@ -390,7 +390,7 @@ const computedInterests = computed(() => {
 
 .badge {
   background: var(--neon);
-  color: #040814;
+  color: #ffffff !important;
   font-weight: 700;
   font-size: 0.75rem;
   padding: 4px 10px;
@@ -427,7 +427,7 @@ const computedInterests = computed(() => {
 
 .btn-print {
   background: var(--neon);
-  color: #040814;
+  color: #ffffff !important;
   border: none;
   padding: 10px 18px;
   border-radius: 10px;
