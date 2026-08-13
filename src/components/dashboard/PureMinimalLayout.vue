@@ -22,7 +22,10 @@ const {
   availableLanguages,
   getTechDetails,
   closeNote,
+  downloadVCard,
 } = usePortfolio();
+
+const showQrModal = ref(false);
 
 const { playClick } = useAudioSynth();
 const { tabPaths, navigateFromEvent } = useNavigation();
@@ -313,6 +316,14 @@ const navigateToProject = async (relProj) => {
             <span>مشاهده رزومه رسمی A4</span>
             <span class="btn-arrow mono-ui">PDF ↗</span>
           </a>
+          <div class="sidebar-contact-tools">
+            <button @click="downloadVCard" class="tool-chip-btn" title="ذخیره مستقیم شماره و اطلاعات در گوشی (vCard)">
+              📇 vCard
+            </button>
+            <button @click="showQrModal = true" class="tool-chip-btn" title="نمایش کد QR پورتفولیو">
+              📱 QR Code
+            </button>
+          </div>
         </div>
       </aside>
 
@@ -525,6 +536,21 @@ const navigateToProject = async (relProj) => {
         </footer>
       </main>
     </div>
+
+    <!-- QR CODE MODAL OVERLAY -->
+    <Transition name="fade">
+      <div v-if="showQrModal" class="qr-modal-overlay" @click.self="showQrModal = false">
+        <div class="qr-modal-card">
+          <button class="close-qr-btn" @click="showQrModal = false">✕</button>
+          <h3>📱 اسکن کد QR پورتفولیو</h3>
+          <p>با دوربین گوشی اسکن کنید تا آدرس سایت مستقیماً باز شود:</p>
+          <div class="qr-image-wrap">
+            <img src="/qr-code.svg" alt="QR Code Alireza Lotfi Portfolio" width="200" height="200" />
+          </div>
+          <div class="qr-url-pill mono-ui" dir="ltr">alirezalotfimoghaddam.ir</div>
+        </div>
+      </div>
+    </Transition>
   </div>
 </template>
 
@@ -734,6 +760,38 @@ const navigateToProject = async (relProj) => {
 
 .sidebar-bottom {
   margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sidebar-contact-tools {
+  display: flex;
+  gap: 8px;
+}
+
+.tool-chip-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: var(--item-bg);
+  border: 1px solid var(--panel-border);
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.tool-chip-btn:hover {
+  border-color: var(--neon);
+  color: var(--neon);
+  transform: translateY(-1px);
 }
 
 /* HIGH-END SWISS EDITORIAL RESUME BUTTON */
@@ -1505,5 +1563,93 @@ const navigateToProject = async (relProj) => {
   transition: all 0.6s ease !important;
   position: relative;
   z-index: 5;
+}
+
+.qr-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.qr-modal-card {
+  position: relative;
+  background: #ffffff;
+  color: #0f172a;
+  border-radius: 24px;
+  padding: 28px 24px;
+  max-width: 340px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+  direction: rtl;
+}
+
+.close-qr-btn {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background: #f1f5f9;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  font-weight: bold;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.close-qr-btn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.qr-modal-card h3 {
+  margin: 0 0 6px 0;
+  font-size: 1.15rem;
+  color: #0f172a;
+}
+
+.qr-modal-card p {
+  margin: 0 0 18px 0;
+  font-size: 0.82rem;
+  color: #64748b;
+  text-align: center;
+}
+
+.qr-image-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  margin-bottom: 16px;
+}
+
+.qr-image-wrap img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.qr-url-pill {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #4f46e5;
+  background: #f1f5f9;
+  padding: 6px 14px;
+  border-radius: 8px;
+  display: inline-block;
 }
 </style>

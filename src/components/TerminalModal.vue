@@ -3,7 +3,10 @@ import { ref, nextTick, watch, onMounted, onUnmounted } from 'vue';
 import { useTheme } from '../composables/useTheme';
 import { useAudioSynth } from '../composables/useAudioSynth';
 
+import { usePortfolio } from '../composables/usePortfolio';
+
 const { playKey, playThemeChirp, playClick, isMuted } = useAudioSynth();
+const { downloadVCard } = usePortfolio();
 
 // دریافت اطلاعات از والد (App.vue)
 const props = defineProps({
@@ -26,7 +29,7 @@ const history = ref([]);
 
 const { themes, setTheme, currentTheme } = useTheme();
 
-const COMMANDS = ['help', 'whoami', 'skills', 'projects', 'ls', 'status', 'learning', 'contact', 'cls', 'clear', 'exit', 'theme', 'music', 'neofetch', 'matrix'];
+const COMMANDS = ['help', 'whoami', 'skills', 'projects', 'ls', 'status', 'learning', 'contact', 'cls', 'clear', 'exit', 'theme', 'music', 'neofetch', 'matrix', 'cv', 'download-cv', 'vcard'];
 
 // Command history
 const cmdHistory = ref([]);
@@ -126,18 +129,28 @@ const handleCommand = () => {
   // --- دستورات ---
   if (mainCmd === 'help') {
     addLog('Available Commands:', 'os-dim');
-    addLog('  whoami    - Display user profile');
-    addLog('  skills    - List technical skills');
-    addLog('  projects  - List projects (ls)');
-    addLog('  status    - Current focus & learning');
-    addLog('  contact   - Show contact info');
-    addLog('  theme     - View/change dynamic theme');
-    addLog('  music     - Control digital audio widget');
-    addLog('  neofetch  - Print system environment statistics');
-    addLog('  matrix    - Toggle Matrix Rain background effect');
-    addLog('  cls       - Clear terminal');
-    addLog('  exit      - Close terminal');
+    addLog('  whoami     - Display user profile');
+    addLog('  skills     - List technical skills');
+    addLog('  projects   - List projects (ls)');
+    addLog('  status     - Current focus & learning');
+    addLog('  contact    - Show contact info');
+    addLog('  vcard      - Download contact vCard (.vcf)');
+    addLog('  cv         - View/Download A4 Printable Resume');
+    addLog('  theme      - View/change dynamic theme');
+    addLog('  music      - Control digital audio widget');
+    addLog('  neofetch   - Print system environment statistics');
+    addLog('  matrix     - Toggle Matrix Rain background effect');
+    addLog('  cls        - Clear terminal');
+    addLog('  exit       - Close terminal');
   } 
+  else if (mainCmd === 'vcard') {
+    downloadVCard();
+    addLog('Downloading Alireza-Lotfi-Moghaddam.vcf contact file...', 'os-ok');
+  }
+  else if (mainCmd === 'cv' || mainCmd === 'download-cv') {
+    window.location.href = '/resume/';
+    addLog('Navigating to A4 Printable Resume page...', 'os-ok');
+  }
   else if (mainCmd === 'ls' || mainCmd === 'projects') {
     addLog('Scanning projects directory...', 'os-dim');
     addLog('');
@@ -169,6 +182,7 @@ const handleCommand = () => {
       if (props.contact.github) addLog(`GitHub:   github.com/${props.contact.github}`);
       if (props.contact.telegram) addLog(`Telegram: ${props.contact.telegram}`);
     }
+    addLog('Tip: Type "vcard" to download .vcf contact card', 'os-dim');
   }
   else if (mainCmd === 'status' || mainCmd === 'learning') {
     addLog('--- CURRENT FOCUS ---', 'os-warn');

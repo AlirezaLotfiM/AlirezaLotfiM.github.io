@@ -213,6 +213,31 @@ const closeNote = () => {
   noteComments.value = [];
 };
 
+const downloadVCard = () => {
+  const vcardData = `BEGIN:VCARD
+VERSION:3.0
+N:Lotfi Moghaddam;Alireza;;;
+FN:Alireza Lotfi Moghaddam
+TITLE:Senior Software Engineer & .NET Architect
+EMAIL;TYPE=INTERNET,PREF:lotfi.moghaddam.alireza@gmail.com
+TEL;TYPE=CELL,VOICE:+989109043782
+URL;TYPE=WORK:https://alirezalotfimoghaddam.ir
+X-SOCIALPROFILE;TYPE=github:https://github.com/AlirezaLotfiM
+X-SOCIALPROFILE;TYPE=linkedin:https://linkedin.com/in/alireza-lotfi-moghaddam-378a8018a
+NOTE:Senior Software Engineer specializing in C#, .NET, distributed systems, and WPF desktop software.
+END:VCARD`;
+
+  const blob = new Blob([vcardData], { type: 'text/vcard;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.setAttribute('download', 'Alireza-Lotfi-Moghaddam.vcf');
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+};
+
 export function usePortfolio() {
   return {
     userGithub,
@@ -240,5 +265,6 @@ export function usePortfolio() {
     fetchData,
     openNote,
     closeNote,
+    downloadVCard,
   };
 }
