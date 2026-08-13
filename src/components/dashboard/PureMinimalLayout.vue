@@ -827,20 +827,29 @@ const navigateToProject = async (relProj) => {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .sidebar-contact-tools {
   display: flex;
   gap: 8px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .tool-chip-btn {
-  flex: 1;
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 8px 12px;
+  padding: 8px 10px;
   border-radius: 10px;
   background: var(--item-bg);
   border: 1px solid var(--panel-border);
@@ -850,6 +859,7 @@ const navigateToProject = async (relProj) => {
   cursor: pointer;
   transition: all 0.2s ease;
   font-family: inherit;
+  white-space: nowrap;
 }
 
 .tool-chip-btn:hover {
