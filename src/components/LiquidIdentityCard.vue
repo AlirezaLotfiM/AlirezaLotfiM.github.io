@@ -1,8 +1,10 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { usePortfolio } from '../composables/usePortfolio';
+import { useNavigation } from '../composables/useNavigation';
 
 const { downloadVCard } = usePortfolio();
+const { tabPaths, navigateFromEvent } = useNavigation();
 const showQrModal = ref(false);
 
 const props = defineProps({
@@ -100,9 +102,8 @@ const resumeLabel = computed(() => cardData.value.resumeLabel || 'رزومه');
               </button>
               <a
                 class="secondary-btn"
-                :href="resumeUrl || profile.resumeUrl || '/MyResume.pdf'"
-                target="_blank"
-                rel="noopener noreferrer"
+                :href="tabPaths.resume"
+                @click="navigateFromEvent($event, tabPaths.resume)"
               >
                 {{ resumeLabel }}
               </a>
