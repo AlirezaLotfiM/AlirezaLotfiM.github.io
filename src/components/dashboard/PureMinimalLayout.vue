@@ -424,6 +424,22 @@ const navigateToProject = async (relProj) => {
                 <span class="spec-lbl">استک اصلی معماری</span>
               </div>
             </div>
+
+            <!-- MOBILE-ONLY ACTION BUTTONS BLOCK -->
+            <div class="mobile-action-tools">
+              <a :href="tabPaths.resume" @click="navigateFromEvent($event, tabPaths.resume)" class="editorial-resume-btn">
+                <span>مشاهده رزومه رسمی A4</span>
+                <span class="btn-arrow mono-ui">PDF ↗</span>
+              </a>
+              <div class="sidebar-contact-tools">
+                <button @click="downloadVCard" class="tool-chip-btn" title="ذخیره مستقیم شماره و اطلاعات در گوشی (vCard)">
+                  📇 vCard
+                </button>
+                <button @click="showQrModal = true" class="tool-chip-btn" title="نمایش کد QR پورتفولیو">
+                  📱 QR Code
+                </button>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -1505,11 +1521,15 @@ const navigateToProject = async (relProj) => {
   color: var(--neon);
 }
 
+.mobile-action-tools {
+  display: none;
+}
+
 @media (max-width: 1024px) {
   .editorial-layout {
     grid-template-columns: 1fr;
-    gap: 20px;
-    padding: 14px;
+    gap: 16px;
+    padding: 12px;
   }
 
   .editorial-sidebar, .editorial-content {
@@ -1519,12 +1539,23 @@ const navigateToProject = async (relProj) => {
     overflow: visible;
   }
 
-  .editorial-sidebar .concise-bio {
+  .editorial-sidebar .concise-bio,
+  .editorial-sidebar .sidebar-bottom {
     display: none;
   }
 
+  .mobile-action-tools {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
   .sidebar-identity {
-    margin-bottom: 8px;
+    margin-bottom: 4px;
   }
 
   .editorial-specs-strip {
