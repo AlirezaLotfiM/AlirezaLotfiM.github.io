@@ -209,15 +209,34 @@ const scrollToSection = (sectionId, event) => {
   }
 };
 
-const navigateToProject = (relProj) => {
+const highlightedProjectSlug = ref('');
+
+const navigateToProject = async (relProj) => {
   playClick();
-  scrollToSection('projects');
-  const targetProj = projects.value.find(p => p.id === relProj.id || p.slug === relProj.slug);
-  if (targetProj && targetProj.architecture) {
-    setTimeout(() => {
-      openArchitecture(targetProj);
-    }, 450);
+  const slug = relProj.slug || relProj.id;
+  highlightedProjectSlug.value = slug;
+
+  const targetId = `project-${slug}`;
+  const el = document.getElementById(targetId);
+
+  if (el && contentPaneRef.value) {
+    const containerTop = contentPaneRef.value.getBoundingClientRect().top;
+    const targetTop = el.getBoundingClientRect().top;
+    const offset = targetTop - containerTop + contentPaneRef.value.scrollTop;
+
+    contentPaneRef.value.scrollTo({
+      top: Math.max(0, offset - 20),
+      behavior: 'smooth',
+    });
+  } else {
+    scrollToSection('projects');
   }
+
+  setTimeout(() => {
+    if (highlightedProjectSlug.value === slug) {
+      highlightedProjectSlug.value = '';
+    }
+  }, 3500);
 };
 </script>
 
@@ -439,7 +458,8 @@ const navigateToProject = (relProj) => {
             <article
               v-for="p in projects.filter(proj => activeFilter === 'All' || (proj.language && proj.language.includes(activeFilter)))"
               :key="p.id"
-              class="project-editorial-card"
+              :id="'project-' + (p.slug || p.id)"
+              :class="['project-editorial-card', { 'highlight-pulse': highlightedProjectSlug === (p.slug || p.id) }]"
             >
               <div class="proj-top">
                 <h3>
@@ -776,7 +796,7 @@ const navigateToProject = (relProj) => {
 .editorial-content {
   overflow-y: auto;
   max-height: calc(100vh - 120px);
-  padding-right: 8px;
+  padding: 10px 20px 20px 20px;
   scroll-behavior: smooth;
   scrollbar-width: thin;
 }
@@ -1092,6 +1112,8 @@ const navigateToProject = (relProj) => {
   display: flex;
   flex-direction: column;
   gap: 24px;
+  padding: 16px 20px;
+  margin: -16px -20px;
 }
 
 .project-editorial-card {
@@ -1471,5 +1493,30 @@ const navigateToProject = (relProj) => {
   .editorial-stream-footer {
     padding-bottom: 140px;
   }
+}
+
+@keyframes neonPulse {
+  0% {
+    box-shadow: inset 0 0 0 2px #4f46e5, 0 0 15px rgba(79, 70, 229, 0.6);
+    border-color: #4f46e5;
+    background-color: rgba(79, 70, 229, 0.05);
+  }
+  50% {
+    box-shadow: inset 0 0 0 2px #4f46e5, 0 0 24px 4px rgba(79, 70, 229, 0.7);
+    border-color: #4f46e5;
+    background-color: rgba(79, 70, 229, 0.1);
+  }
+  100% {
+    box-shadow: inset 0 0 0 0 transparent, 0 0 0 0 transparent;
+    border-color: var(--panel-border);
+    background-color: #ffffff;
+  }
+}
+
+.highlight-pulse {
+  animation: neonPulse 1.1s ease-in-out 3 !important;
+  border-color: #4f46e5 !important;
+  position: relative;
+  z-index: 5;
 }
 </style>

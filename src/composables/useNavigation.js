@@ -63,20 +63,22 @@ export function useNavigation() {
 
   const navigateTo = (path, options = {}) => {
     if (typeof window === "undefined") return;
+    const hash = path.includes('#') ? `#${path.split('#')[1]}` : '';
     const normalizedPath = normalizePath(path);
-    const method = options.replace ? "replaceState" : "pushState";
+    const targetUrl = `${normalizedPath}${hash}`;
+    const method = options.replace ? 'replaceState' : 'pushState';
 
-    if (currentPath.value !== "/resume/" && normalizedPath === "/resume/") {
+    if (currentPath.value !== '/resume/' && normalizedPath === '/resume/') {
       lastNonResumePath.value = currentPath.value;
     }
 
-    if (normalizedPath !== currentPath.value || options.replace) {
-      window.history[method]({}, "", normalizedPath);
+    if (normalizedPath !== currentPath.value || hash || options.replace) {
+      window.history[method]({}, '', targetUrl);
       currentPath.value = normalizedPath;
     }
 
-    if (!options.preserveScroll) {
-      window.scrollTo({ top: 0, behavior: options.instant ? "auto" : "smooth" });
+    if (!options.preserveScroll && !hash) {
+      window.scrollTo({ top: 0, behavior: options.instant ? 'auto' : 'smooth' });
     }
   };
 

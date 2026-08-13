@@ -1,7 +1,14 @@
 <script setup>
 import { useWorkExperience } from '../../../composables/useWorkExperience';
+import { useNavigation } from '../../../composables/useNavigation';
 
 const { workExperiences } = useWorkExperience();
+const { navigateTo } = useNavigation();
+
+const goToProject = (event, slug) => {
+  if (event) event.preventDefault();
+  navigateTo(`/projects/#project-${slug}`);
+};
 </script>
 
 <template>
@@ -38,6 +45,21 @@ const { workExperiences } = useWorkExperience();
               <li v-for="(line, i) in job.description" :key="i">{{ line }}</li>
             </ul>
             <p v-else class="desc-text">{{ job.description }}</p>
+          </div>
+
+          <div v-if="job.related_projects && job.related_projects.length > 0" class="related-projects-block">
+            <span class="related-title">پروژه‌های مرتبط:</span>
+            <div class="related-pills">
+              <a
+                v-for="proj in job.related_projects"
+                :key="proj.id || proj.slug"
+                :href="`/projects/#project-${proj.slug}`"
+                class="related-pill mono-ui"
+                @click="goToProject($event, proj.slug)"
+              >
+                🚀 {{ proj.name }}
+              </a>
+            </div>
           </div>
 
           <div class="tech-stack" v-if="job.technologies && job.technologies.length > 0">
@@ -210,6 +232,43 @@ const { workExperiences } = useWorkExperience();
   font-size: 0.88rem;
   color: var(--text-secondary);
   line-height: 1.7;
+}
+
+.related-projects-block {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.related-title {
+  font-size: 0.78rem;
+  color: var(--text-muted, #94a3b8);
+}
+
+.related-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.related-pill {
+  font-size: 0.78rem;
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  color: var(--neon, #38bdf8);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.related-pill:hover {
+  background: rgba(56, 189, 248, 0.25);
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+  transform: translateY(-1px);
 }
 
 .tech-stack {

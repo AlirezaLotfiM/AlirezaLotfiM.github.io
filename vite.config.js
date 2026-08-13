@@ -24,6 +24,11 @@ export default defineConfig({
     strictPort: true
   },
   build: {
+    modulePreload: {
+      resolveDependencies(filename, deps) {
+        return deps.filter(dep => !dep.includes('mermaid'));
+      }
+    },
     rollupOptions: {
       output: {
         manualChunks(id) {

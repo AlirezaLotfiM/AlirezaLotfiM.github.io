@@ -1,5 +1,5 @@
 <script setup>
-import { computed, defineAsyncComponent, ref } from 'vue';
+import { computed, defineAsyncComponent, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 import { usePortfolio } from '../../../composables/usePortfolio';
 import { useTilt } from '../../../composables/useTilt';
 import { getProjectPath, useNavigation } from '../../../composables/useNavigation';
@@ -13,6 +13,7 @@ const showArchModal = ref(false);
 const currentArchDiagram = ref('');
 const currentArchTitle = ref('');
 const copiedLink = ref(false);
+const highlightedSlug = ref('');
 
 const copyProjectLink = (project) => {
   if (!project) return;
@@ -51,6 +52,39 @@ const openArchitecture = (p) => {
   currentArchDiagram.value = p.architecture;
   showArchModal.value = true;
 };
+
+const highlightProject = async (slug) => {
+  if (!slug) return;
+  highlightedSlug.value = slug;
+  await nextTick();
+  const targetId = `project-${slug}`;
+  const el = document.getElementById(targetId);
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  setTimeout(() => {
+    if (highlightedSlug.value === slug) {
+      highlightedSlug.value = '';
+    }
+  }, 3500);
+};
+
+const checkAndHighlightHash = () => {
+  const hash = window.location.hash;
+  if (hash && hash.startsWith('#project-')) {
+    const slug = hash.replace('#project-', '');
+    highlightProject(slug);
+  }
+};
+
+onMounted(() => {
+  checkAndHighlightHash();
+  window.addEventListener('hashchange', checkAndHighlightHash);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('hashchange', checkAndHighlightHash);
+});
 
 const getTechList = (langString) => {
   if (!langString) return [];
@@ -156,8 +190,8 @@ const selectedProject = computed(() =>
         </div>
       </Teleport>
 
-      <a v-if="!route.isProject" v-for="p in filteredProjects" :key="p.id" :href="getProjectPath(p)"
-        class="grid-item spotlight-card"
+      <a v-if="!route.isProject" v-for="p in filteredProjects" :key="p.id" :id="`project-${p.slug}`" :href="getProjectPath(p)"
+        :class="['grid-item', 'spotlight-card', { 'highlight-pulse': highlightedSlug === p.slug }]"
         @click="navigateFromEvent($event, getProjectPath(p))"
         @mousemove="handleCardTilt" @mouseleave="resetCard">
         <div class="spotlight-bg"></div>
@@ -631,5 +665,29 @@ const selectedProject = computed(() =>
   .card-footer {
     min-height: 0;
   }
+}
+
+@keyframes neonPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.8);
+    border-color: #38bdf8;
+    transform: scale(1.01);
+  }
+  50% {
+    box-shadow: 0 0 25px 8px rgba(56, 189, 248, 0.9);
+    border-color: #38bdf8;
+    transform: scale(1.02);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(56, 189, 248, 0);
+    border-color: var(--panel-border);
+    transform: scale(1);
+  }
+}
+
+.highlight-pulse {
+  animation: neonPulse 1.1s ease-in-out 3 !important;
+  border-color: #38bdf8 !important;
+  z-index: 10 !important;
 }
 </style>
