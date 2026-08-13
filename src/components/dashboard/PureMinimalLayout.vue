@@ -38,16 +38,6 @@ const appVersion = typeof __APP_VERSION__ !== 'undefined' ? __APP_VERSION__ : '1
 const activeSection = ref('about');
 const contentPaneRef = ref(null);
 
-const showArchModal = ref(false);
-const currentArchDiagram = ref('');
-const currentArchTitle = ref('');
-
-const openArchitecture = (p) => {
-  currentArchTitle.value = p.name;
-  currentArchDiagram.value = p.architecture;
-  showArchModal.value = true;
-};
-
 const getTechList = (langString) => {
   if (!langString) return [];
   return langString.split(/\s*\/\s*/).map((l) => getTechDetails(l));
@@ -286,13 +276,6 @@ const navigateToProject = async (relProj) => {
     </header>
 
     <div class="editorial-layout" :class="{ 'zen-mode': isZenMode }">
-      <ArchitectureModal
-        v-if="showArchModal"
-        :visible="showArchModal"
-        :diagram="currentArchDiagram"
-        :title="currentArchTitle"
-        @close="showArchModal = false"
-      />
 
       <!-- RIGHT SIDEBAR (PURE SWISS EDITORIAL - NO BOXES, NO SCROLLING) -->
       <aside v-if="!isZenMode" class="editorial-sidebar">
@@ -481,9 +464,6 @@ const navigateToProject = async (relProj) => {
 
               <div class="meta-line">
                 <span class="tech-stack mono-ui" dir="ltr">{{ p.language }}</span>
-                <button v-if="p.architecture" class="arch-btn mono-ui" @click="openArchitecture(p)">
-                  نمودار معماری ↗
-                </button>
               </div>
             </article>
           </div>

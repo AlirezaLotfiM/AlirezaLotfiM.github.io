@@ -23,30 +23,4 @@ export default defineConfig({
     port: 5173,
     strictPort: true
   },
-  build: {
-    modulePreload: {
-      resolveDependencies(filename, deps) {
-        return deps.filter(dep => !dep.includes('mermaid'));
-      }
-    },
-    rollupOptions: {
-      output: {
-        manualChunks(id) {
-          if (
-            id.includes('node_modules/mermaid') ||
-            id.includes('node_modules/@mermaid-js') ||
-            id.includes('node_modules/dagre') ||
-            id.includes('node_modules/d3') ||
-            id.includes('node_modules/khroma') ||
-            id.includes('node_modules/chevrotain') ||
-            id.includes('node_modules/langium') ||
-            id.includes('node_modules/cytoscape') ||
-            id.includes('node_modules/lodash')
-          ) {
-            return 'mermaid';
-          }
-        }
-      }
-    }
-  }
 })

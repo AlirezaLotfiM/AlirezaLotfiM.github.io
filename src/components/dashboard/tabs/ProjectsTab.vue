@@ -7,51 +7,8 @@ import { getProjectPath, useNavigation } from '../../../composables/useNavigatio
 const { projects, filteredProjects, availableLanguages, activeFilter, getTechDetails } = usePortfolio();
 const { handleCardTilt, resetCard } = useTilt();
 const { route, tabPaths, navigateFromEvent } = useNavigation();
-const ArchitectureModal = defineAsyncComponent(() => import('../../ArchitectureModal.vue'));
-
-const showArchModal = ref(false);
-const currentArchDiagram = ref('');
-const currentArchTitle = ref('');
 const copiedLink = ref(false);
 const highlightedSlug = ref('');
-
-const copyProjectLink = (project) => {
-  if (!project) return;
-  const path = getProjectPath(project);
-  const fullUrl = `${window.location.origin}${path}`;
-  navigator.clipboard.writeText(fullUrl);
-  copiedLink.value = true;
-  setTimeout(() => {
-    copiedLink.value = false;
-  }, 2000);
-};
-
-const tooltip = ref({
-  visible: false,
-  text: '',
-  x: 0,
-  y: 0,
-});
-
-const showTooltip = (event, text) => {
-  const rect = event.currentTarget.getBoundingClientRect();
-  tooltip.value = {
-    visible: true,
-    text,
-    x: rect.left + rect.width / 2,
-    y: rect.top - 8,
-  };
-};
-
-const hideTooltip = () => {
-  tooltip.value.visible = false;
-};
-
-const openArchitecture = (p) => {
-  currentArchTitle.value = p.name;
-  currentArchDiagram.value = p.architecture;
-  showArchModal.value = true;
-};
 
 const highlightProject = async (slug) => {
   if (!slug) return;
@@ -175,13 +132,6 @@ const selectedProject = computed(() =>
     </article>
 
     <div class="grid-list">
-      <ArchitectureModal
-        v-if="showArchModal"
-        :visible="showArchModal"
-        :diagram="currentArchDiagram"
-        :title="currentArchTitle"
-        @close="showArchModal = false"
-      />
 
       <Teleport to="body">
         <div v-if="tooltip.visible"

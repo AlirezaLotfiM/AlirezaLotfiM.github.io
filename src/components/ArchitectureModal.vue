@@ -13,32 +13,9 @@ const closeButtonRef = ref(null);
 let mermaidApi = null;
 let previousActiveElement = null;
 
-const getMermaid = async () => {
-  if (mermaidApi) return mermaidApi;
-  const module = await import('mermaid');
-  mermaidApi = module.default;
-  mermaidApi.initialize({
-    startOnLoad: false,
-    theme: 'dark',
-    securityLevel: 'strict',
-    fontFamily: 'monospace',
-  });
-  return mermaidApi;
-};
-
 const renderDiagram = async () => {
   if (!props.diagram || !containerRef.value) return;
-  containerRef.value.innerHTML = '<div class="loading">Generating Diagram...</div>';
-
-  try {
-    const mermaid = await getMermaid();
-    const id = `mermaid-${crypto.randomUUID?.() || Math.random().toString(36).slice(2)}`;
-    const { svg } = await mermaid.render(id, props.diagram);
-    containerRef.value.innerHTML = svg;
-  } catch (e) {
-    console.error('Mermaid render error:', e);
-    containerRef.value.innerHTML = `<div class="error">Failed to render diagram: ${e.message}</div>`;
-  }
+  containerRef.value.innerHTML = `<div class="loading">${props.diagram}</div>`;
 };
 
 const closeModal = () => emit('close');
