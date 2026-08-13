@@ -129,26 +129,49 @@ const syncUrlWithSection = (sectionId) => {
 };
 
 const updateActiveSectionOnScroll = () => {
-  if (!contentPaneRef.value) return;
-  const containerRect = contentPaneRef.value.getBoundingClientRect();
-  const sections = contentPaneRef.value.querySelectorAll('.editorial-section');
+  if (typeof document === 'undefined') return;
 
-  let activeId = 'about';
+  const sectionIds = ['about', 'experience', 'projects', 'skills', 'notes'];
+  const sections = sectionIds
+    .map((id) => document.getElementById(id))
+    .filter(Boolean);
 
-  // Check if scrolled near bottom of content stream
-  const isAtBottom = contentPaneRef.value.scrollHeight - contentPaneRef.value.scrollTop - contentPaneRef.value.clientHeight < 100;
+  if (!sections.length) return;
 
-  if (isAtBottom) {
-    activeId = 'notes';
-  } else {
-    sections.forEach((sec) => {
-      const secRect = sec.getBoundingClientRect();
-      const relativeTop = secRect.top - containerRect.top;
-      
-      if (relativeTop <= 180 && secRect.bottom - containerRect.top > 60) {
-        activeId = sec.id;
-      }
-    });
+  const isMobile = window.innerWidth < 1024;
+  let activeId = activeSection.value;
+
+  if (isMobile) {
+    const scrollPosition = window.scrollY;
+    const windowHeight = window.innerHeight;
+    const fullHeight = document.documentElement.scrollHeight;
+
+    if (scrollPosition + windowHeight >= fullHeight - 80) {
+      activeId = 'notes';
+    } else {
+      sections.forEach((sec) => {
+        const secRect = sec.getBoundingClientRect();
+        if (secRect.top <= 140 && secRect.bottom > 60) {
+          activeId = sec.id;
+        }
+      });
+    }
+  } else if (contentPaneRef.value) {
+    const containerRect = contentPaneRef.value.getBoundingClientRect();
+    const isAtBottom =
+      contentPaneRef.value.scrollHeight - contentPaneRef.value.scrollTop - contentPaneRef.value.clientHeight < 100;
+
+    if (isAtBottom) {
+      activeId = 'notes';
+    } else {
+      sections.forEach((sec) => {
+        const secRect = sec.getBoundingClientRect();
+        const relativeTop = secRect.top - containerRect.top;
+        if (relativeTop <= 180 && secRect.bottom - containerRect.top > 60) {
+          activeId = sec.id;
+        }
+      });
+    }
   }
 
   if (activeSection.value !== activeId) {
@@ -157,30 +180,49 @@ const updateActiveSectionOnScroll = () => {
   }
 };
 
-onMounted(() => {
-  if (!contentPaneRef.value) return;
+const handleScrollEvent = () => {
+  updateActiveSectionOnScroll();
+};
 
-  contentPaneRef.value.addEventListener('scroll', updateActiveSectionOnScroll, { passive: true });
+onMounted(() => {
+  if (typeof window !== 'undefined') {
+    window.addEventListener('scroll', handleScrollEvent, { passive: true });
+  }
+  if (contentPaneRef.value) {
+    contentPaneRef.value.addEventListener('scroll', handleScrollEvent, { passive: true });
+  }
 
   const initialSection = getSectionFromUrl();
   activeSection.value = initialSection;
 
   if (initialSection !== 'about') {
-    const target = document.getElementById(initialSection);
-    if (target && contentPaneRef.value) {
-      const containerTop = contentPaneRef.value.getBoundingClientRect().top;
-      const targetTop = target.getBoundingClientRect().top;
-      const offset = targetTop - containerTop + contentPaneRef.value.scrollTop;
-      contentPaneRef.value.scrollTop = Math.max(0, offset - 12);
-    }
+    setTimeout(() => {
+      const target = document.getElementById(initialSection);
+      if (target) {
+        const isMobile = window.innerWidth < 1024;
+        if (isMobile) {
+          const topOffset = 118;
+          const elementPosition = target.getBoundingClientRect().top + window.scrollY;
+          window.scrollTo({ top: Math.max(0, elementPosition - topOffset), behavior: 'instant' });
+        } else if (contentPaneRef.value) {
+          const containerTop = contentPaneRef.value.getBoundingClientRect().top;
+          const targetTop = target.getBoundingClientRect().top;
+          const offset = targetTop - containerTop + contentPaneRef.value.scrollTop;
+          contentPaneRef.value.scrollTop = Math.max(0, offset - 12);
+        }
+      }
+    }, 50);
   } else {
     updateActiveSectionOnScroll();
   }
 });
 
 onUnmounted(() => {
+  if (typeof window !== 'undefined') {
+    window.removeEventListener('scroll', handleScrollEvent);
+  }
   if (contentPaneRef.value) {
-    contentPaneRef.value.removeEventListener('scroll', updateActiveSectionOnScroll);
+    contentPaneRef.value.removeEventListener('scroll', handleScrollEvent);
   }
 });
 
@@ -194,7 +236,19 @@ const scrollToSection = (sectionId, event) => {
   syncUrlWithSection(sectionId);
 
   const target = document.getElementById(sectionId);
-  if (target && contentPaneRef.value) {
+  if (!target) return;
+
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 1024;
+
+  if (isMobile) {
+    const topOffset = 118;
+    const elementPosition = target.getBoundingClientRect().top + window.scrollY;
+    const offsetPosition = elementPosition - topOffset;
+    window.scrollTo({
+      top: Math.max(0, offsetPosition),
+      behavior: 'smooth',
+    });
+  } else if (contentPaneRef.value) {
     const containerTop = contentPaneRef.value.getBoundingClientRect().top;
     const targetTop = target.getBoundingClientRect().top;
     const offset = targetTop - containerTop + contentPaneRef.value.scrollTop;
@@ -216,15 +270,25 @@ const navigateToProject = async (relProj) => {
   const targetId = `project-${slug}`;
   const el = document.getElementById(targetId);
 
-  if (el && contentPaneRef.value) {
-    const containerTop = contentPaneRef.value.getBoundingClientRect().top;
-    const targetTop = el.getBoundingClientRect().top;
-    const offset = targetTop - containerTop + contentPaneRef.value.scrollTop;
+  if (el) {
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 1024;
+    if (isMobile) {
+      const topOffset = 120;
+      const elementPosition = el.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({
+        top: Math.max(0, elementPosition - topOffset),
+        behavior: 'smooth',
+      });
+    } else if (contentPaneRef.value) {
+      const containerTop = contentPaneRef.value.getBoundingClientRect().top;
+      const targetTop = el.getBoundingClientRect().top;
+      const offset = targetTop - containerTop + contentPaneRef.value.scrollTop;
 
-    contentPaneRef.value.scrollTo({
-      top: Math.max(0, offset - 20),
-      behavior: 'smooth',
-    });
+      contentPaneRef.value.scrollTo({
+        top: Math.max(0, offset - 20),
+        behavior: 'smooth',
+      });
+    }
   } else {
     scrollToSection('projects');
   }
@@ -1434,8 +1498,8 @@ const navigateToProject = async (relProj) => {
 @media (max-width: 1024px) {
   .editorial-layout {
     grid-template-columns: 1fr;
-    gap: 24px;
-    padding: 16px;
+    gap: 20px;
+    padding: 14px;
   }
 
   .editorial-sidebar, .editorial-content {
@@ -1443,6 +1507,14 @@ const navigateToProject = async (relProj) => {
     top: 0;
     max-height: none;
     overflow: visible;
+  }
+
+  .editorial-sidebar .concise-bio {
+    display: none;
+  }
+
+  .sidebar-identity {
+    margin-bottom: 8px;
   }
 
   .editorial-specs-strip {
