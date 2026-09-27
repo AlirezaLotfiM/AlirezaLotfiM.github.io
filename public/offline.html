@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0a0a0a" />
+    <title>آفلاین | Alireza Lotfi</title>
+    <style>
+      :root {
+        color-scheme: light;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        font-family: "Segoe UI", Tahoma, sans-serif;
+        background:
+          radial-gradient(circle at top, rgba(255, 255, 255, 0.95), transparent 28%),
+          linear-gradient(145deg, #dfeefe 0%, #f6fbff 42%, #d2e4f5 100%);
+        color: #17314c;
+      }
+      .offline-card {
+        width: min(100%, 460px);
+        padding: 24px;
+        border-radius: 24px;
+        background: rgba(255, 255, 255, 0.82);
+        border: 1px solid rgba(214, 229, 243, 0.98);
+        box-shadow: 0 20px 44px rgba(77, 121, 168, 0.12);
+        text-align: center;
+      }
+      h1 {
+        margin: 0 0 12px;
+        font-size: 1.4rem;
+      }
+      p {
+        margin: 0 0 18px;
+        line-height: 1.8;
+        color: #35536f;
+      }
+      button {
+        border: none;
+        border-radius: 14px;
+        padding: 12px 18px;
+        background: linear-gradient(180deg, rgba(94, 144, 196, 0.96), rgba(76, 122, 171, 0.9));
+        color: #fff;
+        font: inherit;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="offline-card">
+      <h1>الان آفلاین هستی</h1>
+      <p>اتصال اینترنت برقرار نیست. به محض برگشتن اینترنت، نسخه جدید سایت دوباره بارگذاری می‌شود.</p>
+      <button type="button" onclick="location.reload()">تلاش دوباره</button>
+    </main>
+  </body>
+</html>

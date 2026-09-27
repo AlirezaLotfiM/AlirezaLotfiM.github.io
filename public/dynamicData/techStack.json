@@ -1,0 +1,19 @@
+{
+  "C#": { "color": "#178600", "short": "C#", "name": "C# (.NET)" },
+  "Vue": { "color": "#41b883", "short": "Vue", "name": "Vue.js" },
+  "JavaScript": { "color": "#f1e05a", "short": "JS", "name": "JavaScript" },
+  "HTML": { "color": "#e34c26", "short": "HTML", "name": "HTML5" },
+  "CSS": { "color": "#563d7c", "short": "CSS", "name": "CSS3" },
+  "Python": { "color": "#3572A5", "short": "Py", "name": "Python" },
+  "WPF": { "color": "#512bd4", "short": "WPF", "name": "Windows Presentation Foundation" },
+  "TypeScript": { "color": "#2b7489", "short": "TS", "name": "TypeScript" },
+  "Shell": { "color": "#89e051", "short": "Shell", "name": "Shell Script" },
+  ".NET": { "color": "#512bd4", "short": ".NET", "name": ".NET / C#" },
+  "ASP.NET Core": { "color": "#7b2fff", "short": "ASP", "name": "ASP.NET Core" },
+  "LLamaSharp": { "color": "#f97316", "short": "LLM", "name": "LLamaSharp (Local AI)" },
+  "Tesseract": { "color": "#0ea5e9", "short": "OCR", "name": "Tesseract OCR" },
+  "WordPress": { "color": "#21759b", "short": "WP", "name": "WordPress" },
+  "PHP": { "color": "#777bb4", "short": "PHP", "name": "PHP" },
+  "RabbitMQ": { "color": "#ff6600", "short": "MQ", "name": "RabbitMQ" },
+  "SQL": { "color": "#e38c00", "short": "SQL", "name": "SQL Server" }
+}

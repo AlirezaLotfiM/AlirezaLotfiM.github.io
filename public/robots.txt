@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /dynamicData/guestbook.json
+
+# Sitemap
+Sitemap: https://alirezalotfimoghaddam.ir/sitemap.xml
+
