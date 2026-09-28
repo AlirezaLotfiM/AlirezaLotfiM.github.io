@@ -219,7 +219,7 @@ VERSION:3.0
 N:Lotfi Moghaddam;Alireza;;;
 FN:Alireza Lotfi Moghaddam
 TITLE:Software Engineer & .NET Developer
-EMAIL;TYPE=INTERNET,PREF:lotfi.moghaddam.alireza@gmail.com
+EMAIL;TYPE=INTERNET,PREF:hi@alirz.ir
 URL;TYPE=WORK:https://alirezalotfimoghaddam.ir
 X-SOCIALPROFILE;TYPE=telegram:https://t.me/DAMOON_X
 X-SOCIALPROFILE;TYPE=github:https://github.com/AlirezaLotfiM

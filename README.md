@@ -150,7 +150,7 @@ npm run deploy
 - 🌐 Website: [alirezalotfimoghaddam.ir](https://alirezalotfimoghaddam.ir)
 - 🐙 GitHub: [@AlirezaLotfiM](https://github.com/AlirezaLotfiM)
 - 💼 LinkedIn: [alireza-lotfi-moghaddam](https://linkedin.com/in/alireza-lotfi-moghaddam-378a8018a)
-- ✉️ Email: `Lotfi.moghaddam.alireza@gmail.com`
+- ✉️ Email: `hi@alirz.ir`
 
 ---
 

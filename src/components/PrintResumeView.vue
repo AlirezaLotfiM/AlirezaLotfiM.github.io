@@ -17,7 +17,7 @@ const personalDetails = {
   maritalStatus: 'مجرد',
   militaryStatus: 'معافیت تحصیلی',
   city: 'تهران',
-  email: 'lotfi.moghaddam.alireza@gmail.com',
+  email: 'hi@alirz.ir',
   website: 'alirezalotfimoghaddam.ir',
   github: 'github.com/AlirezaLotfiM',
   linkedin: 'linkedin.com/in/alireza-lotfi-moghaddam-378a8018a',
@@ -37,7 +37,6 @@ const fallbackWorkExperiences = [
       'توسعه و نگهداری APIها و وب‌سرویس‌های بک‌اند با استفاده از تکنولوژی‌های ASP.NET و ASP.NET Core.',
       'طراحی، پیاده‌سازی و پشتیبانی نرم‌افزارهای دسکتاپ (ویندوزی) مبتنی بر WPF و WinForms.',
       'توسعه ابزارهای جانبی و نرم‌افزارهای کاربردی ویندوز با استفاده از زبان Python.',
-      'مشارکت در ساخت و توسعه اپلیکیشن‌های موبایل (کراس‌پلتفرم) با بهره‌گیری از Flutter و React Native.',
       'دیباگ، رفع خطا و پشتیبانی فنی مداوم از نرم‌افزارهای در حال اجرا برای تضمین پایداری سیستم‌ها.'
     ]
   }
@@ -279,18 +278,6 @@ const computedInterests = computed(() => {
             </div>
           </section>
 
-          <!-- Research / Thesis -->
-          <section class="cv-section">
-            <div class="section-header">
-              <span class="sec-icon">🔍</span>
-              <h2>تحقیقات و پژوهش‌ها</h2>
-            </div>
-            <div class="research-block">
-              <h4 class="res-title">{{ researchThesis.title }}</h4>
-              <span class="res-pub">ناشر: {{ researchThesis.publisher }}</span>
-              <p class="res-desc">{{ researchThesis.details }}</p>
-            </div>
-          </section>
         </main>
 
         <!-- Sidebar Column (Left) -->
@@ -341,6 +328,19 @@ const computedInterests = computed(() => {
               <li><strong>فارسی:</strong> زبان مادری</li>
               <li><strong>انگلیسی:</strong> متوسط / تخصصی و فنی</li>
             </ul>
+          </section>
+
+          <!-- Research / Thesis -->
+          <section class="side-section">
+            <div class="section-header">
+              <span class="sec-icon">🔍</span>
+              <h2>تحقیقات و پژوهش‌ها</h2>
+            </div>
+            <div class="research-block">
+              <h4 class="res-title">{{ researchThesis.title }}</h4>
+              <span class="res-pub">ناشر: {{ researchThesis.publisher }}</span>
+              <p class="res-desc">{{ researchThesis.details }}</p>
+            </div>
           </section>
 
           <!-- Interests -->
@@ -546,8 +546,7 @@ const computedInterests = computed(() => {
 
 /* Sections */
 .cv-section, .side-section {
-  margin-bottom: 22px;
-  page-break-inside: avoid;
+  margin-bottom: 20px;
 }
 
 .section-header {
@@ -740,14 +739,15 @@ const computedInterests = computed(() => {
 }
 
 .res-title {
-  margin: 0 0 2px 0;
-  font-size: 0.88rem;
+  margin: 0 0 4px 0;
+  font-size: 0.85rem;
   font-weight: 700;
   color: #0f172a;
+  line-height: 1.45;
 }
 
 .res-pub {
-  font-size: 0.76rem;
+  font-size: 0.74rem;
   color: #0284c7;
   display: block;
   margin-bottom: 6px;
@@ -755,10 +755,11 @@ const computedInterests = computed(() => {
 }
 
 .res-desc {
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   color: #334155;
   margin: 0;
   line-height: 1.6;
+  text-align: justify;
 }
 
 /* Sidebar Elements */
@@ -840,23 +841,191 @@ const computedInterests = computed(() => {
     width: 100% !important;
   }
 
+  .cv-header {
+    border-bottom: 2px solid #0f172a !important;
+    padding-bottom: 10px !important;
+    margin-bottom: 12px !important;
+  }
+
+  .header-content {
+    margin-bottom: 8px !important;
+    gap: 16px !important;
+  }
+
+  .name {
+    font-size: 1.65rem !important;
+    margin-bottom: 2px !important;
+  }
+
+  .role-subtitle {
+    font-size: 0.92rem !important;
+    margin-bottom: 6px !important;
+  }
+
+  .avatar-img {
+    width: 72px !important;
+    height: 72px !important;
+  }
+
+  .personal-chips {
+    gap: 8px !important;
+    font-size: 0.74rem !important;
+  }
+
+  .personal-chips span {
+    padding: 1px 6px !important;
+    background: #f8fafc !important;
+  }
+
+  .contact-bar {
+    padding: 6px 10px !important;
+    gap: 12px !important;
+    font-size: 0.76rem !important;
+    margin-bottom: 12px !important;
+    background: #f8fafc !important;
+  }
+
   .cv-grid {
     display: grid !important;
-    grid-template-columns: 1fr 260px !important;
-    gap: 22px !important;
+    grid-template-columns: 1fr 250px !important;
+    gap: 18px !important;
   }
 
   .projects-grid {
     display: grid !important;
     grid-template-columns: 1fr 1fr !important;
-    gap: 10px !important;
+    gap: 8px !important;
+  }
+
+  .cv-section,
+  .side-section {
+    break-inside: auto !important;
+    page-break-inside: auto !important;
+    margin-bottom: 12px !important;
   }
 
   .section-header {
     background: #0f172a !important;
     color: #ffffff !important;
+    padding: 4px 10px !important;
+    margin-bottom: 8px !important;
+    break-after: avoid !important;
+    page-break-after: avoid !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
+  }
+
+  .section-header h2 {
+    font-size: 0.88rem !important;
+  }
+
+  .summary-p {
+    font-size: 0.82rem !important;
+    line-height: 1.6 !important;
+  }
+
+  .job-block {
+    margin-bottom: 10px !important;
+    padding-bottom: 8px !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .job-top {
+    margin-bottom: 3px !important;
+    break-after: avoid !important;
+    page-break-after: avoid !important;
+  }
+
+  .job-title {
+    font-size: 0.9rem !important;
+  }
+
+  .company-name {
+    font-size: 0.8rem !important;
+  }
+
+  .job-date {
+    font-size: 0.74rem !important;
+  }
+
+  .bullet-title {
+    font-size: 0.76rem !important;
+    margin-bottom: 2px !important;
+    break-after: avoid !important;
+    page-break-after: avoid !important;
+  }
+
+  .duties-list {
+    font-size: 0.78rem !important;
+    padding-right: 14px !important;
+  }
+
+  .duties-list li {
+    margin-bottom: 3px !important;
+    line-height: 1.45 !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .p-card {
+    padding: 8px !important;
+    background: #f8fafc !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  .p-title {
+    font-size: 0.82rem !important;
+  }
+
+  .p-desc {
+    font-size: 0.75rem !important;
+    line-height: 1.4 !important;
+  }
+
+  .edu-item {
+    margin-bottom: 6px !important;
+    padding-bottom: 6px !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  .research-block {
+    padding: 8px 10px !important;
+    background: #f8fafc !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  .skills-chips {
+    gap: 4px !important;
+  }
+
+  .skill-chip {
+    font-size: 0.7rem !important;
+    padding: 2px 6px !important;
+    background: #f8fafc !important;
+  }
+
+  .soft-list,
+  .lang-list,
+  .interests-list {
+    font-size: 0.76rem !important;
+    padding-right: 14px !important;
+  }
+
+  .soft-list li,
+  .lang-list li,
+  .interests-list li {
+    margin-bottom: 4px !important;
+  }
+
+  .cert-item {
+    font-size: 0.76rem !important;
+    padding-bottom: 3px !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
   }
 
   .personal-chips span,
@@ -864,24 +1033,13 @@ const computedInterests = computed(() => {
   .contact-bar,
   .p-card,
   .research-block {
-    background: #f8fafc !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
 
-  .cv-section,
-  .side-section,
-  .job-block,
-  .p-card,
-  .edu-item,
-  .research-block {
-    break-inside: avoid !important;
-    page-break-inside: avoid !important;
-  }
-
   @page {
     size: A4 portrait;
-    margin: 10mm 12mm;
+    margin: 8mm 10mm;
   }
 }
 

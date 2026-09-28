@@ -22,19 +22,19 @@ test('Dashboard: Navigation, Terminal Commands, and Guestbook E2E', async ({ pag
         titles: ["Software Engineer", ".NET Developer"],
         bio: "توسعه‌دهنده بک‌اند",
         badges: ["Backend", "Database"],
-        cardEmail: "Lotfi.moghaddam.alireza@gmail.com",
+        cardEmail: "hi@alirz.ir",
         identityCard: {
-          eyebrow: "backend identity",
+          eyebrow: "Available for Projects",
           role: "Software Engineer",
           bio: "توسعه‌دهنده بک‌اند",
           focus: "ASP.NET Core",
-          email: "Lotfi.moghaddam.alireza@gmail.com",
+          email: "hi@alirz.ir",
           badges: ["Backend", "Database"],
           enterLabel: "ورود به داشبورد",
           resumeLabel: "رزومه"
         },
         contact: {
-          email: "Lotfi.moghaddam.alireza@gmail.com"
+          email: "hi@alirz.ir"
         },
         learning: {
           focus: "Dapr & K8s"

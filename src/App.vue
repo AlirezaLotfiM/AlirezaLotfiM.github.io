@@ -93,8 +93,10 @@ const handleMouseMove = (e) => {
 
 const handleKeydown = (e) => {
   if (e.ctrlKey && e.key === "k") {
-    e.preventDefault();
-    showTerminal.value = !showTerminal.value;
+    if (showIdentityCard.value) {
+      e.preventDefault();
+      showTerminal.value = !showTerminal.value;
+    }
   }
   if (e.ctrlKey && e.key === "z" && selectedNote.value) {
     e.preventDefault();

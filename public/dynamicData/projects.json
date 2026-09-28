@@ -3,30 +3,30 @@
     "id": 104,
     "name": "پلتفرم نوبت‌دهی شعب نداپرداز",
     "slug": "legacy-queue-systems",
-    "language": "C# / WPF / WinForms / Hardware / Flutter",
+    "language": "C# / WPF / WinForms / Hardware / SQL",
     "description": "پلتفرم نرم‌افزاری جامع مدیریت صف و نوبت‌دهی شعب نداپرداز انفورماتیک؛ شامل توسعه اکوسیستم نرم‌افزارهای دسکتاپ کیوسک‌های لمسی صدور نوبت، کلاینت‌های باجه (Teller Unit)، موتور نمایشگرهای سالنی (TV Display)، یکپارچه‌سازی سخت‌افزاری و پشتیبانی سامانه‌های بانکی. مستقر در شعب بانک‌های مطرح کشور (مانند بانک ملت، بانک آینده، بانک شهر و...).",
     "html_url": "#",
     "isPrivate": true,
     "status": "عملیاتی بانکی",
     "updatedAt": "2025-11-03",
-    "stackLabel": "C# / WPF / Hardware / Flutter",
-    "role": "توسعه‌دهنده نرم‌افزار و پشتیبان سیستم‌ها (۵ سال سابقه فعالیت)",
-    "architectureSummary": "WPF Kiosks + TV Display Engine + Hardware Control Units + Flutter App + SQL Server",
+    "stackLabel": "C# / WPF / Hardware",
+    "role": "توسعه‌دهنده نرم‌افزار و پشتیبان سیستم‌ها (۵ سال سابقه فعالیت از سال ۱۴۰۰)",
+    "architectureSummary": "WPF Kiosks + TV Display Engine + Hardware Control Units + SQL Server",
     "scale": "شعب بانک‌های مطرح کشور (مانند بانک ملت، آینده، شهر و مراکز سازمانی)",
     "impact": "مدیریت روزانه صدها هزار مراجعه‌کننده و روان‌سازی صفوف بانکی در شعب سراسر کشور",
     "blueprint": {
       "code": "NEDA-QUEUE-BLUEPRINT // V5",
       "layers": [
         {
-          "name": "۱. لایه ورودی و نوبت‌گیری مراجعین",
+          "name": "لایه ورودی و نوبت‌گیری مراجعین",
           "nodes": ["کیوسک‌های لمسی صدور فیش نوبت (WPF)", "استندهای دکمه‌ای فیزیکی شعب", "سرویس نوبت‌دهی غیرحضوری"]
         },
         {
-          "name": "۲. لایه سخت‌افزار و هسته پردازش مرکزی",
+          "name": "لایه سخت‌افزار و هسته پردازش مرکزی",
           "nodes": ["کنترل‌یونیت سخت‌افزاری (Serial/RS485)", "موتور صف‌بندی و زمان‌بندی پویا", "پایگاه داده تراکنشی SQL Server"]
         },
         {
-          "name": "۳. لایه خروجی و باجه‌های عملیاتی",
+          "name": "لایه خروجی و باجه‌های عملیاتی",
           "nodes": ["کلاینت پرسنل باجه (Teller Units)", "موتور نمایشگرهای سالنی (TV Display)", "سیستم صوتی اعلان نوبت"]
         }
       ]
@@ -38,11 +38,10 @@
       "توسعه کلاینت‌های دسکتاپ باجه (Teller Units) برای پرسنل شعب بانکی با قابلیت فراخوانی، انتقال هوشمند، مدیریت باجه و صف‌بندی",
       "طراحی موتور نمایشگرهای تلویزیونی سالن (TV Display Engine) جهت اعلام صوتی شماره‌ها و نمایش وضعیت زنده صفوف",
       "توسعه نرم‌افزاری نسل جدید با اتصال و پشتیبانی از استندهای دکمه‌ای فیزیکی و کنترل‌یونیت‌های سخت‌افزاری از طریق ارتباطات سریال",
-      "توسعه اپلیکیشن‌های کراس‌پلتفرم موبایل با فلاتر (Flutter) جهت نوبت‌دهی غیرحضوری و پیگیری صف",
       "سفارشی‌سازی و استقرار در شعب بانک‌های کشور (مانند بانک ملت، بانک آینده، بانک شهر و...)",
       "ثبت تراکنش‌ها، مانیتورینگ بلادرنگ و بهینه‌سازی کوئری‌های SQL Server جهت پاسخ‌دهی پایدار در ساعات اوج شلوغی"
     ],
-    "architecture": "graph TD\n    subgraph Clients[\"کلاینت‌ها و کیوسک‌های شعب\"]\n      TK[\"کیوسک لمسی اخذ نوبت - Touch Kiosk\"]\n      BS[\"استند دکمه‌ای فیزیکی - Physical Button Stand\"]\n      TEL[\"کلاینت باجی - Teller Unit\"]\n      TV[\"نمایشگر تلویزیونی سالن - TV Display\"]\n      MOB[\"اپلیکیشن موبایل - Flutter App\"]\n    end\n\n    subgraph Hardware_Bridge[\"عامل سخت‌افزاری و ارتباطی\"]\n      CU[\"کنترل یونیت سخت‌افزاری - Control Unit\"]\n      PRT[\"چاپگر حرارتی - Thermal Printer\"]\n      SND[\"ماژول اعلام صوتی - Audio Engine\"]\n      BS --> CU\n      TK --> PRT\n      TV --> SND\n    end\n\n    subgraph Server[\"سرور نوبت‌دهی مرکز / شعبه\"]\n      QS[\"Queue Management Engine\"]\n      REP[\"Reporting & Analytics\"]\n      DB[(\"SQL Server\")]\n    end\n\n    TK & TEL & TV & MOB -->|\"TCP/IP & REST\"| QS\n    CU -->|\"Serial/RS485\"| QS\n    QS --> DB & REP\n\n    style TK fill:#7c3aed,stroke:#fff\n    style TV fill:#0369a1,stroke:#fff\n    style QS fill:#1e40af,stroke:#fff\n    style DB fill:#166534,stroke:#fff\n    style MOB fill:#92400e,stroke:#fff"
+    "architecture": "graph TD\n    subgraph Clients[\"کلاینت‌ها و کیوسک‌های شعب\"]\n      TK[\"کیوسک لمسی اخذ نوبت - Touch Kiosk\"]\n      BS[\"استند دکمه‌ای فیزیکی - Physical Button Stand\"]\n      TEL[\"کلاینت باجی - Teller Unit\"]\n      TV[\"نمایشگر تلویزیونی سالن - TV Display\"]\n    end\n\n    subgraph Hardware_Bridge[\"عامل سخت‌افزاری و ارتباطی\"]\n      CU[\"کنترل یونیت سخت‌افزاری - Control Unit\"]\n      PRT[\"چاپگر حرارتی - Thermal Printer\"]\n      SND[\"ماژول اعلام صوتی - Audio Engine\"]\n      BS --> CU\n      TK --> PRT\n      TV --> SND\n    end\n\n    subgraph Server[\"سرور نوبت‌دهی مرکز / شعبه\"]\n      QS[\"Queue Management Engine\"]\n      REP[\"Reporting & Analytics\"]\n      DB[(\"SQL Server\")]\n    end\n\n    TK & TEL & TV -->|\"TCP/IP & REST\"| QS\n    CU -->|\"Serial/RS485\"| QS\n    QS --> DB & REP\n\n    style TK fill:#7c3aed,stroke:#fff\n    style TV fill:#0369a1,stroke:#fff\n    style QS fill:#1e40af,stroke:#fff\n    style DB fill:#166534,stroke:#fff"
   },
   {
     "id": 105,
@@ -63,15 +62,15 @@
       "code": "BIODARU-QMS-PIPELINE // REALTIME",
       "layers": [
         {
-          "name": "۱. ایستگاه‌های پذیرش و کیوسک‌های مراجعین",
+          "name": "ایستگاه‌های پذیرش و کیوسک‌های مراجعین",
           "nodes": ["کیوسک ثبت‌نام اهداکننده", "کیوسک نظرسنجی دیجیتال", "ایستگاه پذیرش و معاینه پزشک"]
         },
         {
-          "name": "۲. عامل سخت‌افزاری و فرانت‌اند (Edge)",
+          "name": "عامل سخت‌افزاری و فرانت‌اند (Edge)",
           "nodes": ["اسکنر بیومتریک اثر انگشت Suprema SDK", "اسکنر اسناد WIA", "کلاینت Vue 3 SPA + Agent"]
         },
         {
-          "name": "۳. سرور بک‌اند و خطوط بلادرنگ",
+          "name": "سرور بک‌اند و خطوط بلادرنگ",
           "nodes": ["ASP.NET Core REST APIs", "SignalR Hub (WebSocket همگام‌ساز)", "پایگاه داده SQL Server"]
         }
       ]
