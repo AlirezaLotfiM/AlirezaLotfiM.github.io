@@ -1,6 +1,7 @@
 @font-face {
   font-family: "Peyda";
-  src: url("/fonts/Peyda-Regular.ttf") format("truetype");
+  src: url("/fonts/Peyda-Regular.woff2") format("woff2"),
+       url("/fonts/Peyda-Regular.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -8,7 +9,8 @@
 
 @font-face {
   font-family: "Peyda";
-  src: url("/fonts/Peyda-Medium.ttf") format("truetype");
+  src: url("/fonts/Peyda-Medium.woff2") format("woff2"),
+       url("/fonts/Peyda-Medium.ttf") format("truetype");
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -16,7 +18,8 @@
 
 @font-face {
   font-family: "Peyda";
-  src: url("/fonts/Peyda-SemiBold.ttf") format("truetype");
+  src: url("/fonts/Peyda-SemiBold.woff2") format("woff2"),
+       url("/fonts/Peyda-SemiBold.ttf") format("truetype");
   font-weight: 600;
   font-style: normal;
   font-display: swap;
@@ -24,7 +27,8 @@
 
 @font-face {
   font-family: "Peyda";
-  src: url("/fonts/Peyda-Bold.ttf") format("truetype");
+  src: url("/fonts/Peyda-Bold.woff2") format("woff2"),
+       url("/fonts/Peyda-Bold.ttf") format("truetype");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -32,7 +36,8 @@
 
 @font-face {
   font-family: "Peyda";
-  src: url("/fonts/Peyda-Black.ttf") format("truetype");
+  src: url("/fonts/Peyda-Black.woff2") format("woff2"),
+       url("/fonts/Peyda-Black.ttf") format("truetype");
   font-weight: 900;
   font-style: normal;
   font-display: swap;
@@ -40,7 +45,8 @@
 
 @font-face {
   font-family: "JetBrains Mono";
-  src: url("/fonts/JetBrainsMono-Regular.ttf") format("truetype");
+  src: url("/fonts/JetBrainsMono-Regular.woff2") format("woff2"),
+       url("/fonts/JetBrainsMono-Regular.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -48,7 +54,8 @@
 
 @font-face {
   font-family: "JetBrains Mono";
-  src: url("/fonts/JetBrainsMono-Medium.ttf") format("truetype");
+  src: url("/fonts/JetBrainsMono-Medium.woff2") format("woff2"),
+       url("/fonts/JetBrainsMono-Medium.ttf") format("truetype");
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -56,7 +63,8 @@
 
 @font-face {
   font-family: "JetBrains Mono";
-  src: url("/fonts/JetBrainsMono-SemiBold.ttf") format("truetype");
+  src: url("/fonts/JetBrainsMono-SemiBold.woff2") format("woff2"),
+       url("/fonts/JetBrainsMono-SemiBold.ttf") format("truetype");
   font-weight: 600;
   font-style: normal;
   font-display: swap;
@@ -64,7 +72,8 @@
 
 @font-face {
   font-family: "JetBrains Mono";
-  src: url("/fonts/JetBrainsMono-Bold.ttf") format("truetype");
+  src: url("/fonts/JetBrainsMono-Bold.woff2") format("woff2"),
+       url("/fonts/JetBrainsMono-Bold.ttf") format("truetype");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -72,7 +81,8 @@
 
 @font-face {
   font-family: "iranyekan";
-  src: url("/iranyekanwebregular.woff") format("woff");
+  src: url("/iranyekanwebregular.woff2") format("woff2"),
+       url("/iranyekanwebregular.woff") format("woff");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -80,7 +90,8 @@
 
 @font-face {
   font-family: "iranyekan";
-  src: url("/iranyekanwebmedium.woff") format("woff");
+  src: url("/iranyekanwebmedium.woff2") format("woff2"),
+       url("/iranyekanwebmedium.woff") format("woff");
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -88,7 +99,8 @@
 
 @font-face {
   font-family: "iranyekan";
-  src: url("/iranyekanwebbold.woff") format("woff");
+  src: url("/iranyekanwebbold.woff2") format("woff2"),
+       url("/iranyekanwebbold.woff") format("woff");
   font-weight: bold;
   font-style: normal;
   font-display: swap;

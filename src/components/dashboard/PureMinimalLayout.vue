@@ -457,6 +457,8 @@ onUnmounted(() => {
 .editorial-stream-footer {
   padding-top: 28px;
   border-top: 1px solid var(--panel-border, #cbd5e1);
+  min-height: 80px;
+  contain: layout style;
 }
 
 .footer-bottom-row {

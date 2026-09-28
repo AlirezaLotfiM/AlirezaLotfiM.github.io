@@ -10,6 +10,9 @@ const APP_SHELL = [
   '/Damoon-d.jpg',
   '/pwa-192x192.png',
   '/pwa-512x512.png',
+  '/fonts/Peyda-Regular.woff2',
+  '/fonts/Peyda-Bold.woff2',
+  '/fonts/JetBrainsMono-Regular.woff2',
   '/offline.html'
 ];
 

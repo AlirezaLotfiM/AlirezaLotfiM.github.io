@@ -35,7 +35,7 @@ const handleLocaleToggle = () => {
 
 <template>
   <header class="swiss-top-bar" :class="{ hidden: isZenMode }">
-    <div class="scroll-progress-line" :style="{ width: scrollProgress + '%' }"></div>
+    <div class="scroll-progress-line" :style="{ transform: `scaleX(${Math.min(Math.max(scrollProgress / 100, 0), 1)})` }"></div>
     <div class="top-bar-inner">
       <!-- RIGHT (RTL): Brand Logo + Version Pill + Status -->
       <div class="header-logo-wrap" title="Damoon Portfolio">
@@ -152,10 +152,17 @@ const handleLocaleToggle = () => {
   position: absolute;
   top: 0;
   left: 0;
+  right: 0;
   height: 2px;
   background: linear-gradient(90deg, var(--neon, #4f46e5), #06b6d4);
-  transition: width 0.1s ease-out;
+  transform-origin: 0% 50%;
+  will-change: transform;
+  transition: transform 0.1s ease-out;
   z-index: 101;
+}
+
+:global([dir="rtl"]) .scroll-progress-line {
+  transform-origin: 100% 50%;
 }
 
 .top-bar-inner {

@@ -430,25 +430,33 @@ const copyEmailToClipboard = async () => {
 }
 
 .status-pulse-dot {
+  position: relative;
   width: 7px;
   height: 7px;
   border-radius: 50%;
   background: #10b981;
-  box-shadow: 0 0 8px #10b981;
-  animation: pulseDot 2s ease-in-out infinite;
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.8);
   flex-shrink: 0;
 }
 
-@keyframes pulseDot {
-  0%, 100% {
+.status-pulse-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: #10b981;
+  animation: pulseComposited 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes pulseComposited {
+  0% {
     transform: scale(1);
-    opacity: 1;
-    box-shadow: 0 0 6px #10b981;
+    opacity: 0.8;
   }
-  50% {
-    transform: scale(1.3);
-    opacity: 0.7;
-    box-shadow: 0 0 12px #10b981;
+  70%, 100% {
+    transform: scale(2.6);
+    opacity: 0;
   }
 }
 
