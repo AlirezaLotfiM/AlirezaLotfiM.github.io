@@ -249,6 +249,64 @@ pre,
   font-feature-settings: normal;
 }
 
+/* SECTION HEADERS & EDITORIAL MICRO-BADGES */
+.sec-title-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--panel-border, #cbd5e1);
+  position: relative;
+}
+
+.sec-title-bar::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  right: 0;
+  width: 44px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--neon, #4f46e5), #06b6d4);
+  border-radius: 2px;
+}
+
+[dir="ltr"] .sec-title-bar::after {
+  right: auto;
+  left: 0;
+}
+
+.sec-title-bar .sec-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 2px 8px;
+  border-radius: 6px;
+  color: var(--neon, #4f46e5);
+  background: rgba(79, 70, 229, 0.08);
+  border: 1px solid rgba(79, 70, 229, 0.22);
+  line-height: 1.3;
+  user-select: none;
+  transition: all 0.2s ease;
+}
+
+[data-theme="dark"] .sec-title-bar .sec-badge {
+  background: rgba(99, 102, 241, 0.15);
+  border-color: rgba(99, 102, 241, 0.35);
+  color: #a5b4fc;
+  box-shadow: 0 0 10px rgba(99, 102, 241, 0.12);
+}
+
+.sec-title-bar h2 {
+  font-size: 1.32rem;
+  font-weight: 800;
+  color: var(--text-main, #0f172a);
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
 @keyframes ambientFloat {
   0%,
   100% {

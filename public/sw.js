@@ -3,6 +3,8 @@ const SW_VERSION = swUrl.searchParams.get('v') || 'dev';
 const CACHE_PREFIX = 'damoon-portfolio';
 const STATIC_CACHE = `${CACHE_PREFIX}-static-${SW_VERSION}`;
 const RUNTIME_CACHE = `${CACHE_PREFIX}-runtime-${SW_VERSION}`;
+const PEYDA_FONT_URL = 'https://portfolio-data.alirezalotfimoghaddam.ir/Fonts/PeydaWebVF.woff2';
+
 const APP_SHELL = [
   '/',
   '/index.html',
@@ -10,7 +12,8 @@ const APP_SHELL = [
   '/Damoon-d.jpg',
   '/pwa-192x192.png',
   '/pwa-512x512.png',
-  '/offline.html'
+  '/offline.html',
+  PEYDA_FONT_URL
 ];
 
 self.addEventListener('message', (event) => {
@@ -21,7 +24,18 @@ self.addEventListener('message', (event) => {
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(STATIC_CACHE).then((cache) => cache.addAll(APP_SHELL)).then(() => self.skipWaiting())
+    caches.open(STATIC_CACHE).then(async (cache) => {
+      for (const url of APP_SHELL) {
+        try {
+          const res = await fetch(url, { mode: url.startsWith('http') ? 'cors' : 'same-origin' });
+          if (res && (res.ok || res.type === 'opaque')) {
+            await cache.put(url, res);
+          }
+        } catch (e) {
+          console.warn('Pre-cache skip:', url, e);
+        }
+      }
+    }).then(() => self.skipWaiting())
   );
 });
 
@@ -42,7 +56,7 @@ self.addEventListener('activate', (event) => {
 const isNavigationRequest = (request) => request.mode === 'navigate';
 const isCacheableRequest = (requestUrl, request) =>
   request.method === 'GET' &&
-  requestUrl.origin === self.location.origin &&
+  (requestUrl.origin === self.location.origin || requestUrl.hostname === 'portfolio-data.alirezalotfimoghaddam.ir') &&
   !requestUrl.pathname.startsWith('/dynamicData/');
 
 const networkFirst = async (request, cacheName) => {

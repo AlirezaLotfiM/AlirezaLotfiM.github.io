@@ -47,7 +47,7 @@ const handleTagClick = (tech) => {
 <template>
   <section id="skills" class="editorial-section" :dir="isRtl ? 'rtl' : 'ltr'">
     <div class="sec-title-bar">
-      <span class="num mono-ui" dir="ltr">{{ isRtl ? '۰۳ //' : '03 //' }}</span>
+      <span class="sec-badge mono-ui" dir="ltr">03</span>
       <h2>{{ t('skillsTitle') }}</h2>
     </div>
 
@@ -93,26 +93,7 @@ const handleTagClick = (tech) => {
   gap: 20px;
 }
 
-.sec-title-bar {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding-bottom: 8px;
-  border-bottom: 2px solid var(--neon, #4f46e5);
-}
 
-.sec-title-bar .num {
-  font-size: 0.88rem;
-  font-weight: 700;
-  color: var(--neon, #4f46e5);
-}
-
-.sec-title-bar h2 {
-  font-size: 1.35rem;
-  font-weight: 800;
-  color: var(--text-main, #0f172a);
-  margin: 0;
-}
 
 .skills-section-hint {
   font-size: 0.82rem;

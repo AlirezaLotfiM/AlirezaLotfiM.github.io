@@ -21,8 +21,9 @@ const expandedProjects = ref({});
 const domainFilters = computed(() => [
   { id: 'All', label: t('filterAll') },
   { id: 'Banking', label: t('filterBanking'), match: (p) => (p.name + p.description + (p.scale || '')).toLowerCase().includes('بانک') },
+  { id: 'Vibe', label: '⚡ Vibe Coding / AI', match: (p) => (p.category === 'vibe' || (p.language + p.description + (p.stackLabel || '')).toLowerCase().includes('vibe') || (p.language + p.description).toLowerCase().includes('flutter')) },
   { id: 'Realtime', label: t('filterRealtime'), match: (p) => (p.language + p.description).toLowerCase().includes('signalr') || (p.language + p.description).toLowerCase().includes('hardware') },
-  { id: 'Desktop', label: t('filterDesktop'), match: (p) => (p.language + p.description).toLowerCase().includes('wpf') || (p.language + p.description).toLowerCase().includes('کیوسک') },
+  { id: 'Desktop', label: t('filterDesktop'), match: (p) => (p.language + p.description).toLowerCase().includes('wpf') || (p.language + p.description).toLowerCase().includes('کیوسک') || (p.language + p.description).toLowerCase().includes('windows') },
   { id: 'C#', label: 'C# / .NET', match: (p) => (p.language || '').includes('C#') || (p.language || '').includes('.NET') },
   { id: 'Vue', label: 'Vue.js', match: (p) => (p.language || '').includes('Vue') },
   { id: 'SQL', label: 'SQL Server', match: (p) => (p.language + p.description + (p.architectureSummary || '')).toLowerCase().includes('sql') }
@@ -58,6 +59,7 @@ const formatStatus = (st) => {
   if (!st) return null;
   const lower = st.toLowerCase();
   if (lower.includes('بانک') || lower.includes('bank')) return { text: 'عملیاتی در شبکه بانکی کشور', type: 'bank-prod' };
+  if (lower.includes('بازار') || lower.includes('مایکت') || lower.includes('استور')) return { text: st, type: 'store-prod' };
   if (lower.includes('عملیاتی') || lower.includes('live') || lower.includes('prod')) return { text: 'عملیاتی', type: 'prod' };
   if (lower.includes('فعال') || lower.includes('active')) return { text: 'فعال', type: 'prod' };
   if (lower.includes('پایدار') || lower.includes('stable')) return { text: 'پایدار', type: 'prod' };
@@ -69,7 +71,7 @@ const formatStatus = (st) => {
 <template>
   <section id="projects" class="editorial-section" :dir="isRtl ? 'rtl' : 'ltr'">
     <div class="sec-title-bar">
-      <span class="num mono-ui" dir="ltr">{{ isRtl ? '۰۲ //' : '02 //' }}</span>
+      <span class="sec-badge mono-ui" dir="ltr">02</span>
       <h2>{{ t('projectsTitle') }}</h2>
     </div>
 
@@ -126,6 +128,21 @@ const formatStatus = (st) => {
           </button>
         </div>
 
+        <!-- External Action Links (e.g. Cafe Bazaar, Myket) -->
+        <div v-if="p.links && p.links.length" class="proj-external-links">
+          <a
+            v-for="lnk in p.links"
+            :key="lnk.url"
+            :href="lnk.url"
+            target="_blank"
+            rel="noopener"
+            class="store-link-chip"
+          >
+            <span>{{ lnk.title }}</span>
+            <span class="chip-arrow">↗</span>
+          </a>
+        </div>
+
         <!-- Expanded Technical Specifications Drawer -->
         <Transition name="drawer-slide">
           <div v-if="expandedProjects[p.id]" class="project-specs-panel">
@@ -178,26 +195,7 @@ const formatStatus = (st) => {
   gap: 20px;
 }
 
-.sec-title-bar {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding-bottom: 8px;
-  border-bottom: 2px solid var(--neon, #4f46e5);
-}
 
-.sec-title-bar .num {
-  font-size: 0.88rem;
-  font-weight: 700;
-  color: var(--neon, #4f46e5);
-}
-
-.sec-title-bar h2 {
-  font-size: 1.35rem;
-  font-weight: 800;
-  color: var(--text-main, #0f172a);
-  margin: 0;
-}
 
 .domain-filter-scroll-wrap {
   overflow-x: auto;
@@ -309,10 +307,59 @@ const formatStatus = (st) => {
   color: #10b981;
 }
 
+.status-badge-pill.store-prod {
+  background: rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.3);
+  color: #059669;
+}
+
+:global([data-theme="dark"]) .status-badge-pill.store-prod {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+}
+
 .status-badge-pill.prod {
   background: rgba(79, 70, 229, 0.08);
   border-color: rgba(79, 70, 229, 0.25);
   color: var(--neon, #4f46e5);
+}
+
+.proj-external-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.store-link-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  padding: 4px 11px;
+  border-radius: 6px;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  color: #059669;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+:global([data-theme="dark"]) .store-link-chip {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.35);
+  color: #34d399;
+}
+
+.store-link-chip:hover {
+  background: rgba(16, 185, 129, 0.18);
+  border-color: #10b981;
+  transform: translateY(-1px);
+}
+
+.chip-arrow {
+  font-size: 0.76rem;
 }
 
 .status-dot {

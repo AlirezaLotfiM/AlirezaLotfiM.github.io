@@ -82,6 +82,14 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://alirezalotfimoghaddam.ir/projects/biodaru-qms/" />
   </url>
   <url>
+    <loc>https://alirezalotfimoghaddam.ir/projects/nava-music-player/</loc>
+    <lastmod>2026-03-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://alirezalotfimoghaddam.ir/projects/nava-music-player/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://alirezalotfimoghaddam.ir/projects/nava-music-player/" />
+  </url>
+  <url>
     <loc>https://alirezalotfimoghaddam.ir/projects/biodaroo-training-suite/</loc>
     <lastmod>2025-03-22</lastmod>
     <changefreq>monthly</changefreq>

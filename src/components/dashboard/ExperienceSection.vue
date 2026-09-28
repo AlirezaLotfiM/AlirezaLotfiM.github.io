@@ -23,7 +23,7 @@ const handleProjectChipClick = (relProj) => {
 <template>
   <section id="experience" class="editorial-section" :dir="isRtl ? 'rtl' : 'ltr'">
     <div class="sec-title-bar">
-      <span class="num mono-ui" dir="ltr">{{ isRtl ? '۰۱ //' : '01 //' }}</span>
+      <span class="sec-badge mono-ui" dir="ltr">01</span>
       <h2>{{ t('expTitle') }}</h2>
     </div>
 
@@ -127,26 +127,7 @@ const handleProjectChipClick = (relProj) => {
   gap: 20px;
 }
 
-.sec-title-bar {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding-bottom: 8px;
-  border-bottom: 2px solid var(--neon, #4f46e5);
-}
 
-.sec-title-bar .num {
-  font-size: 0.88rem;
-  font-weight: 700;
-  color: var(--neon, #4f46e5);
-}
-
-.sec-title-bar h2 {
-  font-size: 1.35rem;
-  font-weight: 800;
-  color: var(--text-main, #0f172a);
-  margin: 0;
-}
 
 .experience-timeline-wrapper {
   display: flex;

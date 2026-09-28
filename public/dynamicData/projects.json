@@ -89,6 +89,58 @@
     "architecture": "graph TD\n    subgraph Kiosk_Nodes[\"کیوسک‌ها و ایستگاه‌ها\"]\n      RK[\"کیوسک ثبت‌نام - RegisterKiosk\"]\n      QK[\"کیوسک نظرسنجی - QuestionnaireKiosk\"]\n      RC[\"پذیرش - Reception\"]\n      DOC[\"پزشک - Doctor\"]\n      SLN[\"سالن - Salon/TV\"]\n    end\n\n    subgraph ClientAgent[\"ClientAgent — WPF + WebView2\"]\n      CA[\"عامل سخت‌افزاری - 127.0.0.1:5050\"]\n      FP[\"FingerScanner.Sdk - Suprema\"]\n      SC[\"Scanner.Sdk - WIA Document\"]\n      AU[\"Audio Service - اعلام صوتی\"]\n      CA --> FP\n      CA --> SC\n      CA --> AU\n    end\n\n    subgraph Web[\"QMS.Web — Vue 3 + TypeScript\"]\n      SPA[\"SPA - Vue Router + Pinia\"]\n    end\n\n    subgraph API[\"QMS.API — ASP.NET Core\"]\n      REST[\"REST Controllers\"]\n      HUB[\"SignalR QueueHub\"]\n      TS[\"TicketService\"]\n      QS[\"QuestionnaireQueueService\"]\n      JWT[\"JWT Auth Middleware\"]\n      REST --> TS\n      HUB --> TS\n      QS --> HUB\n    end\n\n    DB[(\"SQL Server\")]\n\n    Kiosk_Nodes -->|\"از طریق WebView2\"| CA\n    CA -->|\"localhost:5050\"| FP & SC\n    SPA -->|\"REST / HTTPS\"| REST\n    SPA -->|\"SignalR WS\"| HUB\n    CA -->|\"SignalR WS\"| HUB\n    REST & HUB --> DB\n    JWT --> REST\n\n    style CA fill:#374151,stroke:#9ca3af\n    style FP fill:#7c3aed,stroke:#fff\n    style SC fill:#7c3aed,stroke:#fff\n    style HUB fill:#0369a1,stroke:#fff\n    style REST fill:#1e40af,stroke:#fff\n    style TS fill:#0f766e,stroke:#fff\n    style DB fill:#166534,stroke:#fff\n    style SPA fill:#92400e,stroke:#fff"
   },
   {
+    "id": 106,
+    "name": "موزیک پلیر نوا (Nava Music Player)",
+    "slug": "nava-music-player",
+    "language": "Flutter / Dart / Cross-Platform (Android & Windows)",
+    "description": "موزیک پلیر مدرن و پیشرفته توسعه‌یافته با فلاتر بر پایه متدولوژی چابک Vibe Coding و دستیاری هوش مصنوعی. منتشرشده به‌صورت رسمی در استورهای کافه‌بازار و مایکت با قابلیت اجرای بومی در ویندوز، سرویس بلادرنگ پخش پس‌زمینه (Background Audio)، کنترل‌های نوتیفیکیشن و قفل صفحه، و طراحی بصری شیک نئومورفیک/گلس.",
+    "html_url": "https://cafebazaar.ir/app/com.damoon.nava.music",
+    "isPrivate": false,
+    "status": "منتشرشده در بازار و مایکت",
+    "updatedAt": "2026-03-20",
+    "stackLabel": "Flutter / Dart / Vibe Coding",
+    "role": "طراح و توسعه‌دهنده محصول (AI-Augmented Engineering)",
+    "architectureSummary": "Flutter UI + AudioService (Background Lifecycle) + JustAudio + Windows Desktop Runner",
+    "scale": "منتشرشده در کافه‌بازار، مایکت و نسخه بومی دسکتاپ ویندوز",
+    "impact": "توسعه، بسته‌بندی و شیپ کامل یک محصول چندسکویی و انتشار در استورهای رسمی با بهره‌وری حداکثری از هوش مصنوعی",
+    "category": "vibe",
+    "links": [
+      {
+        "title": "دریافت از کافه‌بازار",
+        "url": "https://cafebazaar.ir/app/com.damoon.nava.music"
+      },
+      {
+        "title": "دریافت از مایکت",
+        "url": "https://myket.ir/app/com.damoon.nava.music"
+      }
+    ],
+    "blueprint": {
+      "code": "NAVA-AUDIO-PIPELINE // VIBE-ENGINEERING",
+      "layers": [
+        {
+          "name": "لایه رابط کاربری و تعاملات (UI/UX Layer)",
+          "nodes": ["طراحی نئومورفیک و گلس‌مورفیک فلاتر", "لیست پخش هوشمند و کش آرت‌ورک", "کنترل‌های لمسی و ژست‌های حرکتی"]
+        },
+        {
+          "name": "لایه مدیریت پخش و سرویس پس‌زمینه (Audio Core)",
+          "nodes": ["AudioService (Foreground Service)", "موتور صوتی JustAudio (کم‌تاخیر)", "کنترلر نوتیفیکیشن و قفل صفحه"]
+        },
+        {
+          "name": "لایه استقرار چندسکویی (Target Platforms)",
+          "nodes": ["خروجی اندروید (انتشار در بازار و مایکت)", "خروجی بومی دسکتاپ ویندوز (Windows Runner)", "پایگاه داده محلی سبک (Hive / Preferences)"]
+        }
+      ]
+    },
+    "details": [
+      "پیاده‌سازی چرخه عمر صوت در پس‌زمینه (Background Audio Lifecycle) با هندلینگ قطع/وصل هدفون، تماس ورودی و مدیریت Audio Focus",
+      "توسعه چندسکویی (Cross-Platform) با یک کدبیس واحد برای اندروید و دسکتاپ ویندوز",
+      "بهره‌گیری موثر از ابزارهای هوش مصنوعی در متدولوژی Vibe Coding برای تبدیل سریع ایده به محصول تجاری قابل استفاده",
+      "انتشار رسمی و موفق بر روی مارکت‌های معتبر داخلی (کافه‌بازار و مایکت) با شناسه com.damoon.nava.music",
+      "طراحی سیستم لیست‌های پخش، اسکن خودکار حافظه و دسته‌بندی آلبوم‌ها و هنرمندان"
+    ],
+    "architecture": "graph TD\n    subgraph UI[\"رابط کاربری و بصری (Flutter UI)\"]\n      Home[\"صفحه اصلی و کتابخانه آهنگ‌ها\"]\n      NP[\"Now Playing (پلیر تمام‌صفحه)\"]\n      EQ[\"اکولایزر و تنظیمات صوتی\"]\n    end\n\n    subgraph Engine[\"هسته پردازش صوت و چرخه عمر\"]\n      AS[\"AudioService (Background Service)\"]\n      JA[\"JustAudio Player Engine\"]\n      AF[\"Audio Focus Manager\"]\n      Notif[\"System Media Notification\"]\n    end\n\n    subgraph Storage[\"داده و فایل‌ها\"]\n      MediaStore[\"Android MediaStore / Win Storage\"]\n      HiveDB[(\"تنظیمات و پلی‌لیست‌ها\")]\n    end\n\n    UI --> AS\n    AS --> JA & AF & Notif\n    JA --> MediaStore\n    UI --> HiveDB\n\n    style UI fill:#0284c7,stroke:#fff\n    style Engine fill:#7c3aed,stroke:#fff\n    style Storage fill:#16a34a,stroke:#fff"
+  },
+  {
     "id": 102,
     "name": "سامانه آموزش و ارزیابی پرسنل بیودارو",
     "slug": "biodaroo-training-suite",
