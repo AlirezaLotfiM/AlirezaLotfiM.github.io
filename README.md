@@ -55,7 +55,7 @@ Instead of relying on heavy frameworks or template libraries, this project is bu
 ```plaintext
 ├── public/
 │   ├── dynamicData/         # Decoupled JSON data layer (projects, experience, notes, skills)
-│   ├── fonts/               # IranYekan & monospace font assets
+│   ├── fonts/               # Peyda Variable font CDN configuration
 │   ├── manifest.json        # PWA application manifest
 │   ├── robots.txt           # Crawler instructions & sitemap link
 │   ├── sitemap.xml          # Dynamically generated search engine sitemap

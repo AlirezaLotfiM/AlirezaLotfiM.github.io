@@ -16,8 +16,8 @@ const emit = defineEmits(['open-terminal', 'open-palette', 'toggle-theme']);
 
 const { profile, userGithub } = usePortfolio();
 const { isDark, toggleTheme } = useTheme();
-const { playThemeChirp, playClick } = useAudioSynth();
-const { t, currentLocale, toggleLocale, isRtl } = useI18n();
+const { playThemeChirp } = useAudioSynth();
+const { t } = useI18n();
 
 const appVersion = typeof __APP_VERSION__ !== 'undefined' ? __APP_VERSION__ : '3.1.0';
 
@@ -25,11 +25,6 @@ const handleThemeToggle = () => {
   playThemeChirp();
   toggleTheme();
   emit('toggle-theme');
-};
-
-const handleLocaleToggle = () => {
-  playClick();
-  toggleLocale();
 };
 </script>
 
@@ -47,26 +42,21 @@ const handleLocaleToggle = () => {
         </span>
       </div>
 
-      <!-- LEFT (RTL): Actions (Spotlight, Language, Theme, Socials, CLI) -->
+      <!-- LEFT (RTL): Actions (Spotlight Search, Theme, Socials, CLI) -->
       <div class="header-actions-row" dir="ltr">
-        <!-- Spotlight Search / Command Palette Trigger -->
+        <!-- Minimal Spotlight Search / Command Palette Trigger -->
         <button
           @click="emit('open-palette')"
           class="header-cmd-btn"
           :title="t('searchPlaceholder')"
+          aria-label="جستجو در پورتفولیو (Ctrl+K)"
         >
-          <span class="cmd-icon">🔍</span>
-          <span class="cmd-text">{{ isRtl ? 'جستجو...' : 'Search...' }}</span>
-          <kbd class="cmd-kbd">Ctrl+K</kbd>
-        </button>
-
-        <!-- Language Switcher -->
-        <button
-          @click="handleLocaleToggle"
-          class="header-icon-link lang-toggle-btn"
-          :title="currentLocale === 'fa' ? 'Switch to English' : 'تغییر به فارسی'"
-        >
-          <span class="lang-text">{{ currentLocale === 'fa' ? 'EN' : 'FA' }}</span>
+          <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="cmd-icon-svg">
+            <circle cx="11" cy="11" r="7"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <span class="cmd-text">جستجو...</span>
+          <kbd class="cmd-kbd">Ctrl K</kbd>
         </button>
 
         <!-- Theme Switcher -->
@@ -233,30 +223,79 @@ const handleLocaleToggle = () => {
 .header-cmd-btn {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 5px 12px;
+  gap: 7px;
+  height: 32px;
+  padding: 0 10px 0 8px;
   background: var(--item-bg, #ffffff);
   border: 1px solid var(--panel-border, #cbd5e1);
-  border-radius: 999px;
+  border-radius: 8px;
   color: var(--text-soft, #64748b);
   cursor: pointer;
-  font-size: 0.76rem;
-  transition: all 0.2s ease;
+  font-family: inherit;
+  font-size: 0.74rem;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+
+:global([data-theme="dark"]) .header-cmd-btn {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
 .header-cmd-btn:hover {
   border-color: var(--neon, #4f46e5);
   color: var(--text-main, #0f172a);
-  box-shadow: 0 2px 10px rgba(79, 70, 229, 0.12);
+  background: var(--card-bg, #ffffff);
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.08);
+}
+
+:global([data-theme="dark"]) .header-cmd-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(99, 102, 241, 0.45);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+  color: #ffffff;
+}
+
+.cmd-icon-svg {
+  opacity: 0.65;
+  flex-shrink: 0;
+  transition: opacity 0.2s ease, transform 0.2s ease, color 0.2s ease;
+}
+
+.header-cmd-btn:hover .cmd-icon-svg {
+  opacity: 1;
+  color: var(--neon, #4f46e5);
+  transform: scale(1.08);
+}
+
+.cmd-text {
+  font-size: 0.74rem;
+  font-weight: 500;
+  color: var(--text-secondary, #475569);
+  letter-spacing: -0.01em;
+}
+
+:global([data-theme="dark"]) .cmd-text {
+  color: var(--text-soft, #94a3b8);
 }
 
 .cmd-kbd {
-  font-size: 0.65rem;
-  font-weight: 700;
+  font-family: inherit;
+  font-size: 0.62rem;
+  font-weight: 600;
   padding: 1px 5px;
-  background: var(--bar-bg, #f1f5f9);
+  line-height: 1.3;
+  color: var(--text-soft, #64748b);
+  background: rgba(148, 163, 184, 0.12);
   border: 1px solid var(--panel-border, #cbd5e1);
   border-radius: 4px;
+  letter-spacing: 0.02em;
+}
+
+:global([data-theme="dark"]) .cmd-kbd {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #94a3b8;
 }
 
 @media (max-width: 640px) {
@@ -271,7 +310,10 @@ const handleLocaleToggle = () => {
     display: none;
   }
   .header-cmd-btn {
-    padding: 6px 9px;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    justify-content: center;
   }
 }
 
@@ -309,17 +351,6 @@ const handleLocaleToggle = () => {
 .header-icon-link:hover {
   color: var(--neon, #4f46e5);
   background: rgba(79, 70, 229, 0.08);
-}
-
-.lang-toggle-btn {
-  font-size: 0.72rem;
-  font-weight: 800;
-  border: 1px solid var(--panel-border, #cbd5e1);
-  background: var(--item-bg, #ffffff);
-}
-
-.lang-toggle-btn:hover {
-  border-color: var(--neon, #4f46e5);
 }
 
 @keyframes pulse {

@@ -1,8 +1,6 @@
 import { ref, computed } from 'vue';
 
-const currentLocale = ref(
-  (typeof window !== 'undefined' && localStorage.getItem('portfolio-locale')) || 'fa'
-);
+const currentLocale = ref('fa');
 
 const translations = {
   fa: {

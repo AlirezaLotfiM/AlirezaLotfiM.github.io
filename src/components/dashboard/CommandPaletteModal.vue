@@ -70,16 +70,7 @@ const quickActions = computed(() => [
       toggleTheme();
     }
   },
-  {
-    id: 'lang',
-    category: t('cmdQuickActions'),
-    title: currentLocale.value === 'fa' ? 'Switch Language to English' : 'تغییر زبان به فارسی',
-    icon: '🌐',
-    action: () => {
-      playClick();
-      toggleLocale();
-    }
-  },
+
   {
     id: 'terminal',
     category: t('cmdQuickActions'),

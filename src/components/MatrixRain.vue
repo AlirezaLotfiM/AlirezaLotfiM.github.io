@@ -54,7 +54,7 @@ const draw = (currentTime) => {
   ctx.fillStyle = isDark.value ? 'rgba(8, 13, 26, 0.12)' : 'rgba(248, 250, 252, 0.16)';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  ctx.font = `600 ${fontSize}px "JetBrains Mono", monospace`;
+  ctx.font = `600 ${fontSize}px "Peyda", monospace`;
   ctx.textAlign = 'center';
 
   const defaultDarkColor = props.color || '#22c55e'; // Iconic phosphor green or theme neon
