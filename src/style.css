@@ -1,7 +1,14 @@
 /* ══════════════════════════════════════════════════════════════════
-   PEYDA PRO 4 - VARIABLE WEB FONT (100 to 1000 Continuous Weights)
-   Hosted on ArvanCloud Private S3 with custom domain
+   AMPERSAND FONT (&) - Elegant classic ampersand fallback
+   Only matches U+0026 (&), allowing Peyda to render all other Latin & Farsi
    ══════════════════════════════════════════════════════════════════ */
+@font-face {
+  font-family: "AmpersandFont";
+  src: local("Segoe UI"), local("Inter"), local("Roboto"), local("Arial"), sans-serif;
+  unicode-range: U+0026;
+  font-display: swap;
+}
+
 @font-face {
   font-family: "Peyda";
   src: url("https://portfolio-data.alirezalotfimoghaddam.ir/Fonts/PeydaWebVF.woff2") format("woff2-variations"),
@@ -97,7 +104,7 @@
   --text-muted: var(--text-secondary);
   --border-color: var(--panel-border);
 
-  --font-sans: "Peyda", "iranyekan", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-sans: "AmpersandFont", "Peyda", "iranyekan", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: "JetBrains Mono", "Peyda", "Cascadia Code", "Fira Code", monospace;
 
   --shine-x: 52%;
