@@ -1,52 +1,22 @@
+/* ══════════════════════════════════════════════════════════════════
+   PEYDA PRO 4 - VARIABLE WEB FONT (100 to 1000 Continuous Weights)
+   Hosted on ArvanCloud Private S3 with custom domain
+   ══════════════════════════════════════════════════════════════════ */
 @font-face {
   font-family: "Peyda";
-  src: url("/fonts/Peyda-Regular.woff2") format("woff2"),
-       url("/fonts/Peyda-Regular.ttf") format("truetype");
-  font-weight: 400;
+  src: url("https://portfolio-data.alirezalotfimoghaddam.ir/Fonts/PeydaWebVF.woff2") format("woff2-variations"),
+       url("https://portfolio-data.alirezalotfimoghaddam.ir/Fonts/PeydaWebVF.woff2") format("woff2");
+  font-weight: 100 1000;
   font-style: normal;
   font-display: swap;
 }
 
-@font-face {
-  font-family: "Peyda";
-  src: url("/fonts/Peyda-Medium.woff2") format("woff2"),
-       url("/fonts/Peyda-Medium.ttf") format("truetype");
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Peyda";
-  src: url("/fonts/Peyda-SemiBold.woff2") format("woff2"),
-       url("/fonts/Peyda-SemiBold.ttf") format("truetype");
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Peyda";
-  src: url("/fonts/Peyda-Bold.woff2") format("woff2"),
-       url("/fonts/Peyda-Bold.ttf") format("truetype");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Peyda";
-  src: url("/fonts/Peyda-Black.woff2") format("woff2"),
-       url("/fonts/Peyda-Black.ttf") format("truetype");
-  font-weight: 900;
-  font-style: normal;
-  font-display: swap;
-}
-
+/* ══════════════════════════════════════════════════════════════════
+   JETBRAINS MONO - CODE & TECHNICAL TYPOGRAPHY
+   ══════════════════════════════════════════════════════════════════ */
 @font-face {
   font-family: "JetBrains Mono";
-  src: url("/fonts/JetBrainsMono-Regular.woff2") format("woff2"),
-       url("/fonts/JetBrainsMono-Regular.ttf") format("truetype");
+  src: url("/fonts/JetBrainsMono-Regular.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -54,8 +24,7 @@
 
 @font-face {
   font-family: "JetBrains Mono";
-  src: url("/fonts/JetBrainsMono-Medium.woff2") format("woff2"),
-       url("/fonts/JetBrainsMono-Medium.ttf") format("truetype");
+  src: url("/fonts/JetBrainsMono-Medium.woff2") format("woff2");
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -63,8 +32,7 @@
 
 @font-face {
   font-family: "JetBrains Mono";
-  src: url("/fonts/JetBrainsMono-SemiBold.woff2") format("woff2"),
-       url("/fonts/JetBrainsMono-SemiBold.ttf") format("truetype");
+  src: url("/fonts/JetBrainsMono-SemiBold.woff2") format("woff2");
   font-weight: 600;
   font-style: normal;
   font-display: swap;
@@ -72,8 +40,7 @@
 
 @font-face {
   font-family: "JetBrains Mono";
-  src: url("/fonts/JetBrainsMono-Bold.woff2") format("woff2"),
-       url("/fonts/JetBrainsMono-Bold.ttf") format("truetype");
+  src: url("/fonts/JetBrainsMono-Bold.woff2") format("woff2");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -205,7 +172,6 @@ body {
   background: var(--bg-main);
   color: var(--text-main);
   font-family: var(--font-sans);
-  font-feature-settings: "ss01";
   width: 100%;
   max-width: 100%;
   overflow-y: auto;
