@@ -514,6 +514,18 @@ const sitemapEntries = [
     changefreq: "monthly",
     priority: "0.7",
   })),
+  {
+    routePath: "/llms.txt",
+    lastModified: new Date().toISOString().slice(0, 10),
+    changefreq: "weekly",
+    priority: "0.9",
+  },
+  {
+    routePath: "/llms-full.txt",
+    lastModified: new Date().toISOString().slice(0, 10),
+    changefreq: "weekly",
+    priority: "0.8",
+  },
 ];
 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>

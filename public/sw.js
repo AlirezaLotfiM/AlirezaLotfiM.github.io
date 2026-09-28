@@ -13,6 +13,14 @@ const APP_SHELL = [
   '/pwa-192x192.png',
   '/pwa-512x512.png',
   '/offline.html',
+  '/llms.txt',
+  '/llms-full.txt',
+  '/ai-catalog.json',
+  '/dynamicData/profile.json',
+  '/dynamicData/projects.json',
+  '/dynamicData/experience.json',
+  '/dynamicData/skills.json',
+  '/dynamicData/techStack.json',
   PEYDA_FONT_URL
 ];
 

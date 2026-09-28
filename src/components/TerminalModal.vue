@@ -29,7 +29,7 @@ const history = ref([]);
 
 const { themes, setTheme, currentTheme } = useTheme();
 
-const COMMANDS = ['help', 'whoami', 'skills', 'projects', 'ls', 'status', 'learning', 'contact', 'cls', 'clear', 'exit', 'theme', 'music', 'neofetch', 'matrix', 'cv', 'download-cv', 'vcard', 'repo', 'github'];
+const COMMANDS = ['help', 'whoami', 'skills', 'projects', 'ls', 'status', 'learning', 'contact', 'cls', 'clear', 'exit', 'theme', 'music', 'neofetch', 'matrix', 'cv', 'download-cv', 'vcard', 'repo', 'github', 'llms', 'ai'];
 
 // Command history
 const cmdHistory = ref([]);
@@ -147,9 +147,21 @@ const handleCommand = () => {
     addLog('  neofetch   - Print system environment statistics');
     addLog('  matrix     - Toggle Matrix Rain background effect');
     addLog('  repo       - Open GitHub source repository');
+    addLog('  llms       - View AI Agentic specification (llms.txt)');
     addLog('  cls        - Clear terminal');
     addLog('  exit       - Close terminal');
   } 
+  else if (mainCmd === 'llms' || mainCmd === 'llm' || mainCmd === 'ai' || mainCmd === 'agent') {
+    addLog('--- AGENTIC BROWSING & LLM INTERFACE ---', 'os-warn');
+    addLog('Standard: https://llmstxt.org / ARD Protocol', 'os-dim');
+    addLog('[+] /llms.txt       - High-density markdown for AI agents', 'os-ok');
+    addLog('[+] /llms-full.txt  - Extended engineering dossier & blueprints', 'os-ok');
+    addLog('[+] /ai-catalog.json- Machine-readable resource discovery', 'os-ok');
+    addLog('Opening /llms.txt in new tab...', 'os-dim');
+    if (typeof window !== 'undefined') {
+      window.open('/llms.txt', '_blank');
+    }
+  }
   else if (mainCmd === 'repo' || mainCmd === 'github') {
     addLog('Opening GitHub repository: github.com/AlirezaLotfiM/AlirezaLotfiM.github.io', 'os-ok');
     if (typeof window !== 'undefined') {

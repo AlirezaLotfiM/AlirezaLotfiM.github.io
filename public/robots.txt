@@ -2,6 +2,10 @@ User-agent: *
 Allow: /
 Disallow: /dynamicData/guestbook.json
 
+# AI Agents & LLM Specifications
+# https://llmstxt.org / Agentic Resource Discovery
+# See /llms.txt and /llms-full.txt
+
 # Sitemap
 Sitemap: https://alirezalotfimoghaddam.ir/sitemap.xml
 
