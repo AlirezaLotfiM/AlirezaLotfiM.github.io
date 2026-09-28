@@ -322,24 +322,6 @@ const updateRouteSEO = () => {
   });
 };
 
-let konamiIndex = 0;
-const konamiCode = [
-  "ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown",
-  "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight",
-  "b", "a",
-];
-const handleKonami = (event) => {
-  if (event.key === konamiCode[konamiIndex]) {
-    konamiIndex += 1;
-    if (konamiIndex === konamiCode.length) {
-      document.documentElement.style.setProperty("--neon", "#ff00ff");
-      konamiIndex = 0;
-    }
-  } else {
-    konamiIndex = 0;
-  }
-};
-
 watch([currentPath, notes, projects, profile], () => {
   updateRouteState();
   updateRouteSEO();
@@ -348,7 +330,6 @@ watch([currentPath, notes, projects, profile], () => {
 onMounted(() => {
   fetchData();
   window.addEventListener("keydown", handleKeydown);
-  window.addEventListener("keydown", handleKonami);
   updateRouteState();
   updateRouteSEO();
 
@@ -361,7 +342,6 @@ onMounted(() => {
 
 onUnmounted(() => {
   window.removeEventListener("keydown", handleKeydown);
-  window.removeEventListener("keydown", handleKonami);
 });
 </script>
 
