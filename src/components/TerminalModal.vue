@@ -2,11 +2,12 @@
 import { ref, nextTick, watch, onMounted, onUnmounted } from 'vue';
 import { useTheme } from '../composables/useTheme';
 import { useAudioSynth } from '../composables/useAudioSynth';
-
 import { usePortfolio } from '../composables/usePortfolio';
+import { useSmoothScroll } from '../composables/useSmoothScroll';
 
 const { playKey, playThemeChirp, playClick, isMuted } = useAudioSynth();
 const { downloadVCard } = usePortfolio();
+const { stop: stopScroll, start: startScroll } = useSmoothScroll();
 
 // دریافت اطلاعات از والد (App.vue)
 const props = defineProps({
@@ -383,6 +384,17 @@ const scrollToBottom = () => {
   });
 };
 
+watch(() => props.visible, (vis) => {
+  if (typeof document === 'undefined') return;
+  if (vis) {
+    stopScroll();
+    document.body.style.overflow = 'hidden';
+  } else {
+    startScroll();
+    document.body.style.overflow = '';
+  }
+}, { immediate: true });
+
 onMounted(() => {
   initTerminal();
 });
@@ -392,8 +404,8 @@ onUnmounted(() => document.removeEventListener('keydown', handleModalKeydown));
 
 <template>
   <Transition name="fade">
-    <div v-if="visible" class="terminal-overlay" @click.self="closeTerminal">
-      <div ref="terminalWindowRef" class="terminal-window ltr-mode" role="dialog" aria-modal="true" aria-labelledby="terminal-title">
+    <div v-if="visible" class="terminal-overlay" data-lenis-prevent @click.self="closeTerminal">
+      <div ref="terminalWindowRef" class="terminal-window ltr-mode" data-lenis-prevent role="dialog" aria-modal="true" aria-labelledby="terminal-title">
         
         <div class="terminal-header">
           <div class="header-left">
@@ -405,7 +417,7 @@ onUnmounted(() => document.removeEventListener('keydown', handleModalKeydown));
           </div>
         </div>
         
-        <div class="terminal-body" @click="focusInput">
+        <div class="terminal-body" data-lenis-prevent @click="focusInput">
           <div v-for="(line, index) in history" :key="index">
             <div v-if="line.type === 'empty'" class="empty-line"></div>
             <pre v-else-if="line.type === 'ascii'" class="ascii-art">{{ line.content }}</pre>

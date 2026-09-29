@@ -397,3 +397,19 @@ pre,
     visibility: hidden !important;
   }
 }
+
+/* ==========================================================================
+   GLOBAL BRAND LOGO INVERSION FOR DARK MODE
+   ========================================================================== */
+html.dark .damoon-full-logo-img,
+html[data-theme="space-glass"] .damoon-full-logo-img,
+html[data-theme="dark"] .damoon-full-logo-img,
+.is-dark .damoon-full-logo-img,
+.damoon-full-logo-img.is-dark {
+  filter: brightness(0) invert(1) drop-shadow(0 0 10px rgba(56, 189, 248, 0.65)) !important;
+}
+
+html:not(.dark) .damoon-full-logo-img:not(.is-dark) {
+  filter: drop-shadow(0 2px 8px rgba(79, 70, 229, 0.15));
+}
+

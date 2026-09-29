@@ -2,13 +2,33 @@ import { ref, onMounted, onUnmounted } from 'vue';
 import Lenis from 'lenis';
 import 'lenis/dist/lenis.css';
 
+let lenisInstance = null;
+let rafId = null;
+let activeSubscribers = 0;
+const isEnabled = ref(true);
+
 export function useSmoothScroll() {
-  let lenisInstance = null;
-  let rafId = null;
-  const isEnabled = ref(true);
+  const isStopped = ref(false);
+
+  const start = () => {
+    if (lenisInstance) {
+      lenisInstance.start();
+      isStopped.value = false;
+    }
+  };
+
+  const stop = () => {
+    if (lenisInstance) {
+      lenisInstance.stop();
+      isStopped.value = true;
+    }
+  };
 
   onMounted(() => {
     if (typeof window === 'undefined') return;
+    activeSubscribers++;
+
+    if (lenisInstance) return;
 
     // Respect reduced motion preference
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -26,7 +46,48 @@ export function useSmoothScroll() {
         smoothWheel: true,
         wheelMultiplier: 1.0,
         touchMultiplier: 1.2,
-        autoRaf: false
+        autoRaf: false,
+        allowNestedScroll: true,
+        prevent: (node) => {
+          if (!node || !(node instanceof HTMLElement)) return false;
+
+          // 1. Explicit data-lenis-prevent attribute
+          if (node.hasAttribute('data-lenis-prevent') || node.closest('[data-lenis-prevent]')) {
+            return true;
+          }
+
+          // 2. Modals, Dialogs, Drawers, Overlays, Code blocks, and Terminal
+          const insideScrollableContainer = node.closest(
+            '[role="dialog"], [aria-modal="true"], .study-dialog, .study-overlay, .study-body, ' +
+            '.note-reader-card, .note-reader-overlay, .reader-body-content, ' +
+            '.terminal-window, .terminal-overlay, .terminal-body, ' +
+            '.palette-dialog, .palette-backdrop, .palette-results-list, ' +
+            '.modal-window, .modal-overlay, .diagram-wrapper, ' +
+            '.qr-modal-card, .qr-modal-overlay, .resume-mode-container, ' +
+            'pre, code, textarea'
+          );
+          if (insideScrollableContainer) {
+            return true;
+          }
+
+          // 3. Any element that has its own scrollable vertical area
+          let curr = node;
+          while (curr && curr !== document.body && curr !== document.documentElement) {
+            if (curr instanceof HTMLElement) {
+              const style = window.getComputedStyle(curr);
+              const overflowY = style.overflowY;
+              const overflowX = style.overflowX;
+              const hasScrollY = (overflowY === 'auto' || overflowY === 'scroll') && curr.scrollHeight > curr.clientHeight;
+              const hasScrollX = (overflowX === 'auto' || overflowX === 'scroll') && curr.scrollWidth > curr.clientWidth;
+              if (hasScrollY || hasScrollX) {
+                return true;
+              }
+            }
+            curr = curr.parentElement;
+          }
+
+          return false;
+        }
       });
 
       const raf = (time) => {
@@ -40,10 +101,17 @@ export function useSmoothScroll() {
   });
 
   onUnmounted(() => {
-    if (rafId) cancelAnimationFrame(rafId);
-    if (lenisInstance) {
-      lenisInstance.destroy();
-      lenisInstance = null;
+    activeSubscribers--;
+    if (activeSubscribers <= 0) {
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+      }
+      if (lenisInstance) {
+        lenisInstance.destroy();
+        lenisInstance = null;
+      }
+      activeSubscribers = 0;
     }
   });
 
@@ -66,6 +134,9 @@ export function useSmoothScroll() {
 
   return {
     scrollTo,
+    stop,
+    start,
+    isStopped,
     isEnabled
   };
 }

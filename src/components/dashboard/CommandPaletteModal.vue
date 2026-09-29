@@ -227,8 +227,8 @@ onUnmounted(() => {
 
 <template>
   <Transition name="palette-fade">
-    <div v-if="isOpen" class="palette-backdrop" @click.self="emit('close')">
-      <div class="palette-dialog" role="dialog" aria-modal="true" :dir="isRtl ? 'rtl' : 'ltr'">
+    <div v-if="isOpen" class="palette-backdrop" data-lenis-prevent @click.self="emit('close')">
+      <div class="palette-dialog" data-lenis-prevent role="dialog" aria-modal="true" :dir="isRtl ? 'rtl' : 'ltr'">
         <!-- Search Input Bar -->
         <div class="palette-input-wrap">
           <span class="palette-search-icon">🔍</span>
@@ -246,7 +246,7 @@ onUnmounted(() => {
         </div>
 
         <!-- Results List -->
-        <div class="palette-results-list" role="listbox">
+        <div class="palette-results-list" data-lenis-prevent role="listbox">
           <div v-if="filteredResults.length === 0" class="no-results-state">
             <span class="no-results-icon">🔎</span>
             <p>{{ t('cmdNoResults') }}</p>

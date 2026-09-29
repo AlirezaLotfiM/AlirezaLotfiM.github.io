@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
 import { usePortfolio } from '../../composables/usePortfolio';
 import { useAudioSynth } from '../../composables/useAudioSynth';
 import { useNavigation } from '../../composables/useNavigation';
@@ -41,7 +41,19 @@ const highlightedProjectSlug = ref('');
 const notesSectionRef = ref(null);
 
 // Buttery smooth inertia scroll on window (Matt Trice style)
-const { scrollTo: smoothScrollTo } = useSmoothScroll();
+const { scrollTo: smoothScrollTo, stop: stopSmoothScroll, start: startSmoothScroll } = useSmoothScroll();
+
+// Lock scroll & pause Lenis when modals/dialogs are open
+watch([isCaseStudyOpen, isPaletteOpen, showQrModal], ([cs, pal, qr]) => {
+  if (typeof document === 'undefined') return;
+  if (cs || pal || qr) {
+    stopSmoothScroll();
+    document.body.style.overflow = 'hidden';
+  } else {
+    startSmoothScroll();
+    document.body.style.overflow = '';
+  }
+});
 
 const sectionRoutes = {
   about: '/',
@@ -390,8 +402,8 @@ onUnmounted(() => {
 
     <!-- QR CODE MODAL OVERLAY -->
     <Transition name="fade">
-      <div v-if="showQrModal" class="qr-modal-overlay" @click.self="showQrModal = false">
-        <div class="qr-modal-card">
+      <div v-if="showQrModal" class="qr-modal-overlay" data-lenis-prevent @click.self="showQrModal = false">
+        <div class="qr-modal-card" data-lenis-prevent>
           <button class="close-qr-btn" @click="showQrModal = false">✕</button>
           <h3>📱 اسکن کد QR پورتفولیو</h3>
           <p>با دوربین گوشی اسکن کنید تا آدرس سایت مستقیماً باز شود:</p>

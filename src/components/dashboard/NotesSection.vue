@@ -1,9 +1,10 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { usePortfolio } from '../../composables/usePortfolio';
 import { useI18n } from '../../composables/useI18n';
 import { useAudioSynth } from '../../composables/useAudioSynth';
 import { useMarkdown } from '../../composables/useMarkdown';
+import { useSmoothScroll } from '../../composables/useSmoothScroll';
 
 const emit = defineEmits(['open-note']);
 
@@ -11,9 +12,21 @@ const { notes } = usePortfolio();
 const { t, isRtl } = useI18n();
 const { playClick } = useAudioSynth();
 const { parseMarkdown } = useMarkdown();
+const { stop: stopScroll, start: startScroll } = useSmoothScroll();
 
 const activeReadingNote = ref(null);
 const copyNoteTooltip = ref('کپی لینک');
+
+watch(activeReadingNote, (note) => {
+  if (typeof document === 'undefined') return;
+  if (note) {
+    stopScroll();
+    document.body.style.overflow = 'hidden';
+  } else {
+    startScroll();
+    document.body.style.overflow = '';
+  }
+});
 
 const toPersianDigits = (num) => {
   const faDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
@@ -114,8 +127,8 @@ defineExpose({
 
     <!-- NOTES READING MODAL / DRAWER -->
     <Transition name="fade">
-      <div v-if="activeReadingNote" class="note-reader-overlay" @click.self="closeDrawer">
-        <article class="note-reader-card" role="dialog" aria-modal="true" :dir="isRtl ? 'rtl' : 'ltr'">
+      <div v-if="activeReadingNote" class="note-reader-overlay" data-lenis-prevent @click.self="closeDrawer">
+        <article class="note-reader-card" data-lenis-prevent role="dialog" aria-modal="true" :dir="isRtl ? 'rtl' : 'ltr'">
           <header class="reader-header">
             <div class="reader-title-wrap">
               <span class="reader-tag mono-ui" dir="ltr">engineering/note</span>
@@ -134,7 +147,7 @@ defineExpose({
             </div>
           </header>
 
-          <div class="reader-body-content markdown-body" v-html="parseMarkdown(activeReadingNote.body)"></div>
+          <div class="reader-body-content markdown-body" data-lenis-prevent v-html="parseMarkdown(activeReadingNote.body)"></div>
         </article>
       </div>
     </Transition>

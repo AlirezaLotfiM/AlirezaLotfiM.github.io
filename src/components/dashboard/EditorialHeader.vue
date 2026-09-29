@@ -34,7 +34,14 @@ const handleThemeToggle = () => {
     <div class="top-bar-inner">
       <!-- RIGHT (RTL): Brand Logo + Version Pill + Status -->
       <div class="header-logo-wrap" title="Damoon Portfolio">
-        <img src="/monogram-damoon.png" alt="Damoon" class="damoon-full-logo-img" width="98" height="98" />
+        <img
+          src="/monogram-damoon.png"
+          alt="Damoon"
+          class="damoon-full-logo-img"
+          :class="{ 'is-dark': isDark }"
+          width="98"
+          height="98"
+        />
         <span class="header-version-pill mono-ui" dir="ltr">v{{ appVersion }}</span>
         <span class="header-availability-badge" :title="t('availableForHire')">
           <span class="availability-pulse-dot"></span>
@@ -182,12 +189,13 @@ const handleThemeToggle = () => {
   width: 54px;
   height: 54px;
   object-fit: contain;
-  transition: transform 0.2s ease, filter 0.2s ease;
+  transition: transform 0.2s ease, filter 0.25s ease;
+  filter: var(--logo-filter, drop-shadow(0 2px 8px rgba(79, 70, 229, 0.15)));
+  display: block;
 }
 
-:global([data-theme="space-glass"]) .damoon-full-logo-img,
-:global([data-theme="dark"]) .damoon-full-logo-img {
-  filter: brightness(0) invert(1) drop-shadow(0 0 10px rgba(56, 189, 248, 0.65));
+.damoon-full-logo-img.is-dark {
+  filter: brightness(0) invert(1) drop-shadow(0 0 10px rgba(56, 189, 248, 0.65)) !important;
 }
 
 @media (min-width: 1025px) {

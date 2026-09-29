@@ -1,7 +1,8 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { useI18n } from '../../composables/useI18n';
 import { useAudioSynth } from '../../composables/useAudioSynth';
+import { useSmoothScroll } from '../../composables/useSmoothScroll';
 
 const props = defineProps({
   isOpen: Boolean,
@@ -14,6 +15,18 @@ const props = defineProps({
 const emit = defineEmits(['close']);
 const { isRtl } = useI18n();
 const { playClick } = useAudioSynth();
+const { stop: stopScroll, start: startScroll } = useSmoothScroll();
+
+watch(() => props.isOpen, (open) => {
+  if (typeof document === 'undefined') return;
+  if (open) {
+    stopScroll();
+    document.body.style.overflow = 'hidden';
+  } else {
+    startScroll();
+    document.body.style.overflow = '';
+  }
+}, { immediate: true });
 
 const activeTab = ref('architecture');
 
@@ -25,8 +38,8 @@ const setTab = (tab) => {
 
 <template>
   <Transition name="study-fade">
-    <div v-if="isOpen" class="study-overlay" @click.self="emit('close')">
-      <div class="study-dialog" role="dialog" aria-modal="true" :dir="isRtl ? 'rtl' : 'ltr'">
+    <div v-if="isOpen" class="study-overlay" data-lenis-prevent @click.self="emit('close')">
+      <div class="study-dialog" data-lenis-prevent role="dialog" aria-modal="true" :dir="isRtl ? 'rtl' : 'ltr'">
         <!-- Dialog Header -->
         <header class="study-header">
           <div class="study-header-badges">
@@ -48,7 +61,7 @@ const setTab = (tab) => {
         </div>
 
         <!-- Navigation Tabs -->
-        <div class="study-tabs-bar" role="tablist">
+        <div class="study-tabs-bar" data-lenis-prevent role="tablist">
           <button
             @click="setTab('architecture')"
             :class="['study-tab-btn', { active: activeTab === 'architecture' }]"
@@ -92,7 +105,7 @@ const setTab = (tab) => {
         </div>
 
         <!-- Content Area -->
-        <div class="study-body">
+        <div class="study-body" data-lenis-prevent>
           <!-- TAB 1: ARCHITECTURE -->
           <div v-if="activeTab === 'architecture'" class="study-tab-pane">
             <div class="case-card-panel">

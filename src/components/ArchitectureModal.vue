@@ -1,5 +1,6 @@
 <script setup>
 import { nextTick, onUnmounted, ref, watch } from 'vue';
+import { useSmoothScroll } from '../composables/useSmoothScroll';
 
 const props = defineProps({
   visible: Boolean,
@@ -10,6 +11,7 @@ const props = defineProps({
 const emit = defineEmits(['close']);
 const containerRef = ref(null);
 const closeButtonRef = ref(null);
+const { stop: stopScroll, start: startScroll } = useSmoothScroll();
 let mermaidApi = null;
 let previousActiveElement = null;
 
@@ -28,26 +30,31 @@ const handleKeydown = (event) => {
 };
 
 watch(() => props.visible, async (val) => {
+  if (typeof document === 'undefined') return;
   if (val) {
+    stopScroll();
+    document.body.style.overflow = 'hidden';
     previousActiveElement = document.activeElement;
     document.addEventListener('keydown', handleKeydown);
     await nextTick();
     closeButtonRef.value?.focus();
     setTimeout(renderDiagram, 100);
   } else {
+    startScroll();
+    document.body.style.overflow = '';
     document.removeEventListener('keydown', handleKeydown);
     if (containerRef.value) containerRef.value.innerHTML = '';
     previousActiveElement?.focus?.();
   }
-});
+}, { immediate: true });
 
 onUnmounted(() => document.removeEventListener('keydown', handleKeydown));
 </script>
 
 <template>
   <Transition name="fade">
-    <div v-if="visible" class="modal-overlay" @click.self="closeModal">
-      <div class="modal-window glass-panel" role="dialog" aria-modal="true" aria-labelledby="architecture-title">
+    <div v-if="visible" class="modal-overlay" data-lenis-prevent @click.self="closeModal">
+      <div class="modal-window glass-panel" data-lenis-prevent role="dialog" aria-modal="true" aria-labelledby="architecture-title">
         <header class="modal-header">
           <div class="header-title">
             <span class="icon">🏗️</span>
@@ -56,7 +63,7 @@ onUnmounted(() => document.removeEventListener('keydown', handleKeydown));
           <button ref="closeButtonRef" class="close-btn" @click="closeModal" aria-label="بستن نمودار معماری">✕</button>
         </header>
 
-        <div class="diagram-wrapper">
+        <div class="diagram-wrapper" data-lenis-prevent>
           <div class="diagram-container" ref="containerRef"></div>
         </div>
 

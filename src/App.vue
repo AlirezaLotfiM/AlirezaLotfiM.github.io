@@ -378,7 +378,7 @@ onUnmounted(() => {
         />
       </Transition>
 
-      <div v-if="route.isResume" class="resume-mode-container">
+      <div v-if="route.isResume" class="resume-mode-container" data-lenis-prevent>
         <PrintResumeView />
       </div>
 
