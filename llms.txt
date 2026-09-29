@@ -1,0 +1,50 @@
+# Alireza Lotfi (علیرضا لطفی مقدم) — Software Engineer & .NET Specialist
+
+> Alireza Lotfi (also known as Alireza Lotfi Moghaddam or Damoon) is a Senior Software Engineer specializing in the C# and .NET ecosystem, high-throughput queuing systems, desktop application engineering (WPF), hardware interfacing (biometrics, thermal printers, serial/RS485), and distributed architectures. With over 5 continuous years of enterprise experience at Nedapardaz Informatics (since 2021), he has engineered and maintained mission-critical banking queue platforms deployed nationwide across major Iranian banks (Bank Mellat, Bank Ayandeh, Bank Shahr) serving hundreds of thousands of daily users.
+
+Alireza is based in Tehran, Iran, and is available for contract, remote, and full-time software engineering roles.
+
+## Core Specializations
+
+- **Enterprise Backend**: C#, .NET 9, ASP.NET Core WebAPI, Clean Architecture, CQRS, SignalR real-time hubs, JWT Authentication.
+- **Desktop & Hardware Interfacing**: WPF (MVVM), WinForms, Win32 APIs, WebView2, Suprema Biometric Fingerprint SDK, WIA Document Scanner SDK, Serial/RS485 Control Units, Thermal ESC/POS Printers.
+- **Relational Databases & Performance**: Microsoft SQL Server, T-SQL optimization, execution plan profiling, high-concurrency indexing.
+- **Distributed & Real-Time Systems**: RabbitMQ message queuing, Redis distributed caching, Dapr, microservice paradigms.
+- **Frontend & Cross-Platform**: Vue.js 3 (Composition API, Pinia), TypeScript, Flutter & Dart (Cross-platform Android & Windows).
+- **AI-Augmented Engineering (Vibe Coding)**: Rapid end-to-end prototyping and shipping of commercial-grade applications using advanced agentic workflows.
+
+## Key Engineered Systems & Projects
+
+- [Nedapardaz Banking Queue & Branch Automation Platform](https://alirezalotfimoghaddam.ir/#legacy-queue-systems): Comprehensive queue management ecosystem deployed in major Iranian banks (Bank Mellat, Ayandeh, Shahr). Features touch kiosks (WPF), teller counter units, TV hall display engines, audio announcement systems, and hardware serial bridges.
+- [Biodaru Real-Time QMS & Biometric Verification Suite](https://alirezalotfimoghaddam.ir/#biodaru-qms): Web & desktop queuing system for plasma donation centers. Integrates Suprema fingerprint authentication, WIA document scanning, SignalR real-time hubs, and Vue 3 SPAs.
+- [Nava Music Player](https://cafebazaar.ir/app/com.damoon.nava.music): Commercial cross-platform music player (Android & Windows) built with Flutter and AI-augmented Vibe Coding methodology. Published on Cafe Bazaar and Myket app stores.
+- [Biodaru Employee Training & Assessment Suite](https://alirezalotfimoghaddam.ir/#biodaroo-training-suite): Enterprise web application for automated online employee exams, timer-based tests, and statistical performance analysis.
+- [NeuroFlow Platform (R&D Concept)](https://alirezalotfimoghaddam.ir/#neuroflow-platform): Distributed event-driven asynchronous processing pipeline architecture utilizing .NET Worker Services, RabbitMQ, and Redis.
+
+## Professional Experience
+
+- [Software Engineer & Banking Systems Specialist at Nedapardaz Informatics](https://alirezalotfimoghaddam.ir/#experience): 2021 — Present (5+ continuous years). Core developer for branch ticketing kiosks, teller clients, TV display engines, and Bank Mellat online remote reservation services.
+- [Operational Systems Engineer at Biodaru Organizational Projects](https://alirezalotfimoghaddam.ir/#experience): April 2024 — Present. Full-stack development of real-time QMS, biometric donor verification, and corporate training systems.
+
+## Machine-Readable Data Endpoints (JSON)
+
+- [Profile & Contact Metadata](https://alirezalotfimoghaddam.ir/dynamicData/profile.json): Raw identity, contact links, and current learning focus.
+- [Projects Database](https://alirezalotfimoghaddam.ir/dynamicData/projects.json): Structured catalog of engineered projects, architecture diagrams, and tech stacks.
+- [Experience Records](https://alirezalotfimoghaddam.ir/dynamicData/experience.json): Detailed employment history, responsibilities, and impact metrics.
+- [Skills Matrix](https://alirezalotfimoghaddam.ir/dynamicData/skills.json): Core proficiencies and technical competence levels.
+- [Tech Stack Dictionary](https://alirezalotfimoghaddam.ir/dynamicData/techStack.json): Categorized technologies with visual tags and metadata.
+- [Engineering Roadmap](https://alirezalotfimoghaddam.ir/dynamicData/roadmap.json): Future technical goals, distributed system topics, and learning track.
+
+## Contact & Online Presence
+
+- [Website](https://alirezalotfimoghaddam.ir/): Official personal website and interactive portfolio.
+- [GitHub](https://github.com/AlirezaLotfiM): Open-source repositories and development activities.
+- [LinkedIn](https://linkedin.com/in/alireza-lotfi-moghaddam-378a8018a): Professional background and networking.
+- [Telegram](https://t.me/DAMOON_X): Direct messaging (@DAMOON_X).
+- [Email](mailto:hi@alirz.ir): Primary correspondence: hi@alirz.ir.
+- [Download Resume (PDF)](https://alirezalotfimoghaddam.ir/MyResume.pdf): Official Curriculum Vitae.
+
+## Optional
+
+- [Full LLM Context & Extended Technical Dossier](https://alirezalotfimoghaddam.ir/llms-full.txt): Comprehensive deep-dive covering architecture blueprints, database design notes, and complete project specs for AI agents.
+- [Agentic Resource Discovery Catalog (ai-catalog.json)](https://alirezalotfimoghaddam.ir/ai-catalog.json): Machine-readable ARD manifest specifying public endpoints, tools, and capabilities.

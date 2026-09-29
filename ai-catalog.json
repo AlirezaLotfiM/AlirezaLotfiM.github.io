@@ -1,0 +1,60 @@
+{
+  "$schema": "https://agenticresourcediscovery.org/schemas/v1/ai-catalog.json",
+  "version": "1.0.0",
+  "name": "Alireza Lotfi Portfolio & Systems Catalog",
+  "description": "Agentic Resource Discovery (ARD) catalog manifest for Alireza Lotfi (Software Engineer). Exposes structured endpoints, technical documents, and project catalogs for AI agents and autonomous crawlers.",
+  "canonicalUrl": "https://alirezalotfimoghaddam.ir/",
+  "provider": {
+    "name": "Alireza Lotfi (علیرضا لطفی مقدم)",
+    "role": "Senior Software Engineer & .NET Specialist",
+    "url": "https://alirezalotfimoghaddam.ir/",
+    "email": "hi@alirz.ir",
+    "github": "https://github.com/AlirezaLotfiM",
+    "linkedin": "https://linkedin.com/in/alireza-lotfi-moghaddam-378a8018a",
+    "telegram": "https://t.me/DAMOON_X"
+  },
+  "documentation": {
+    "llms_txt": "https://alirezalotfimoghaddam.ir/llms.txt",
+    "llms_full_txt": "https://alirezalotfimoghaddam.ir/llms-full.txt",
+    "resume_pdf": "https://alirezalotfimoghaddam.ir/MyResume.pdf"
+  },
+  "endpoints": [
+    {
+      "name": "Profile Endpoint",
+      "url": "https://alirezalotfimoghaddam.ir/dynamicData/profile.json",
+      "contentType": "application/json",
+      "description": "Basic profile attributes, contact info, bio, and operational focus."
+    },
+    {
+      "name": "Projects Endpoint",
+      "url": "https://alirezalotfimoghaddam.ir/dynamicData/projects.json",
+      "contentType": "application/json",
+      "description": "Detailed project catalog with architecture layers, technologies, and store links."
+    },
+    {
+      "name": "Experience Endpoint",
+      "url": "https://alirezalotfimoghaddam.ir/dynamicData/experience.json",
+      "contentType": "application/json",
+      "description": "Enterprise career chronology including 5+ years at Nedapardaz Informatics and Biodaru."
+    },
+    {
+      "name": "Skills Endpoint",
+      "url": "https://alirezalotfimoghaddam.ir/dynamicData/skills.json",
+      "contentType": "application/json",
+      "description": "Competence matrix with proficiency ratings across .NET, SQL, and distributed technologies."
+    },
+    {
+      "name": "Tech Stack Endpoint",
+      "url": "https://alirezalotfimoghaddam.ir/dynamicData/techStack.json",
+      "contentType": "application/json",
+      "description": "Categorized technology dictionary with visual tokens and metadata."
+    }
+  ],
+  "capabilities": [
+    "Software Engineering (.NET, C#, WPF)",
+    "Distributed Queue Architectures",
+    "Hardware & Biometric Interfacing",
+    "Real-Time WebSockets (SignalR)",
+    "AI-Augmented Engineering (Vibe Coding)"
+  ]
+}

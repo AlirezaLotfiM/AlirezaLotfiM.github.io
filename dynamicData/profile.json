@@ -1,0 +1,66 @@
+{
+  "name": "علیرضا لطفی‌مقدم",
+  "role": "Software Expert",
+  "githubUser": "AlirezaLotfiM",
+  "avatarUrl": "/Damoon-d.jpg",
+  "titles": [
+    "Software Engineer",
+    ".NET & Desktop Developer",
+    "Database Enthusiast",
+    "Backend Developer"
+  ],
+  "bio": "توسعه‌دهنده نرم‌افزار با +۵ سال سابقه فعالیت در شرکت نداپرداز انفورماتیک (از سال ۱۴۰۰) و اکوسیستم C#؛ آماده همکاری پروژه‌ای و دورکاری با تمرکز بر ساخت سرویس‌های پایدار و تمیز.",
+  "badges": [
+    "Backend",
+    "API Design",
+    "Database",
+    "Hardware & Kiosks"
+  ],
+  "cardEmail": "hi@alirz.ir",
+  "identityCard": {
+    "eyebrow": "Available for Projects",
+    "role": "Software Engineer",
+    "bio": "توسعه‌دهنده نرم‌افزار با +۵ سال سابقه فعالیت در شرکت نداپرداز (از سال ۱۴۰۰) و اکوسیستم .NET؛ آماده همکاری پروژه‌ای و تمام‌وقت.",
+    "focus": "ASP.NET Core",
+    "email": "hi@alirz.ir",
+    "badges": [
+      "Backend",
+      "API Design",
+      "Database"
+    ],
+    "enterLabel": "ورود به داشبورد",
+    "resumeLabel": "رزومه"
+  },
+  "quickActions": [
+    "ship backend modules",
+    "design resilient APIs",
+    "profile SQL queries"
+  ],
+  "shipping": "Core backend and internal platform modules for operational teams.",
+  "stackSummary": "C# / ASP.NET Core / SQL / WPF / Vue.js / Realtime & Messaging",
+  "stackModules": [
+    {
+      "label": "shipping",
+      "value": "Operational backends & APIs"
+    },
+    {
+      "label": "core stack",
+      "value": "C#, .NET, SQL, WPF, Vue.js"
+    },
+    {
+      "label": "learning",
+      "value": "Dapr, K8s, RabbitMQ"
+    }
+  ],
+  "contact": {
+    "email": "hi@alirz.ir",
+    "linkedin": "https://linkedin.com/in/alireza-lotfi-moghaddam-378a8018a",
+    "telegramUrl": "https://t.me/DAMOON_X",
+    "telegramId": "@DAMOON_X"
+  },
+  "learning": {
+    "focus": "Dapr & K8s",
+    "reading": "DDIA"
+  },
+  "resumeUrl": "/MyResume.pdf"
+}
