@@ -1,9 +1,10 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { usePortfolio } from '../../composables/usePortfolio';
 import { useAudioSynth } from '../../composables/useAudioSynth';
 import { useNavigation } from '../../composables/useNavigation';
 import { useI18n } from '../../composables/useI18n';
+import { useSmoothScroll } from '../../composables/useSmoothScroll';
 
 // Child Modular Components
 import EditorialHeader from './EditorialHeader.vue';
@@ -15,6 +16,7 @@ import SkillsSection from './SkillsSection.vue';
 import NotesSection from './NotesSection.vue';
 import CommandPaletteModal from './CommandPaletteModal.vue';
 import CaseStudyModal from './CaseStudyModal.vue';
+import EditorialFooter from './EditorialFooter.vue';
 
 const { selectedNote, closeNote, activeFilter } = usePortfolio();
 const { playClick } = useAudioSynth();
@@ -29,7 +31,7 @@ const props = defineProps({
 
 // --- State ---
 const activeSection = ref('about');
-const contentPaneRef = ref(null);
+const activeSubItem = ref('');
 const scrollProgress = ref(0);
 const showQrModal = ref(false);
 const isPaletteOpen = ref(false);
@@ -37,6 +39,9 @@ const isCaseStudyOpen = ref(false);
 const selectedCaseStudy = ref(null);
 const highlightedProjectSlug = ref('');
 const notesSectionRef = ref(null);
+
+// Buttery smooth inertia scroll on window (Matt Trice style)
+const { scrollTo: smoothScrollTo } = useSmoothScroll();
 
 const sectionRoutes = {
   about: '/',
@@ -76,65 +81,76 @@ let scrollLockTimeout = null;
 
 const updateScrollProgress = () => {
   if (typeof window === 'undefined') return;
-  const isMobile = window.innerWidth < 1024;
-  if (isMobile) {
-    const total = document.documentElement.scrollHeight - window.innerHeight;
-    scrollProgress.value = total > 0 ? Math.min(100, Math.max(0, (window.scrollY / total) * 100)) : 0;
-  } else if (contentPaneRef.value) {
-    const total = contentPaneRef.value.scrollHeight - contentPaneRef.value.clientHeight;
-    scrollProgress.value = total > 0 ? Math.min(100, Math.max(0, (contentPaneRef.value.scrollTop / total) * 100)) : 0;
-  }
+  const total = document.documentElement.scrollHeight - window.innerHeight;
+  scrollProgress.value = total > 0 ? Math.min(100, Math.max(0, (window.scrollY / total) * 100)) : 0;
 };
 
 const updateActiveSectionOnScroll = () => {
   if (typeof document === 'undefined' || isManualNavScrolling) return;
 
-  const sectionIds = ['about', 'experience', 'projects', 'skills', 'notes'];
-  const sections = sectionIds
-    .map((id) => document.getElementById(id))
-    .filter(Boolean);
+  const scrollPosition = window.scrollY;
+  const windowHeight = window.innerHeight;
+  const fullHeight = document.documentElement.scrollHeight;
 
-  if (!sections.length) return;
+  const expEl = document.getElementById('experience');
+  const projectsEl = document.getElementById('projects');
+  const skillsEl = document.getElementById('skills');
+  const notesEl = document.getElementById('notes');
 
-  const isMobile = window.innerWidth < 1024;
-  let activeId = activeSection.value;
+  let activeId = 'about';
 
-  if (isMobile) {
-    const scrollPosition = window.scrollY;
-    const windowHeight = window.innerHeight;
-    const fullHeight = document.documentElement.scrollHeight;
-
-    if (scrollPosition + windowHeight >= fullHeight - 80) {
-      activeId = 'notes';
-    } else {
-      sections.forEach((sec) => {
-        const secRect = sec.getBoundingClientRect();
-        if (secRect.top <= 140 && secRect.bottom > 60) {
-          activeId = sec.id;
-        }
-      });
-    }
-  } else if (contentPaneRef.value) {
-    const containerRect = contentPaneRef.value.getBoundingClientRect();
-    const isAtBottom =
-      contentPaneRef.value.scrollHeight - contentPaneRef.value.scrollTop - contentPaneRef.value.clientHeight < 80;
-
-    if (isAtBottom) {
-      activeId = 'notes';
-    } else {
-      sections.forEach((sec) => {
-        const secRect = sec.getBoundingClientRect();
-        const relativeTop = secRect.top - containerRect.top;
-        if (relativeTop <= 180 && secRect.bottom - containerRect.top > 60) {
-          activeId = sec.id;
-        }
-      });
-    }
+  // Responsive cascade: check from bottom-most section upwards
+  if (scrollPosition + windowHeight >= fullHeight - 120) {
+    activeId = 'notes';
+  } else if (notesEl && notesEl.getBoundingClientRect().top <= windowHeight * 0.65) {
+    activeId = 'notes';
+  } else if (skillsEl && skillsEl.getBoundingClientRect().top <= windowHeight * 0.60) {
+    activeId = 'skills';
+  } else if (projectsEl && projectsEl.getBoundingClientRect().top <= windowHeight * 0.58) {
+    activeId = 'projects';
+  } else if (expEl && expEl.getBoundingClientRect().top <= windowHeight * 0.58) {
+    activeId = 'experience';
+  } else {
+    activeId = 'about';
   }
 
   if (activeSection.value !== activeId) {
     activeSection.value = activeId;
     syncUrlWithSection(activeId);
+  }
+
+  // --- Sub-item scroll tracking (only for experience and projects) ---
+  if (activeId === 'experience') {
+    const expSubIds = ['exp-card-1', 'exp-card-2'];
+    for (const sId of expSubIds) {
+      const el = document.getElementById(sId);
+      if (el) {
+        const rect = el.getBoundingClientRect();
+        if (rect.top <= windowHeight * 0.45 && rect.bottom > 100) {
+          activeSubItem.value = sId;
+          break;
+        }
+      }
+    }
+  } else if (activeId === 'projects') {
+    const projSubIds = [
+      'project-legacy-queue-systems',
+      'project-biodaru-qms',
+      'project-nava-music-player',
+      'project-biodaroo-training-suite'
+    ];
+    for (const sId of projSubIds) {
+      const el = document.getElementById(sId);
+      if (el) {
+        const rect = el.getBoundingClientRect();
+        if (rect.top <= windowHeight * 0.45 && rect.bottom > 100) {
+          activeSubItem.value = sId;
+          break;
+        }
+      }
+    }
+  } else {
+    activeSubItem.value = '';
   }
 };
 
@@ -161,28 +177,66 @@ const scrollToSection = (sectionId, event) => {
   }
 
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 1024;
+  const topOffset = isMobile ? 110 : 80;
+  const elementPosition = target.getBoundingClientRect().top + window.scrollY;
+  const targetTop = Math.max(0, elementPosition - topOffset);
 
-  if (isMobile) {
-    const topOffset = 114;
-    const elementPosition = target.getBoundingClientRect().top + window.scrollY;
-    window.scrollTo({
-      top: Math.max(0, elementPosition - topOffset),
-      behavior: 'smooth',
-    });
-  } else if (contentPaneRef.value) {
-    const containerTop = contentPaneRef.value.getBoundingClientRect().top;
-    const targetTop = target.getBoundingClientRect().top;
-    const offset = targetTop - containerTop + contentPaneRef.value.scrollTop;
-
-    contentPaneRef.value.scrollTo({
-      top: Math.max(0, offset - 14),
-      behavior: 'smooth',
-    });
-  }
+  smoothScrollTo(targetTop, { duration: 1.1 });
 
   scrollLockTimeout = setTimeout(() => {
     isManualNavScrolling = false;
-  }, 750);
+  }, 950);
+};
+
+const scrollToTarget = (targetId, event) => {
+  playClick();
+  if (event) event.preventDefault();
+
+  const el = document.getElementById(targetId);
+  if (!el) {
+    if (targetId.startsWith('exp-')) {
+      scrollToSection('experience');
+    } else if (targetId.startsWith('project-')) {
+      scrollToSection('projects');
+    } else {
+      scrollToSection(targetId);
+    }
+    return;
+  }
+
+  isManualNavScrolling = true;
+  if (scrollLockTimeout) clearTimeout(scrollLockTimeout);
+
+  activeSubItem.value = targetId;
+
+  if (targetId.startsWith('exp-')) {
+    activeSection.value = 'experience';
+    syncUrlWithSection('experience');
+  } else if (targetId.startsWith('project-')) {
+    activeSection.value = 'projects';
+    syncUrlWithSection('projects');
+    const slug = targetId.replace('project-', '');
+    highlightedProjectSlug.value = slug;
+    setTimeout(() => {
+      if (highlightedProjectSlug.value === slug) {
+        highlightedProjectSlug.value = '';
+      }
+    }, 3500);
+  } else if (['experience', 'projects', 'skills', 'notes', 'about'].includes(targetId)) {
+    activeSection.value = targetId;
+    syncUrlWithSection(targetId);
+  }
+
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 1024;
+  const topOffset = isMobile ? 100 : 84;
+  const elementPosition = el.getBoundingClientRect().top + window.scrollY;
+  const targetTop = Math.max(0, elementPosition - topOffset);
+
+  smoothScrollTo(targetTop, { duration: 1.1 });
+
+  scrollLockTimeout = setTimeout(() => {
+    isManualNavScrolling = false;
+  }, 950);
 };
 
 const navigateToProject = (relProj) => {
@@ -195,23 +249,11 @@ const navigateToProject = (relProj) => {
 
   if (el) {
     const isMobile = typeof window !== 'undefined' && window.innerWidth < 1024;
-    if (isMobile) {
-      const topOffset = 118;
-      const elementPosition = el.getBoundingClientRect().top + window.scrollY;
-      window.scrollTo({
-        top: Math.max(0, elementPosition - topOffset),
-        behavior: 'smooth',
-      });
-    } else if (contentPaneRef.value) {
-      const containerTop = contentPaneRef.value.getBoundingClientRect().top;
-      const targetTop = el.getBoundingClientRect().top;
-      const offset = targetTop - containerTop + contentPaneRef.value.scrollTop;
+    const topOffset = isMobile ? 110 : 80;
+    const elementPosition = el.getBoundingClientRect().top + window.scrollY;
+    const targetTop = Math.max(0, elementPosition - topOffset);
 
-      contentPaneRef.value.scrollTo({
-        top: Math.max(0, offset - 18),
-        behavior: 'smooth',
-      });
-    }
+    smoothScrollTo(targetTop, { duration: 1.1 });
   } else {
     scrollToSection('projects');
   }
@@ -245,26 +287,10 @@ const handleGlobalKeydown = (e) => {
   }
 };
 
-const handleLayoutWheel = (e) => {
-  // If mouse is over sidebar or padding on desktop, forward scroll to contentPaneRef
-  if (typeof window !== 'undefined' && window.innerWidth >= 1024 && contentPaneRef.value) {
-    if (!e.target.closest('.editorial-content') &&
-        !e.target.closest('.palette-dialog') &&
-        !e.target.closest('.study-dialog') &&
-        !e.target.closest('.qr-modal-card') &&
-        !e.target.closest('.note-reader-card')) {
-      contentPaneRef.value.scrollTop += e.deltaY;
-    }
-  }
-};
-
 onMounted(() => {
   if (typeof window !== 'undefined') {
     window.addEventListener('scroll', handleScrollEvent, { passive: true });
     window.addEventListener('keydown', handleGlobalKeydown);
-  }
-  if (contentPaneRef.value) {
-    contentPaneRef.value.addEventListener('scroll', handleScrollEvent, { passive: true });
   }
 
   updateScrollProgress();
@@ -275,7 +301,7 @@ onMounted(() => {
   if (initialSection !== 'about') {
     setTimeout(() => {
       scrollToSection(initialSection);
-    }, 80);
+    }, 120);
   }
 });
 
@@ -284,15 +310,12 @@ onUnmounted(() => {
     window.removeEventListener('scroll', handleScrollEvent);
     window.removeEventListener('keydown', handleGlobalKeydown);
   }
-  if (contentPaneRef.value) {
-    contentPaneRef.value.removeEventListener('scroll', handleScrollEvent);
-  }
 });
 </script>
 
 <template>
   <div class="master-shell" :dir="isRtl ? 'rtl' : 'ltr'">
-    <!-- SWISS TOP BAR -->
+    <!-- GLASSMORPHYSIC SWISS TOP BAR -->
     <EditorialHeader
       :is-zen-mode="isZenMode"
       :scroll-progress="scrollProgress"
@@ -300,23 +323,30 @@ onUnmounted(() => {
       @open-palette="isPaletteOpen = true"
     />
 
-    <!-- EDITORIAL LAYOUT (DESKTOP: FIXED SIDEBAR + SCROLLING CONTENT / MOBILE: FULL-PAGE FLOW) -->
-    <div class="editorial-layout" :class="{ 'zen-mode': isZenMode }" @wheel="handleLayoutWheel">
-      <!-- SIDEBAR (STAYS STRICTLY FIXED & STATIONARY ON DESKTOP) -->
+    <!-- 00 // STANDALONE HERO BANNER (Full width above sticky stage) -->
+    <div v-if="!isZenMode" class="hero-stage-container">
+      <AboutSection
+        @show-qr="showQrModal = true"
+        @explore-work="scrollToSection('experience')"
+      />
+    </div>
+
+    <!-- WORK STAGE: STICKY TREE SIDEBAR + EDITORIAL STREAM (01 to 04) -->
+    <div id="work-stage" class="editorial-layout" :class="{ 'zen-mode': isZenMode }">
+      <!-- TREE TABLE OF CONTENTS SIDEBAR -->
       <EditorialSidebar
         v-if="!isZenMode"
         :active-section="activeSection"
+        :active-sub-item="activeSubItem"
         :section-routes="sectionRoutes"
-        :selected-note="selectedNote"
         @scroll-to-section="scrollToSection"
+        @scroll-to-target="scrollToTarget"
         @show-qr="showQrModal = true"
+        @scroll-top="scrollToSection('about')"
       />
 
-      <!-- MAIN SCROLLING STREAM -->
-      <main class="editorial-content" ref="contentPaneRef">
-        <!-- 00 // ABOUT -->
-        <AboutSection @show-qr="showQrModal = true" />
-
+      <!-- MAIN SCROLLING STREAM (01 to 04) -->
+      <main class="editorial-content">
         <!-- 01 // EXPERIENCE -->
         <ExperienceSection
           @open-case-study="openCaseStudy"
@@ -332,15 +362,11 @@ onUnmounted(() => {
         <!-- 04 // NOTES -->
         <NotesSection ref="notesSectionRef" />
 
-        <!-- STREAM FOOTER -->
-        <footer class="editorial-stream-footer">
-          <div class="footer-bottom-row">
-            <p class="copyright mono-ui" dir="ltr">{{ t('copyright') }}</p>
-            <button @click="scrollToSection('about')" class="scroll-top-btn">
-              {{ t('backToTop') }}
-            </button>
-          </div>
-        </footer>
+        <!-- EDITORIAL FOOTER -->
+        <EditorialFooter
+          @scroll-to-top="scrollToSection('about')"
+          @open-terminal="emit('open-terminal')"
+        />
       </main>
     </div>
 
@@ -387,7 +413,28 @@ onUnmounted(() => {
   flex-direction: column;
 }
 
-/* DESKTOP EDITORIAL LAYOUT (FIXED SIDEBAR + INDEPENDENT STREAM) */
+/* HERO STAGE CONTAINER */
+.hero-stage-container {
+  max-width: 1380px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 24px 28px 12px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 1024px) {
+  .hero-stage-container {
+    padding: 16px 16px 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-stage-container {
+    padding: 12px 12px 4px;
+  }
+}
+
+/* DESKTOP EDITORIAL LAYOUT (NATURAL WINDOW SCROLL + STICKY SIDEBAR) */
 .editorial-layout {
   display: grid;
   grid-template-columns: 290px 1fr;
@@ -395,11 +442,8 @@ onUnmounted(() => {
   max-width: 1380px;
   margin: 0 auto;
   width: 100%;
-  height: calc(100vh - 64px);
-  max-height: calc(100vh - 64px);
-  padding: 10px 28px 0;
+  padding: 12px 28px 48px;
   box-sizing: border-box;
-  overflow: hidden;
   position: relative;
 }
 
@@ -410,16 +454,12 @@ onUnmounted(() => {
 
 /* CONTENT STREAM */
 .editorial-content {
-  overflow-y: auto;
-  height: 100%;
-  max-height: 100%;
   display: flex;
   flex-direction: column;
   gap: 68px;
-  padding: 14px 20px 90px 20px;
-  scroll-behavior: smooth;
-  scrollbar-width: thin;
+  padding: 10px 14px 40px 14px;
   box-sizing: border-box;
+  min-width: 0;
 }
 
 /* MOBILE RESPONSIVE OVERRIDES */
@@ -427,17 +467,11 @@ onUnmounted(() => {
   .editorial-layout {
     display: flex;
     flex-direction: column;
-    padding: 10px 14px 40px;
-    gap: 20px;
-    height: auto;
-    max-height: none;
-    overflow: visible;
+    padding: 10px 16px 40px;
+    gap: 24px;
   }
 
   .editorial-content {
-    overflow: visible;
-    max-height: none;
-    height: auto;
     padding: 0;
     gap: 44px;
   }

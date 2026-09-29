@@ -188,6 +188,27 @@ const handleTagClick = (tech) => {
   color: #ffffff;
 }
 
+:global([data-theme="space-glass"]) .pillar-card,
+:global([data-theme="dark"]) .pillar-card {
+  background: rgba(15, 23, 42, 0.72);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+:global([data-theme="space-glass"]) .pillar-tag-item,
+:global([data-theme="dark"]) .pillar-tag-item {
+  background: rgba(30, 41, 59, 0.75);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #cbd5e1;
+}
+
+:global([data-theme="space-glass"]) .pillar-tag-item:hover,
+:global([data-theme="dark"]) .pillar-tag-item:hover {
+  background: #0284c7;
+  border-color: #0284c7;
+  color: #ffffff;
+}
+
 @media (max-width: 640px) {
   .pillar-card {
     padding: 16px 14px;

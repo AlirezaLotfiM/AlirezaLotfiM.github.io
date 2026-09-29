@@ -125,13 +125,21 @@ const handleThemeToggle = () => {
   top: 0;
   z-index: 100;
   width: 100%;
-  background: var(--bg-main, #f8fafc);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-bottom: 1px solid var(--panel-border, #cbd5e1);
+  background: rgba(248, 250, 252, 0.8);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid rgba(203, 213, 225, 0.65);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.03);
   padding: 0 24px;
   box-sizing: border-box;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, background 0.3s ease, border-color 0.3s ease;
+}
+
+:global([data-theme="space-glass"]) .swiss-top-bar,
+:global([data-theme="dark"]) .swiss-top-bar {
+  background: rgba(8, 13, 26, 0.82);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.4);
 }
 
 .swiss-top-bar.hidden {
@@ -171,9 +179,22 @@ const handleThemeToggle = () => {
 }
 
 .damoon-full-logo-img {
-  width: 44px;
-  height: 44px;
+  width: 54px;
+  height: 54px;
   object-fit: contain;
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+:global([data-theme="space-glass"]) .damoon-full-logo-img,
+:global([data-theme="dark"]) .damoon-full-logo-img {
+  filter: brightness(0) invert(1) drop-shadow(0 0 10px rgba(56, 189, 248, 0.65));
+}
+
+@media (min-width: 1025px) {
+  .damoon-full-logo-img {
+    width: 72px;
+    height: 72px;
+  }
 }
 
 .header-version-pill {

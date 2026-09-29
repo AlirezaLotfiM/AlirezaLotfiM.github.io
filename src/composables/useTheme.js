@@ -77,6 +77,11 @@ function applyTheme(theme) {
     document.documentElement.style.setProperty("--neon-rgb", rgbString);
   }
 
+  if (typeof document !== 'undefined') {
+    document.documentElement.setAttribute('data-theme', theme.id);
+    document.documentElement.classList.toggle('dark', theme.id !== 'swiss-light');
+  }
+
   localStorage.setItem(THEME_STORAGE_KEY, theme.id);
   currentTheme.value = theme;
 }

@@ -31,14 +31,9 @@ const handleProjectChipClick = (relProj) => {
       <article
         v-for="(job, index) in workExperience"
         :key="job.id || index"
+        :id="'exp-card-' + (job.id || index)"
         class="timeline-job-card"
       >
-        <!-- Timeline Left Node & Connector -->
-        <div class="timeline-left-node">
-          <span class="node-dot"></span>
-          <span class="node-line" v-if="index < workExperience.length - 1"></span>
-        </div>
-
         <!-- Main Card Content -->
         <div class="job-card-content">
           <div class="job-header-row">
@@ -137,34 +132,8 @@ const handleProjectChipClick = (relProj) => {
 
 .timeline-job-card {
   display: flex;
-  gap: 16px;
   position: relative;
-}
-
-.timeline-left-node {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 20px;
-  flex-shrink: 0;
-  padding-top: 6px;
-}
-
-.node-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: var(--item-bg, #ffffff);
-  border: 3px solid var(--neon, #4f46e5);
-  box-shadow: 0 0 10px rgba(79, 70, 229, 0.4);
-  z-index: 2;
-}
-
-.node-line {
-  flex: 1;
-  width: 2px;
-  background: linear-gradient(180deg, var(--neon, #4f46e5), var(--panel-border, #cbd5e1));
-  margin-top: 4px;
+  width: 100%;
 }
 
 .job-card-content {
@@ -172,23 +141,30 @@ const handleProjectChipClick = (relProj) => {
   background: var(--item-bg, #ffffff);
   border: 1px solid var(--panel-border, #cbd5e1);
   border-radius: 16px;
-  padding: 20px 24px;
+  padding: 22px 24px;
   box-shadow: 0 4px 16px rgba(15, 23, 42, 0.03);
   display: flex;
   flex-direction: column;
   gap: 14px;
   transition: all 0.2s ease;
-  border-right: 3px solid var(--neon, #4f46e5);
 }
 
-[dir="ltr"] .job-card-content {
-  border-right: 1px solid var(--panel-border, #cbd5e1);
-  border-left: 3px solid var(--neon, #4f46e5);
+:global([data-theme="space-glass"]) .job-card-content,
+:global([data-theme="dark"]) .job-card-content {
+  background: rgba(15, 23, 42, 0.72);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
 }
 
 .job-card-content:hover {
   border-color: rgba(79, 70, 229, 0.4);
   box-shadow: 0 8px 24px rgba(79, 70, 229, 0.08);
+}
+
+:global([data-theme="space-glass"]) .job-card-content:hover,
+:global([data-theme="dark"]) .job-card-content:hover {
+  border-color: rgba(56, 189, 248, 0.4);
+  box-shadow: 0 8px 24px rgba(56, 189, 248, 0.1);
 }
 
 .job-header-row {
@@ -327,6 +303,45 @@ const handleProjectChipClick = (relProj) => {
   color: var(--text-secondary, #475569);
 }
 
+:global([data-theme="space-glass"]) .period-badge-pill,
+:global([data-theme="dark"]) .period-badge-pill {
+  background: rgba(30, 41, 59, 0.7);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #cbd5e1;
+}
+
+:global([data-theme="space-glass"]) .case-study-trigger-btn,
+:global([data-theme="dark"]) .case-study-trigger-btn {
+  background: rgba(56, 189, 248, 0.1);
+  border-color: rgba(56, 189, 248, 0.3);
+  color: #38bdf8;
+}
+
+:global([data-theme="space-glass"]) .case-study-trigger-btn:hover,
+:global([data-theme="dark"]) .case-study-trigger-btn:hover {
+  background: #0284c7;
+  color: #ffffff;
+}
+
+:global([data-theme="space-glass"]) .impact-metric-pill,
+:global([data-theme="dark"]) .impact-metric-pill {
+  background: rgba(15, 23, 42, 0.8);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #94a3b8;
+}
+
+:global([data-theme="space-glass"]) .impact-metric-pill .metric-val,
+:global([data-theme="dark"]) .impact-metric-pill .metric-val {
+  color: #f8fafc;
+}
+
+:global([data-theme="space-glass"]) .tech-pill-badge,
+:global([data-theme="dark"]) .tech-pill-badge {
+  background: rgba(30, 41, 59, 0.7);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #cbd5e1;
+}
+
 .job-related-projects-box {
   display: flex;
   align-items: center;
@@ -338,10 +353,21 @@ const handleProjectChipClick = (relProj) => {
   flex-wrap: wrap;
 }
 
+:global([data-theme="space-glass"]) .job-related-projects-box,
+:global([data-theme="dark"]) .job-related-projects-box {
+  background: rgba(56, 189, 248, 0.04);
+  border-color: rgba(56, 189, 248, 0.2);
+}
+
 .related-lbl {
   font-size: 0.76rem;
   font-weight: 700;
   color: var(--neon, #4f46e5);
+}
+
+:global([data-theme="space-glass"]) .related-lbl,
+:global([data-theme="dark"]) .related-lbl {
+  color: #38bdf8;
 }
 
 .related-chips-row {
@@ -365,14 +391,32 @@ const handleProjectChipClick = (relProj) => {
   transition: all 0.15s ease;
 }
 
+:global([data-theme="space-glass"]) .related-project-chip,
+:global([data-theme="dark"]) .related-project-chip {
+  background: rgba(15, 23, 42, 0.85);
+  border-color: rgba(255, 255, 255, 0.14);
+  color: #f8fafc;
+}
+
 .related-project-chip:hover {
   border-color: var(--neon, #4f46e5);
   color: var(--neon, #4f46e5);
 }
 
+:global([data-theme="space-glass"]) .related-project-chip:hover,
+:global([data-theme="dark"]) .related-project-chip:hover {
+  border-color: #38bdf8;
+  color: #38bdf8;
+}
+
 .chip-arrow {
   font-size: 0.72rem;
   color: var(--neon, #4f46e5);
+}
+
+:global([data-theme="space-glass"]) .chip-arrow,
+:global([data-theme="dark"]) .chip-arrow {
+  color: #38bdf8;
 }
 
 @media (max-width: 640px) {

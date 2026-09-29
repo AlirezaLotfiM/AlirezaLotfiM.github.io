@@ -115,15 +115,23 @@ const formatStatus = (st) => {
 
         <p class="desc">{{ p.description }}</p>
 
+        <!-- Impact & Scale Metrics Strip (Matt Trice / Decent App Style) -->
+        <div v-if="p.metrics && p.metrics.length" class="project-metrics-strip">
+          <div v-for="(m, mi) in p.metrics" :key="mi" class="metric-mini-tile">
+            <span class="m-val mono-ui">{{ m.value }}</span>
+            <span class="m-lbl">{{ m.label }}</span>
+          </div>
+        </div>
+
         <div class="meta-line">
           <span class="tech-stack mono-ui" dir="ltr">{{ p.language }}</span>
           <button
-            v-if="p.role || p.architectureSummary || (p.details && p.details.length) || p.blueprint"
+            v-if="p.role || p.architectureSummary || (p.details && p.details.length) || p.blueprint || p.challenge"
             @click="toggleSpecs(p.id)"
             class="toggle-specs-btn"
             type="button"
           >
-            <span>{{ expandedProjects[p.id] ? t('specsToggleClose') : t('specsToggleOpen') }}</span>
+            <span>{{ expandedProjects[p.id] ? 'بستن کیس‌استادی' : 'مطالعه موردی معماری (Case Study)' }}</span>
             <span class="chevron-icon" :class="{ rotated: expandedProjects[p.id] }">▾</span>
           </button>
         </div>
@@ -147,8 +155,20 @@ const formatStatus = (st) => {
         <Transition name="drawer-slide">
           <div v-if="expandedProjects[p.id]" class="project-specs-panel">
             <div class="specs-panel-header">
-              <span class="specs-header-badge mono-ui" dir="ltr">ENGINEERING ARCHITECTURE SPEC</span>
+              <span class="specs-header-badge mono-ui" dir="ltr">ENGINEERING CASE STUDY & ARCHITECTURE</span>
               <span class="specs-header-dot"></span>
+            </div>
+
+            <!-- Case Narrative 01: Challenge -->
+            <div v-if="p.challenge" class="case-narrative-block challenge-block">
+              <span class="narrative-tag mono-ui" dir="ltr">// 01 THE ENGINEERING CHALLENGE</span>
+              <p class="narrative-text">{{ p.challenge }}</p>
+            </div>
+
+            <!-- Case Narrative 02: Approach -->
+            <div v-if="p.approach" class="case-narrative-block approach-block">
+              <span class="narrative-tag mono-ui" dir="ltr">// 02 ARCHITECTURE APPROACH</span>
+              <p class="narrative-text">{{ p.approach }}</p>
             </div>
 
             <div class="specs-grid">
@@ -168,12 +188,15 @@ const formatStatus = (st) => {
 
             <!-- Visual Schematic Blueprint Flow Diagram -->
             <div v-if="p.blueprint" class="blueprint-mount-area">
+              <div class="blueprint-mount-header">
+                <span class="narrative-tag mono-ui" dir="ltr">// 03 SYSTEM BLUEPRINT SCHEMATIC</span>
+              </div>
               <BlueprintDiagram :blueprint="p.blueprint" />
             </div>
 
             <!-- Key Implementations & Technical Challenges -->
             <div v-if="p.details && p.details.length" class="specs-details-block">
-              <span class="specs-details-title">{{ t('keyChallenges') }}</span>
+              <span class="narrative-tag mono-ui" dir="ltr">// 04 CRITICAL IMPLEMENTATION DETAILS</span>
               <ul class="specs-bullet-list">
                 <li v-for="(detail, di) in p.details" :key="di">
                   <span class="bullet-dot">›</span>
@@ -227,12 +250,34 @@ const formatStatus = (st) => {
   color: var(--neon, #4f46e5);
 }
 
+:global([data-theme="space-glass"]) .filter-chip-btn,
+:global([data-theme="dark"]) .filter-chip-btn {
+  background: rgba(30, 41, 59, 0.7);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #cbd5e1;
+}
+
+:global([data-theme="space-glass"]) .filter-chip-btn:hover,
+:global([data-theme="dark"]) .filter-chip-btn:hover {
+  border-color: #38bdf8;
+  color: #38bdf8;
+}
+
 .filter-chip-btn.active {
   background: var(--neon, #4f46e5);
   border-color: var(--neon, #4f46e5);
   color: #ffffff;
   font-weight: 700;
   box-shadow: 0 2px 10px rgba(79, 70, 229, 0.25);
+}
+
+:global([data-theme="space-glass"]) .filter-chip-btn.active,
+:global([data-theme="dark"]) .filter-chip-btn.active {
+  background: #38bdf8;
+  border-color: #38bdf8;
+  color: #080d1a !important;
+  font-weight: 800;
+  box-shadow: 0 0 16px rgba(56, 189, 248, 0.4);
 }
 
 .projects-editorial-stream {
@@ -407,8 +452,22 @@ const formatStatus = (st) => {
   transition: all 0.15s ease;
 }
 
+:global([data-theme="space-glass"]) .toggle-specs-btn,
+:global([data-theme="dark"]) .toggle-specs-btn {
+  background: rgba(56, 189, 248, 0.1);
+  border-color: rgba(56, 189, 248, 0.28);
+  color: #38bdf8;
+}
+
 .toggle-specs-btn:hover {
   background: var(--neon, #4f46e5);
+  color: #ffffff;
+}
+
+:global([data-theme="space-glass"]) .toggle-specs-btn:hover,
+:global([data-theme="dark"]) .toggle-specs-btn:hover {
+  background: #0284c7;
+  border-color: #0284c7;
   color: #ffffff;
 }
 
@@ -466,6 +525,12 @@ const formatStatus = (st) => {
   background: var(--item-bg, #ffffff);
   border: 1px solid var(--panel-border, #cbd5e1);
   border-radius: 10px;
+}
+
+:global([data-theme="space-glass"]) .spec-cell,
+:global([data-theme="dark"]) .spec-cell {
+  background: rgba(15, 23, 42, 0.7);
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
 .spec-k {
@@ -538,6 +603,86 @@ const formatStatus = (st) => {
 .drawer-slide-leave-to {
   opacity: 0;
   transform: translateY(-8px);
+}
+
+.project-metrics-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 8px;
+  margin: 4px 0 2px;
+}
+
+.metric-mini-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--item-bg, #ffffff);
+  border: 1px solid var(--panel-border, #e2e8f0);
+  transition: all 0.2s ease;
+}
+
+:global([data-theme="space-glass"]) .metric-mini-tile,
+:global([data-theme="dark"]) .metric-mini-tile {
+  background: rgba(30, 41, 59, 0.65);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.metric-mini-tile:hover {
+  border-color: var(--neon, #0284c7);
+  background: var(--card-bg, #ffffff);
+}
+
+.m-val {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-main, #0f172a);
+}
+
+:global([data-theme="space-glass"]) .m-val,
+:global([data-theme="dark"]) .m-val {
+  color: #38bdf8;
+}
+
+.m-lbl {
+  font-size: 0.68rem;
+  color: var(--text-soft, #64748b);
+  font-weight: 500;
+}
+
+.case-narrative-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--item-bg, #ffffff);
+  border: 1px solid var(--panel-border, #cbd5e1);
+}
+
+:global([data-theme="space-glass"]) .case-narrative-block,
+:global([data-theme="dark"]) .case-narrative-block {
+  background: rgba(15, 23, 42, 0.65);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.narrative-tag {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--text-soft, #64748b);
+}
+
+.narrative-text {
+  font-size: 0.86rem;
+  line-height: 1.7;
+  color: var(--text-main, #0f172a);
+  margin: 0;
+}
+
+.blueprint-mount-header {
+  margin-bottom: 8px;
 }
 
 @media (max-width: 640px) {

@@ -403,7 +403,7 @@ onUnmounted(() => {
   min-height: 100dvh;
   width: 100%;
   max-width: 100vw;
-  overflow-x: hidden;
+  overflow: visible;
   display: flex;
   flex-direction: column;
   padding: 0;
@@ -419,7 +419,7 @@ onUnmounted(() => {
   max-width: 100vw;
   min-width: 0;
   box-sizing: border-box;
-  overflow-x: hidden;
+  overflow: visible;
 }
 
 .dashboard.zen-mode {

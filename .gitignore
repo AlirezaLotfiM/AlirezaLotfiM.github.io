@@ -30,3 +30,5 @@ playwright-report/
 # Proprietary licensed fonts (hosted on ArvanCloud S3)
 public/fonts/Peyda*
 
+# Dev scratch / analysis scripts
+scratch/
