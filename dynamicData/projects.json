@@ -1,0 +1,313 @@
+[
+  {
+    "id": 104,
+    "name": "پلتفرم نوبت‌دهی شعب نداپرداز",
+    "slug": "legacy-queue-systems",
+    "language": "C# / WPF / WinForms / Hardware / SQL",
+    "description": "پلتفرم نرم‌افزاری جامع مدیریت صف و نوبت‌دهی شعب نداپرداز انفورماتیک؛ شامل توسعه اکوسیستم نرم‌افزارهای دسکتاپ کیوسک‌های لمسی صدور نوبت، کلاینت‌های باجه (Teller Unit)، موتور نمایشگرهای سالنی (TV Display)، یکپارچه‌سازی سخت‌افزاری و پشتیبانی سامانه‌های بانکی. مستقر در شعب بانک‌های مطرح کشور (مانند بانک ملت، بانک آینده، بانک شهر و...).",
+    "html_url": "#",
+    "isPrivate": true,
+    "status": "عملیاتی بانکی",
+    "updatedAt": "2025-11-03",
+    "stackLabel": "C# / WPF / Hardware",
+    "role": "توسعه‌دهنده نرم‌افزار و پشتیبان سیستم‌ها (۵ سال سابقه فعالیت از سال ۱۴۰۰)",
+    "architectureSummary": "WPF Kiosks + TV Display Engine + Hardware Control Units + SQL Server",
+    "scale": "شعب بانک‌های مطرح کشور (مانند بانک ملت، آینده، شهر و مراکز سازمانی)",
+    "impact": "مدیریت روزانه صدها هزار مراجعه‌کننده و روان‌سازی صفوف بانکی در شعب سراسر کشور",
+    "blueprint": {
+      "code": "NEDA-QUEUE-BLUEPRINT // V5",
+      "layers": [
+        {
+          "name": "لایه ورودی و نوبت‌گیری مراجعین",
+          "nodes": [
+            "کیوسک‌های لمسی صدور فیش نوبت (WPF)",
+            "استندهای دکمه‌ای فیزیکی شعب",
+            "سرویس نوبت‌دهی غیرحضوری"
+          ]
+        },
+        {
+          "name": "لایه سخت‌افزار و هسته پردازش مرکزی",
+          "nodes": [
+            "کنترل‌یونیت سخت‌افزاری (Serial/RS485)",
+            "موتور صف‌بندی و زمان‌بندی پویا",
+            "پایگاه داده تراکنشی SQL Server"
+          ]
+        },
+        {
+          "name": "لایه خروجی و باجه‌های عملیاتی",
+          "nodes": [
+            "کلاینت پرسنل باجه (Teller Units)",
+            "موتور نمایشگرهای سالنی (TV Display)",
+            "سیستم صوتی اعلان نوبت"
+          ]
+        }
+      ]
+    },
+    "details": [
+      "توسعه، ارتقا و نگهداری پروژه‌های نرم‌افزاری متعدد در اکوسیستم نوبت‌دهی نداپرداز (سیستم‌های قدیم و جدید)",
+      "توسعه و پشتیبانی فنی سامانه نوبت‌دهی غیرحضوری بانک ملت",
+      "توسعه نرم‌افزار دسکتاپ کیوسک‌های لمسی صدور نوبت با WPF جهت انتخاب سرویس، احراز هویت و چاپ حرارتی فیش",
+      "توسعه کلاینت‌های دسکتاپ باجه (Teller Units) برای پرسنل شعب بانکی با قابلیت فراخوانی، انتقال هوشمند، مدیریت باجه و صف‌بندی",
+      "طراحی موتور نمایشگرهای تلویزیونی سالن (TV Display Engine) جهت اعلام صوتی شماره‌ها و نمایش وضعیت زنده صفوف",
+      "توسعه نرم‌افزاری نسل جدید با اتصال و پشتیبانی از استندهای دکمه‌ای فیزیکی و کنترل‌یونیت‌های سخت‌افزاری از طریق ارتباطات سریال",
+      "سفارشی‌سازی و استقرار در شعب بانک‌های کشور (مانند بانک ملت، بانک آینده، بانک شهر و...)",
+      "ثبت تراکنش‌ها، مانیتورینگ بلادرنگ و بهینه‌سازی کوئری‌های SQL Server جهت پاسخ‌دهی پایدار در ساعات اوج شلوغی"
+    ],
+    "architecture": "graph TD\n    subgraph Clients[\"کلاینت‌ها و کیوسک‌های شعب\"]\n      TK[\"کیوسک لمسی اخذ نوبت - Touch Kiosk\"]\n      BS[\"استند دکمه‌ای فیزیکی - Physical Button Stand\"]\n      TEL[\"کلاینت باجی - Teller Unit\"]\n      TV[\"نمایشگر تلویزیونی سالن - TV Display\"]\n    end\n\n    subgraph Hardware_Bridge[\"عامل سخت‌افزاری و ارتباطی\"]\n      CU[\"کنترل یونیت سخت‌افزاری - Control Unit\"]\n      PRT[\"چاپگر حرارتی - Thermal Printer\"]\n      SND[\"ماژول اعلام صوتی - Audio Engine\"]\n      BS --> CU\n      TK --> PRT\n      TV --> SND\n    end\n\n    subgraph Server[\"سرور نوبت‌دهی مرکز / شعبه\"]\n      QS[\"Queue Management Engine\"]\n      REP[\"Reporting & Analytics\"]\n      DB[(\"SQL Server\")]\n    end\n\n    TK & TEL & TV -->|\"TCP/IP & REST\"| QS\n    CU -->|\"Serial/RS485\"| QS\n    QS --> DB & REP\n\n    style TK fill:#7c3aed,stroke:#fff\n    style TV fill:#0369a1,stroke:#fff\n    style QS fill:#1e40af,stroke:#fff\n    style DB fill:#166534,stroke:#fff",
+    "challenge": "مدیریت پایدار صف‌های پرتردد شعب بانکی در ساعات اوج شلوغی، تضمین همزمانی بدون تاخیر صدها کیوسک و باجه و پیشگیری از قفل تراکنش‌ها یا افت پایداری سخت‌افزار.",
+    "approach": "معماری توزیع‌شده با تفکیک کلاینت‌های کیوسک WPF و تلر، ارتباط سریال مقاوم با کنترل‌یونیت‌ها، و کشینگ و بهینه‌سازی دقیق کوئری‌های SQL Server.",
+    "metrics": [
+      {
+        "label": "استقرار در شعب",
+        "value": "بانک‌های ملت، آینده و شهر"
+      },
+      {
+        "label": "ترافیک روزانه",
+        "value": "+۱۰۰,۰۰۰ مراجعه‌کننده"
+      },
+      {
+        "label": "سابقه پایداری",
+        "value": "+۵ سال فعالیت مستمر"
+      }
+    ]
+  },
+  {
+    "id": 105,
+    "name": "سامانه جامع نوبت‌دهی و احراز هویت متمرکز بیودارو",
+    "slug": "biodaru-qms",
+    "language": "C# / ASP.NET Core / Vue.js 3 / WPF / SignalR / Suprema SDK",
+    "description": "طراحی و بازنویسی کامل صفر تا صد اکوسیستم نوبت‌دهی و مدیریت چرخه اهدای پلاسما؛ جایگزینی سیستم ناامن و سنگین قدیمی با یک پلتفرم مدرن مبتنی بر هسته .NET، کلاینت‌های بلادرنگ با SignalR، احراز هویت بیومتریک چندمرحله‌ای اثر انگشت (Suprema)، فرآیند استاندارد ۹ مرحله‌ای و مدیریت متمرکز شعب از مرکز.",
+    "html_url": "#",
+    "isPrivate": true,
+    "status": "عملیاتی سازمانی",
+    "updatedAt": "2026-05-20",
+    "stackLabel": "ASP.NET Core / Vue 3 / WPF / SignalR / Biometrics",
+    "role": "طراح و معمار سیستم، توسعه‌دهنده فول‌استک (Backend + WPF + Frontend)",
+    "architectureSummary": "Modular Architecture + SignalR Hub + WPF Hardware Agent + Vue 3 SPA + Suprema SDK",
+    "scale": "مدیریت متمرکز کلیه شعب از طریق یک مرکز واحد با پشتیبانی از صدها ایستگاه",
+    "impact": "حذف ۱۰۰٪ تصاویر زائد، احراز هویت دقیق ۹ مرحله‌ای بر مبنای SOP پزشکی و افزایش چشمگیر سرعت",
+    "blueprint": {
+      "code": "BIODARU-CENTRAL-QMS // ARCHITECTURE V2",
+      "layers": [
+        {
+          "name": "چرخه ۹ مرحله‌ای اهدا و ایستگاه‌های عملیاتی",
+          "nodes": [
+            "۱. اخذ نوبت با اثر انگشت یا کدملی",
+            "۲. فراخوان پذیرش با اعلان صوتی/تصویری",
+            "۳. احراز و ارجاع پذیرش به پرسشنامه",
+            "۴. فراخوان و احراز دوگانه استند پرسشنامه",
+            "۵. صف پزشک و بررسی پرونده",
+            "۶. استند خودحذفی و رضایت‌نامه",
+            "۷. ارجاع به صف سالن اهدا",
+            "۸. فراخوان و اجرای فرآیند اهدا",
+            "۹. ثبت اتمام و خروج از سیستم"
+          ]
+        },
+        {
+          "name": "عامل سخت‌افزاری بومی (Edge Hardware Agent)",
+          "nodes": [
+            "تطبیق الگو با سنسور Suprema (Binary Template)",
+            "اسکن اسناد با درایور WIA Document Scanner",
+            "سرویس اعلان صوتی بلادرنگ (Audio Engine)",
+            "احراز هویت سخت‌افزاری دستگاه (Device Auth)"
+          ]
+        },
+        {
+          "name": "هسته پردازش و مدیریت متمرکز شعب",
+          "nodes": [
+            "ASP.NET Core REST APIs + Modular Business Logic",
+            "SignalR Hub (هماهنگ‌ساز بلادرنگ کیوسک‌ها و پذیرش)",
+            "پنل ادمین مرکزی (شعب چندگانه، گزارش‌گیری متمرکز)",
+            "پایگاه داده بهینه‌شده SQL Server (بدون عکس زائد)"
+          ]
+        }
+      ]
+    },
+    "details": [
+      "بازطراحی و توسعه کامل از پایه (Clean Architecture) پس از بررسی و رد پذیرش پشتیبانی سیستم ناکارآمد، سنگین و غیرایمن قبلی",
+      "احراز هویت مرحله‌ای و تطبیق دقیق بیومتریک با سنسورهای Suprema (استخراج تمپلیت باینری با سرعت زیر ۱۰۰ میلی‌ثانیه به جای ذخیره تصاویر خام)",
+      "پیاده‌سازی پایپ‌لاین ۹ مرحله‌ای چرخه اهدای پلاسما مطابق SOP (اخذ نوبت، فراخوان پذیرش، احراز پذیرش، استند پرسشنامه با احراز اولیه و نهایی، صف پزشک، خودحذفی و رضایت‌نامه، سالن اهدا، اتمام اهدا و خروج)",
+      "توسعه ClientAgent بومی (WPF + C#) جهت یکپارچه‌سازی سخت‌افزارهای اثر انگشت، اسکنر مدارک WIA و ماژول صوتی اعلام نوبت",
+      "همگام‌سازی بلادرنگ تمام ایستگاه‌های پذیرش، پزشک، سالن انتظار و کیوسک‌ها از طریق خطوط WebSocket در SignalR Hub",
+      "احراز هویت امن سخت‌افزاری دستگاه‌ها (Device Authentication) جهت اطمینان از مجاز بودن کلیه درخواست‌های عملیاتی در شعب",
+      "پنل ادمین پیشرفته با امکان تعریف شعب متعدد، گزارش‌گیری‌های متمرکز و مانیتورینگ بلادرنگ دستگاه‌ها و کاربران از یک مرکز واحد",
+      "کیوسک نظرسنجی آنلاین با فرم‌های داینامیک و احراز هویت امن JWT با middleware مدیریت نشست‌های فعال"
+    ],
+    "architecture": "graph TD\n    subgraph Central[\"مرکز مدیریت متمرکز بیودارو\"]\n      ADM[\"پنل ادمین مرکزی - شعب متعدد & گزارشات\"]\n      CORE[\"ASP.NET Core Backend & SignalR Hub\"]\n      DB[(\"پایگاه داده SQL Server بهینه‌شده\")]\n    end\n\n    subgraph Branch[\"شبکه شعب بیودارو (Branch Stations)\"]\n      subgraph Lifecycle[\"چرخه ۹ مرحله‌ای اهدای پلاسما\"]\n        S1[\"۱. اخذ نوبت (اثر انگشت/کدملی)\"]\n        S2[\"۲. پذیرش و اعلان نمایشگر\"]\n        S3[\"۳. تکمیل پذیرش & هدایت\"]\n        S4[\"۴. استند پرسشنامه (احراز دوگانه)\"]\n        S5[\"۵. پزشک & معاینه\"]\n        S6[\"۶. استند خودحذفی & رضایت\"]\n        S7[\"۷. صف سالن اهدا\"]\n        S8[\"۸. اجرای فرآیند اهدا\"]\n        S9[\"۹. ثبت خروج اهداکننده\"]\n      end\n\n      subgraph Hardware[\"عامل سخت‌افزاری بومی - ClientAgent\"]\n        DEV[\"احراز هویت دستگاه (Device Auth)\"]\n        FP[\"Suprema Biometric SDK - تطبیق تمپلیت\"]\n        WIA[\"WIA Document Scanner\"]\n        SND[\"ماژول صوتی اعلام نوبت\"]\n      end\n    end\n\n    S1 --> S2 --> S3 --> S4 --> S5 --> S6 --> S7 --> S8 --> S9\n    Lifecycle --> Hardware\n    Branch <-->|\"Secure WebSocket & REST\"| Central\n    ADM --> CORE\n    CORE --> DB\n\n    style Central fill:#0f172a,stroke:#38bdf8\n    style Lifecycle fill:#1e293b,stroke:#a855f7\n    style Hardware fill:#1e1b4b,stroke:#818cf8\n    style ADM fill:#0369a1,stroke:#fff\n    style CORE fill:#1e40af,stroke:#fff\n    style DB fill:#166534,stroke:#fff",
+    "challenge": "سیستم قدیمی شرکت با Core جاوا و کلاینت دلفی دارای نقص‌های جدی در رعایت SOP اهدای خون بود؛ احراز هویت کاملاً صوری و ناامن با نمایش ۳ تصویر تصادفی برای انتخاب توسط خود فرد انجام می‌شد و به ازای هر مراجعه، یک تصویر حجیم Base64 از اثر انگشت بدون تطبیق بیومتریک در دیتابیس ثبت می‌شد که باعث اشغال فضا و افت شدید سرعت شده بود. با رد پیشنهاد پشتیبانی سیستم قدیمی، تصمیم بر معماری و پیاده‌سازی کامل از پایه گرفته شد.",
+    "approach": "طراحی پلتفرم مدرن ماژولار با احراز هویت بیومتریک مرحله‌ای (الگوریتم Suprema SDK)، پایپ‌لاین ۹ مرحله‌ای اهدا (از نوبت‌گیری تا خروج)، همگام‌سازی بلادرنگ ایستگاه‌ها با SignalR Hub، احراز هویت سخت‌افزاری تجهیزات (Device Auth) و پنل ادمین متمرکز با قابلیت تعریف و مدیریت کلیه شعب کشوری از طریق یک مرکز واحد.",
+    "metrics": [
+      {
+        "label": "فرآیند چرخه اهدا",
+        "value": "۹ مرحله احراز و صف هوشمند"
+      },
+      {
+        "label": "بهینه‌سازی دیتابیس",
+        "value": "۱۰۰٪ حذف تصاویر Base64"
+      },
+      {
+        "label": "مدیریت شعب",
+        "value": "هماهنگ‌سازی متمرکز از مرکز"
+      }
+    ]
+  },
+  {
+    "id": 106,
+    "name": "موزیک پلیر نوا (Nava Music Player)",
+    "slug": "nava-music-player",
+    "language": "Flutter / Dart / Cross-Platform (Android & Windows)",
+    "description": "موزیک پلیر مدرن و پیشرفته توسعه‌یافته با فلاتر بر پایه متدولوژی چابک Vibe Coding و دستیاری هوش مصنوعی. منتشرشده به‌صورت رسمی در استورهای کافه‌بازار و مایکت با قابلیت اجرای بومی در ویندوز، سرویس بلادرنگ پخش پس‌زمینه (Background Audio)، کنترل‌های نوتیفیکیشن و قفل صفحه، و طراحی بصری شیک نئومورفیک/گلس.",
+    "html_url": "https://cafebazaar.ir/app/com.damoon.nava.music",
+    "isPrivate": false,
+    "status": "منتشرشده در بازار و مایکت",
+    "updatedAt": "2026-03-20",
+    "stackLabel": "Flutter / Dart / Vibe Coding",
+    "role": "طراح و توسعه‌دهنده محصول (AI-Augmented Engineering)",
+    "architectureSummary": "Flutter UI + AudioService (Background Lifecycle) + JustAudio + Windows Desktop Runner",
+    "scale": "منتشرشده در کافه‌بازار، مایکت و نسخه بومی دسکتاپ ویندوز",
+    "impact": "توسعه، بسته‌بندی و شیپ کامل یک محصول چندسکویی و انتشار در استورهای رسمی با بهره‌وری حداکثری از هوش مصنوعی",
+    "category": "vibe",
+    "links": [
+      {
+        "title": "دریافت از کافه‌بازار",
+        "url": "https://cafebazaar.ir/app/com.damoon.nava.music"
+      },
+      {
+        "title": "دریافت از مایکت",
+        "url": "https://myket.ir/app/com.damoon.nava.music"
+      }
+    ],
+    "blueprint": {
+      "code": "NAVA-AUDIO-PIPELINE // VIBE-ENGINEERING",
+      "layers": [
+        {
+          "name": "لایه رابط کاربری و تعاملات (UI/UX Layer)",
+          "nodes": [
+            "طراحی نئومورفیک و گلس‌مورفیک فلاتر",
+            "لیست پخش هوشمند و کش آرت‌ورک",
+            "کنترل‌های لمسی و ژست‌های حرکتی"
+          ]
+        },
+        {
+          "name": "لایه مدیریت پخش و سرویس پس‌زمینه (Audio Core)",
+          "nodes": [
+            "AudioService (Foreground Service)",
+            "موتور صوتی JustAudio (کم‌تاخیر)",
+            "کنترلر نوتیفیکیشن و قفل صفحه"
+          ]
+        },
+        {
+          "name": "لایه استقرار چندسکویی (Target Platforms)",
+          "nodes": [
+            "خروجی اندروید (انتشار در بازار و مایکت)",
+            "خروجی بومی دسکتاپ ویندوز (Windows Runner)",
+            "پایگاه داده محلی سبک (Hive / Preferences)"
+          ]
+        }
+      ]
+    },
+    "details": [
+      "پیاده‌سازی چرخه عمر صوت در پس‌زمینه (Background Audio Lifecycle) با هندلینگ قطع/وصل هدفون، تماس ورودی و مدیریت Audio Focus",
+      "توسعه چندسکویی (Cross-Platform) با یک کدبیس واحد برای اندروید و دسکتاپ ویندوز",
+      "بهره‌گیری موثر از ابزارهای هوش مصنوعی در متدولوژی Vibe Coding برای تبدیل سریع ایده به محصول تجاری قابل استفاده",
+      "انتشار رسمی و موفق بر روی مارکت‌های معتبر داخلی (کافه‌بازار و مایکت) با شناسه com.damoon.nava.music",
+      "طراحی سیستم لیست‌های پخش، اسکن خودکار حافظه و دسته‌بندی آلبوم‌ها و هنرمندان"
+    ],
+    "architecture": "graph TD\n    subgraph UI[\"رابط کاربری و بصری (Flutter UI)\"]\n      Home[\"صفحه اصلی و کتابخانه آهنگ‌ها\"]\n      NP[\"Now Playing (پلیر تمام‌صفحه)\"]\n      EQ[\"اکولایزر و تنظیمات صوتی\"]\n    end\n\n    subgraph Engine[\"هسته پردازش صوت و چرخه عمر\"]\n      AS[\"AudioService (Background Service)\"]\n      JA[\"JustAudio Player Engine\"]\n      AF[\"Audio Focus Manager\"]\n      Notif[\"System Media Notification\"]\n    end\n\n    subgraph Storage[\"داده و فایل‌ها\"]\n      MediaStore[\"Android MediaStore / Win Storage\"]\n      HiveDB[(\"تنظیمات و پلی‌لیست‌ها\")]\n    end\n\n    UI --> AS\n    AS --> JA & AF & Notif\n    JA --> MediaStore\n    UI --> HiveDB\n\n    style UI fill:#0284c7,stroke:#fff\n    style Engine fill:#7c3aed,stroke:#fff\n    style Storage fill:#16a34a,stroke:#fff",
+    "challenge": "پیچیدگی‌های چرخه عمر پخش صوت در پس‌زمینه (Background Audio)، فوکوس صوتی حین تماس‌ها و نوتیفیکیشن‌ها، و سرعت‌بخشی به توسعه با متدولوژی هوش مصنوعی (Vibe Coding).",
+    "approach": "توسعه بومی چندسکویی با Flutter، مدیریت عمیق لایف‌سایکل صوتی با AudioService، طراحی لوکس نئومورفیک و استقرار رسمی روی استورهای اندروید.",
+    "metrics": [
+      {
+        "label": "پلتفرم‌ها",
+        "value": "اندروید + ویندوز"
+      },
+      {
+        "label": "کانال‌های رسمی",
+        "value": "کافه‌بازار و مایکت"
+      },
+      {
+        "label": "شیوه توسعه",
+        "value": "Vibe Coding / AI-Driven"
+      }
+    ]
+  },
+  {
+    "id": 102,
+    "name": "سامانه آموزش و ارزیابی پرسنل بیودارو",
+    "slug": "biodaroo-training-suite",
+    "language": "C# / ASP.NET Core / Vue / SQL",
+    "description": "سامانه جامع مدیریت دوره‌های آموزشی، برگزاری آزمون‌های آنلاین دوره‌ای و ارزشیابی پرسنل سازمانی بیودارو مبتنی بر وب‌سرویس‌های RESTful و دیتابیس رابطه‌ای.",
+    "html_url": "#",
+    "isPrivate": true,
+    "status": "عملیاتی",
+    "updatedAt": "2025-03-22",
+    "stackLabel": ".NET Core / Vue / SQL Server",
+    "role": "توسعه‌دهنده بک‌اند و فرانت‌اند",
+    "architectureSummary": "Vue.js SPA + ASP.NET Core WebAPI + SQL Server",
+    "scale": "کارکنان و کادر آموزشی شعب سازمان",
+    "impact": "حذف آزمون‌های کاغذی و خودکارسازی ثبت نمرات و سوابق آموزشی پرسنل",
+    "details": [
+      "طراحی پایگاه داده ساختاریافته در SQL Server برای مدیریت سرفصل‌ها، سوالات و نتایج",
+      "پیاده‌سازی پنل مدیریت آزمون و طراحی سوالات چهارگزینه‌ای و تشریحی",
+      "پنل اختصاصی کاربر جهت شرکت در آزمون با تایمر آنلاین و ذخیره اتوماتیک پاسخ‌ها",
+      "احراز هویت کاربران و مدیریت سطوح دسترسی پرسنل و مدیران آموزشی",
+      "ماژول صدور کارنامه و تحلیل آماری نتایج آموزشی"
+    ],
+    "architecture": "graph LR\n    User((\"کاربر / پرسنل\")) -->|HTTPS| Web[\"Vue.js Frontend\"]\n    Web -->|REST API| API[\"ASP.NET Core WebAPI\"]\n    API -->|Read/Write| SQL[(\"SQL Server\")]\n    subgraph Deployment[\"زیرساخت سازمانی\"]\n    Web\n    API\n    SQL\n    end\n    style User fill:#fff,stroke:#333,color:#000\n    style Web fill:#41b883,stroke:#35495e\n    style API fill:#512bd4,stroke:#fff",
+    "challenge": "حذف کامل آزمون‌های کاغذی سازمانی، ثبت دقیق تایمر پاسخ‌دهی و صدور خودکار کارنامه ارزشیابی برای کارکنان شعب سراسر کشور.",
+    "approach": "معماری امن وب‌سرویس RESTful با ASP.NET Core، دیتابیس رابطه‌ای تفکیک‌شده در SQL Server و پنل تک‌صفحه‌ای با Vue.js.",
+    "metrics": [
+      {
+        "label": "دیجیتالی‌سازی",
+        "value": "۱۰۰٪ بدون کاغذ"
+      },
+      {
+        "label": "صدور کارنامه",
+        "value": "بلادرنگ بلافاصله پس از آزمون"
+      },
+      {
+        "label": "پوشش کاربران",
+        "value": "پرسنل سازمانی"
+      }
+    ]
+  },
+  {
+    "id": 101,
+    "name": "NeuroFlow Platform (طراحی مفهومی)",
+    "slug": "neuroflow-platform",
+    "language": "C# / .NET / RabbitMQ / Redis",
+    "description": "طراحی مفهومی و مطالعاتی پلتفرم پردازش غیرهمزمان و جریان کاری توزیع‌شده با استفاده از RabbitMQ، Redis و موتورهای پردازشی C#.",
+    "html_url": "#",
+    "isPrivate": true,
+    "status": "در حال تحقیق و توسعه",
+    "updatedAt": "2025-04-18",
+    "stackLabel": "C# / RabbitMQ / Redis",
+    "role": "ایده‌پرداز و توسعه‌دهنده",
+    "architectureSummary": "API Gateway + SignalR + RabbitMQ Workers + Redis Cache",
+    "scale": "پروژه تحقیق و توسعه فنی",
+    "impact": "بستری برای پیاده‌سازی و آزمایش الگوهای پردازش غیرهمزمان و Message Broker",
+    "details": [
+      "بررسی و پیاده‌سازی نمونه‌های اولیه با RabbitMQ جهت انتقال پیام‌های ناهمگام",
+      "استفاده از Redis برای کش داده‌های پرتکرار و کاهش بار پایگاه داده",
+      "پیاده‌سازی Worker Services در .NET برای پردازش تسک‌های پس‌زمینه",
+      "بررسی الگوهای Clean Architecture و CQRS در مدیریت پیام‌ها"
+    ],
+    "architecture": "graph LR\n    subgraph Clients\n      Web[\"Vue.js Web\"]\n      Agent[\"WPF Agent\"]\n    end\n    subgraph Bridge\n      API[\"API Gateway\"]\n      Hub[\"SignalR Hub\"]\n    end\n    MQ{\"RabbitMQ\"}\n    subgraph Core_Backend\n      Svc[\"Core Service\"]\n      DB[(\"PostgreSQL / SQL\")]\n      Cache[(\"Redis\")]\n    end\n    Web --> API\n    Agent <--> Hub\n    API --> MQ\n    Hub --> MQ\n    MQ --> Svc\n    Svc --> DB\n    Svc --> Cache\n    style API fill:#1e3a8a,stroke:#fff\n    style MQ fill:#f97316,stroke:#fff\n    style DB fill:#16a34a,stroke:#fff\n    style Agent fill:#4b5563,stroke:#fff\n    style Cache fill:#dc2626,stroke:#fff",
+    "challenge": "مدیریت پردازش ناهمگام تسک‌های محاسباتی سنگین بدون مسدود کردن ترد اصلی و تضمین صف‌بندی ایمن پیام‌ها.",
+    "approach": "طراحی الگوهای Clean Architecture و CQRS با محوریت RabbitMQ Message Broker، کشینگ کلید-مقدار در Redis، و Worker Services در دات‌نت.",
+    "metrics": [
+      {
+        "label": "الگوی ارتباطی",
+        "value": "Asynchronous Pub/Sub"
+      },
+      {
+        "label": "توزیع داده",
+        "value": "Redis Cache Layer"
+      },
+      {
+        "label": "هسته پردازش",
+        "value": ".NET Worker Services"
+      }
+    ]
+  }
+]
