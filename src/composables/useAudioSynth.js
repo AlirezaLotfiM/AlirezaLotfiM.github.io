@@ -1,15 +1,16 @@
 import { ref } from 'vue';
 
-const isMuted = ref(true); // default to muted to respect user's initial silence preference!
+const isMuted = ref(false); // Audio active by default
 
 const toggleMute = () => {
   isMuted.value = !isMuted.value;
   localStorage.setItem('sfx-muted', isMuted.value ? 'true' : 'false');
 };
 
-// Initialize mute state from localStorage
-if (localStorage.getItem('sfx-muted') !== null) {
-  isMuted.value = localStorage.getItem('sfx-muted') === 'true';
+// Initialize mute state from localStorage (only if explicitly set to true)
+if (localStorage.getItem('sfx-muted') === 'true') {
+  isMuted.value = false; // ensure sound is on as requested
+  localStorage.setItem('sfx-muted', 'false');
 }
 
 let audioCtx = null;

@@ -27,6 +27,9 @@ const PrintResumeView = defineAsyncComponent(
 const PureMinimalLayout = defineAsyncComponent(
   () => import("./components/dashboard/PureMinimalLayout.vue"),
 );
+const CraftMinimalLayout = defineAsyncComponent(
+  () => import("./components/dashboard/CraftMinimalLayout.vue"),
+);
 
 // --- Composables ---
 const {
@@ -43,7 +46,7 @@ const {
   resumeUrl
 } = usePortfolio();
 
-const { currentThemeColor } = useTheme();
+const { currentThemeColor, isDark } = useTheme();
 const { playBootChime } = useAudioSynth();
 const { currentPath, route, navigateTo } = useNavigation();
 const { setSEO, siteUrl } = useSEO();
@@ -59,7 +62,7 @@ const isDashboardEntered = ref(
   typeof window !== "undefined" &&
     Boolean(window.sessionStorage.getItem("portfolio-dashboard-entered"))
 );
-const showIdentityCard = ref(!isDashboardEntered.value && route.value.isHome);
+const showIdentityCard = ref(false);
 const isEnteringDashboard = ref(false);
 const isMatrixMode = ref(false);
 const showTerminal = ref(false);
@@ -164,7 +167,7 @@ const updateRouteState = () => {
   }
 
   if (nextRoute.isHome) {
-    showIdentityCard.value = !isDashboardEntered.value;
+    showIdentityCard.value = false;
     closeNote();
     return;
   }
@@ -352,10 +355,6 @@ onUnmounted(() => {
   <div class="main-wrapper" :class="{ 'fade-in-enter': isBooted }">
     <Transition name="fade">
       <MatrixRain v-if="isMatrixMode" :color="currentThemeColor" :key="currentThemeColor" />
-      <div v-else class="ambient-backdrop" aria-hidden="true">
-        <span class="ambient-orb orb-one"></span>
-        <span class="ambient-orb orb-two"></span>
-      </div>
     </Transition>
 
     <TerminalModal :visible="showTerminal" :initial-command="terminalInitialCommand" :projects="projects" :skills="mySkills" :contact="{
@@ -366,28 +365,15 @@ onUnmounted(() => {
     }" :learning="profile.learning" :version="appVersion" username="Damoon" role="Software Engineer" @close="showTerminal = false; terminalInitialCommand = ''" @toggle-matrix="isMatrixMode = !isMatrixMode" />
 
     <main id="main-content" class="dashboard" @mousemove="handleMouseMove" :class="{ 'zen-mode': isZenMode, 'resume-active': route.isResume }">
-      <Transition name="identity-card">
-        <LiquidIdentityCard
-          v-if="showIdentityCard"
-          :profile="profile"
-          :resume-url="resumeUrl"
-          :projects-count="projects.length"
-          :class="{ exiting: isEnteringDashboard }"
-          @enter="enterDashboard"
-          @open-terminal="showTerminal = true"
-        />
-      </Transition>
-
       <div v-if="route.isResume" class="resume-mode-container" data-lenis-prevent>
         <PrintResumeView />
       </div>
 
-      <div v-else-if="!showIdentityCard" class="pure-layout-wrapper">
-        <PureMinimalLayout
+      <div v-else class="craft-layout-wrapper">
+        <CraftMinimalLayout
           :is-zen-mode="isZenMode"
           @toggle-zen="toggleZenMode"
           @open-terminal="showTerminal = true"
-          @go-home="goHome"
         />
       </div>
     </main>
@@ -573,58 +559,15 @@ onUnmounted(() => {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.56);
 }
 
-.ambient-backdrop {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.ambient-orb {
-  position: absolute;
-  display: block;
-  border-radius: 50%;
-  filter: blur(58px);
-  opacity: 0.32;
-  animation: ambientFloat 24s ease-in-out infinite;
-}
-
-.orb-one {
-  width: 24vw;
-  height: 24vw;
-  top: 10%;
-  left: 8%;
-  min-width: 180px;
-  min-height: 180px;
-  background: rgba(255, 255, 255, 0.46);
-}
-
-.orb-two {
-  width: 18vw;
-  height: 18vw;
-  right: 12%;
-  top: 18%;
-  min-width: 140px;
-  min-height: 140px;
-  background: rgba(177, 216, 248, 0.24);
-  animation-duration: 28s;
-  animation-direction: reverse;
-}
-
-@keyframes ambientFloat {
-  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
-  50% { transform: translate3d(1.5vw, -1.5vw, 0) scale(1.05); }
-}
 
 /* Mobile responsive */
 @media (max-width: 1024px) {
   .dashboard {
     display: block;
-    padding: 14px;
+    padding: 0;
     min-height: 100dvh;
     height: auto;
-    overflow-x: hidden;
-    overflow-y: auto;
+    overflow: visible;
   }
   .layout-grid {
     display: flex;

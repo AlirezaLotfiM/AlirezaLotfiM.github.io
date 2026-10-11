@@ -15,14 +15,13 @@ const props = defineProps({
 const emit = defineEmits(['open-terminal', 'open-palette', 'toggle-theme']);
 
 const { profile, userGithub } = usePortfolio();
-const { isDark, toggleTheme } = useTheme();
+const { isDark, isPaper, isLight, nextThemeLabel, toggleTheme } = useTheme();
 const { playThemeChirp } = useAudioSynth();
 const { t } = useI18n();
 
-const appVersion = typeof __APP_VERSION__ !== 'undefined' ? __APP_VERSION__ : '3.1.0';
+const appVersion = typeof __APP_VERSION__ !== 'undefined' ? __APP_VERSION__ : '4.0.0';
 
 const handleThemeToggle = () => {
-  playThemeChirp();
   toggleTheme();
   emit('toggle-theme');
 };
@@ -69,14 +68,12 @@ const handleThemeToggle = () => {
         <!-- Theme Switcher -->
         <button
           @click="handleThemeToggle"
-          :title="isDark ? 'تغییر به تم لایت' : 'تغییر به تم دارک'"
+          :title="`تغییر تم (حالت فعلی: ${isLight ? 'روشن' : isPaper ? 'کتابخوان' : 'تاریک'})`"
           class="header-icon-link theme-toggle"
-          :aria-label="isDark ? 'تغییر به تم لایت' : 'تغییر به تم دارک'"
+          :aria-label="`تغییر تم به ${nextThemeLabel}`"
         >
-          <svg v-if="!isDark" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-          </svg>
-          <svg v-else viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <!-- Sun icon when Light -->
+          <svg v-if="isLight" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="5"/>
             <line x1="12" y1="1" x2="12" y2="3"/>
             <line x1="12" y1="21" x2="12" y2="23"/>
@@ -86,6 +83,15 @@ const handleThemeToggle = () => {
             <line x1="21" y1="12" x2="23" y2="12"/>
             <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
             <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+          <!-- Book/Paper icon when Paper -->
+          <svg v-else-if="isPaper" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+          </svg>
+          <!-- Moon icon when Dark -->
+          <svg v-else viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
           </svg>
         </button>
 
@@ -149,6 +155,13 @@ const handleThemeToggle = () => {
   box-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.4);
 }
 
+:global([data-theme="paper-reader"]) .swiss-top-bar,
+:global([data-theme="paper"]) .swiss-top-bar {
+  background: rgba(248, 244, 236, 0.88);
+  border-bottom: 1px solid rgba(226, 215, 197, 0.85);
+  box-shadow: 0 4px 20px -2px rgba(43, 38, 33, 0.04);
+}
+
 .swiss-top-bar.hidden {
   transform: translateY(-100%);
 }
@@ -164,6 +177,10 @@ const handleThemeToggle = () => {
   will-change: transform;
   transition: transform 0.1s ease-out;
   z-index: 101;
+}
+
+:global([data-theme="paper-reader"]) .scroll-progress-line {
+  background: linear-gradient(90deg, #b45309, #d97706);
 }
 
 :global([dir="rtl"]) .scroll-progress-line {

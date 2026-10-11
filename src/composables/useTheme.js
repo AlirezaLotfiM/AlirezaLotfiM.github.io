@@ -1,31 +1,58 @@
 import { ref, computed } from 'vue';
+import { useAudioSynth } from './useAudioSynth';
 
-const THEME_STORAGE_KEY = 'user-theme-v4';
+const THEME_STORAGE_KEY = 'user-theme-v5';
 
 const themes = [
   {
     id: "swiss-light",
     name: "Swiss Minimalist Light",
+    label: "☀ روشن",
+    icon: "☀",
     colors: {
-      "--bg-main": "#f8fafc",
-      "--text-main": "#0f172a",
-      "--text-secondary": "#334155",
-      "--text-soft": "#64748b",
-      "--panel-bg": "rgba(255, 255, 255, 0.95)",
-      "--panel-border": "rgba(203, 213, 225, 0.8)",
+      "--bg-main": "#ffffff",
+      "--text-main": "#09090b",
+      "--text-secondary": "#27272a",
+      "--text-soft": "#52525b",
+      "--panel-bg": "#ffffff",
+      "--panel-border": "#e4e4e7",
       "--item-bg": "#ffffff",
-      "--item-hover-bg": "#f1f5f9",
-      "--bar-bg": "#f8fafc",
-      "--neon": "#4f46e5",
-      "--accent-strong": "#4338ca",
-      "--glass-panel-base": "rgba(255, 255, 255, 0.95)",
-      "--glass-panel-highlight": "rgba(79, 70, 229, 0.04)",
-      "--logo-filter": "drop-shadow(0 2px 8px rgba(79, 70, 229, 0.15))"
+      "--item-hover-bg": "#f4f4f5",
+      "--bar-bg": "#ffffff",
+      "--neon": "#2563eb",
+      "--accent-strong": "#1d4ed8",
+      "--glass-panel-base": "#ffffff",
+      "--glass-panel-highlight": "rgba(37, 99, 235, 0.04)",
+      "--logo-filter": "drop-shadow(0 2px 8px rgba(37, 99, 235, 0.15))"
+    }
+  },
+  {
+    id: "paper-reader",
+    name: "Fidibo Warm Paper",
+    label: "📖 کتابخوان",
+    icon: "📖",
+    colors: {
+      "--bg-main": "#f8f4ec",
+      "--text-main": "#2b2621",
+      "--text-secondary": "#49423b",
+      "--text-soft": "#786e64",
+      "--panel-bg": "#f2eadb",
+      "--panel-border": "#e2d7c5",
+      "--item-bg": "#faf6ee",
+      "--item-hover-bg": "#eae0cf",
+      "--bar-bg": "#f3ebe0",
+      "--neon": "#b45309",
+      "--accent-strong": "#92400e",
+      "--glass-panel-base": "#f2eadb",
+      "--glass-panel-highlight": "rgba(180, 83, 9, 0.05)",
+      "--logo-filter": "drop-shadow(0 2px 8px rgba(180, 83, 9, 0.15))"
     }
   },
   {
     id: "space-glass",
     name: "Space Obsidian Dark",
+    label: "☾ تاریک",
+    icon: "☾",
     colors: {
       "--bg-main": "#080d1a",
       "--text-main": "#f8fafc",
@@ -47,7 +74,16 @@ const themes = [
 
 const currentTheme = ref(themes[0]);
 const currentThemeColor = computed(() => currentTheme.value.colors["--neon"]);
-const isDark = computed(() => currentTheme.value.id !== "swiss-light");
+const isDark = computed(() => currentTheme.value.id === "space-glass");
+const isPaper = computed(() => currentTheme.value.id === "paper-reader");
+const isLight = computed(() => currentTheme.value.id === "swiss-light");
+
+const currentThemeLabel = computed(() => currentTheme.value.label);
+const nextThemeLabel = computed(() => {
+  if (currentTheme.value.id === "swiss-light") return "📖 کتابخوان";
+  if (currentTheme.value.id === "paper-reader") return "☾ تاریک";
+  return "☀ روشن";
+});
 
 function hexToRgb(hex) {
   const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
@@ -79,7 +115,9 @@ function applyTheme(theme) {
 
   if (typeof document !== 'undefined') {
     document.documentElement.setAttribute('data-theme', theme.id);
-    document.documentElement.classList.toggle('dark', theme.id !== 'swiss-light');
+    document.documentElement.classList.toggle('dark', theme.id === 'space-glass');
+    document.documentElement.classList.toggle('paper', theme.id === 'paper-reader');
+    document.documentElement.classList.toggle('light', theme.id === 'swiss-light');
   }
 
   localStorage.setItem(THEME_STORAGE_KEY, theme.id);
@@ -91,10 +129,10 @@ function initTheme() {
   if (savedId) {
     const found = themes.find(t => t.id === savedId);
     if (found) applyTheme(found);
-    else if (savedId === 'liquid-glass') applyTheme(themes[1]);
+    else if (savedId === 'liquid-glass') applyTheme(themes[2]);
     else applyTheme(themes[0]);
   } else if (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    applyTheme(themes[1]); // Space Obsidian (Dark)
+    applyTheme(themes[2]); // Space Obsidian (Dark)
   } else {
     applyTheme(themes[0]); // Swiss Light
   }
@@ -103,6 +141,8 @@ function initTheme() {
 initTheme();
 
 export function useTheme() {
+  const { playThemeChirp } = useAudioSynth();
+
   const setTheme = (themeId) => {
     const theme = themes.find(t => t.id === themeId);
     if (theme) {
@@ -111,11 +151,12 @@ export function useTheme() {
   };
 
   const toggleTheme = () => {
-    if (isDark.value) {
-      applyTheme(themes[0]);
-    } else {
-      applyTheme(themes[1]);
-    }
+    try {
+      playThemeChirp();
+    } catch (e) {}
+    const currentIndex = themes.findIndex(t => t.id === currentTheme.value.id);
+    const nextIndex = (currentIndex + 1) % themes.length;
+    applyTheme(themes[nextIndex]);
   };
 
   return {
@@ -123,6 +164,10 @@ export function useTheme() {
     currentTheme,
     currentThemeColor,
     isDark,
+    isPaper,
+    isLight,
+    currentThemeLabel,
+    nextThemeLabel,
     setTheme,
     toggleTheme
   };

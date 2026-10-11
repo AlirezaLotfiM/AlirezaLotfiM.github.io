@@ -12,7 +12,7 @@ const props = defineProps({
 const emit = defineEmits(['close', 'navigate-section', 'select-project', 'open-note', 'open-terminal', 'open-resume']);
 
 const { projects, notes, workExperience, profile, downloadVCard, activeFilter } = usePortfolio();
-const { isDark, toggleTheme } = useTheme();
+const { isDark, isPaper, isLight, nextThemeLabel, toggleTheme } = useTheme();
 const { t, isRtl, toggleLocale, currentLocale } = useI18n();
 const { playClick, playThemeChirp } = useAudioSynth();
 
@@ -63,10 +63,9 @@ const quickActions = computed(() => [
   {
     id: 'theme',
     category: t('cmdQuickActions'),
-    title: `${t('cmdSwitchTheme')} (${isDark.value ? (isRtl.value ? 'لایت' : 'Light') : (isRtl.value ? 'دارک' : 'Dark')})`,
-    icon: isDark.value ? '☀️' : '🌙',
+    title: `${t('cmdSwitchTheme')} (${nextThemeLabel.value})`,
+    icon: isLight.value ? '📖' : isPaper.value ? '🌙' : '☀️',
     action: () => {
-      playThemeChirp();
       toggleTheme();
     }
   },
