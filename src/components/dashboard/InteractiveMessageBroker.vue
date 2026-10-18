@@ -6,22 +6,13 @@ import { useTheme } from '../../composables/useTheme';
 const { playClick, playKey } = useAudioSynth();
 const { isDark, isPaper, isLight } = useTheme();
 
-// Root container ref for scroll measurement
-const containerRef = ref(null);
-const scrollProgress = ref(0);
-
-// Auto-Play Simulation State
+// Self-contained Explorable Progress & Simulation State
+const currentProgress = ref(0.08); // Starts at stage 1
 const isAutoPlaying = ref(false);
-const autoPlayProgress = ref(0);
-const isSimulationActive = ref(false); // Keeps visual state frozen at current stage when paused or finished
 let autoPlayRaf = null;
 let lastAutoPlayTime = null;
-const DURATION_MS = 14000; // 14 seconds for complete cinematic walkthrough
-
-// Effective progress drives all stage visuals and SVG animations
-const currentProgress = computed(() => {
-  return isSimulationActive.value ? autoPlayProgress.value : scrollProgress.value;
-});
+let stageTransitionRaf = null;
+const DURATION_MS = 12000; // 12 seconds for complete cinematic walkthrough
 
 const activeStage = computed(() => {
   const p = currentProgress.value;
@@ -78,58 +69,71 @@ const stages = [
 
 // Packets definition for visualization
 const packets = [
-  { id: 'p1', code: 'P01', label: 'تراکنش بانکی #842', color: '#38bdf8' },
+  { id: 'p1', code: 'P01', label: 'رویداد تراکنشی #842', color: '#38bdf8' },
   { id: 'p2', code: 'P02', label: 'لاگ اثرانگشت بیومتریک', color: '#818cf8' },
   { id: 'p3', code: 'P03', label: 'رویداد فیش کیوسک', color: '#34d399' }
 ];
 
-const updateScroll = () => {
-  if (typeof window === 'undefined' || !containerRef.value) return;
-  const rect = containerRef.value.getBoundingClientRect();
-  const windowH = window.innerHeight || 800;
-  
-  // Total scrollable range inside our tall container
-  const totalDist = rect.height - windowH;
-  if (totalDist <= 0) return;
+// Smooth progress transition helper
+const animateProgressTo = (target, duration = 350) => {
+  cancelAnimationFrame(stageTransitionRaf);
+  if (isAutoPlaying.value) stopAutoPlay();
 
-  const currentScrolled = -rect.top;
-  const rawProgress = Math.max(0, Math.min(1, currentScrolled / totalDist));
-  scrollProgress.value = rawProgress;
+  const start = currentProgress.value;
+  const startTime = performance.now();
+
+  const step = (now) => {
+    const elapsed = now - startTime;
+    const t = Math.min(1, elapsed / duration);
+    const ease = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+    currentProgress.value = start + (target - start) * ease;
+    if (t < 1) {
+      stageTransitionRaf = requestAnimationFrame(step);
+    }
+  };
+  stageTransitionRaf = requestAnimationFrame(step);
+};
+
+const jumpToStage = (index) => {
+  playClick();
+  const targetFraction = index === 0 ? 0.08 : index === 1 ? 0.48 : 0.88;
+  animateProgressTo(targetFraction);
+};
+
+const nextStage = () => {
+  playClick();
+  const next = (activeStage.value + 1) % stages.length;
+  jumpToStage(next);
+};
+
+const prevStage = () => {
+  playClick();
+  const prev = (activeStage.value - 1 + stages.length) % stages.length;
+  jumpToStage(prev);
 };
 
 // Auto-Play Controls
 const startAutoPlay = () => {
   playClick();
-  isSimulationActive.value = true;
-  if (autoPlayProgress.value >= 0.98) {
-    autoPlayProgress.value = 0;
-  } else if (!isAutoPlaying.value && autoPlayProgress.value === 0 && scrollProgress.value > 0.05 && scrollProgress.value < 0.95) {
-    autoPlayProgress.value = scrollProgress.value;
+  cancelAnimationFrame(stageTransitionRaf);
+  if (currentProgress.value >= 0.98) {
+    currentProgress.value = 0;
   }
   isAutoPlaying.value = true;
   lastAutoPlayTime = performance.now();
-
-  // Scroll into view if container is off-screen
-  if (containerRef.value) {
-    const rect = containerRef.value.getBoundingClientRect();
-    if (rect.top < -30 || rect.top > 160) {
-      containerRef.value.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  }
 
   const loop = (now) => {
     if (!isAutoPlaying.value) return;
     const delta = now - lastAutoPlayTime;
     lastAutoPlayTime = now;
 
-    const next = autoPlayProgress.value + (delta / DURATION_MS);
+    const next = currentProgress.value + (delta / DURATION_MS);
     if (next >= 1) {
-      autoPlayProgress.value = 1;
+      currentProgress.value = 1;
       isAutoPlaying.value = false;
-      // Stays frozen at stage 3 without resetting
       return;
     }
-    autoPlayProgress.value = next;
+    currentProgress.value = next;
     autoPlayRaf = requestAnimationFrame(loop);
   };
 
@@ -142,7 +146,6 @@ const stopAutoPlay = () => {
     playClick();
   }
   isAutoPlaying.value = false;
-  // autoPlayProgress remains frozen at the current progress and does not reset
   cancelAnimationFrame(autoPlayRaf);
 };
 
@@ -154,42 +157,21 @@ const toggleAutoPlay = () => {
   }
 };
 
-const handleUserScrollInteraction = () => {
-  if (isAutoPlaying.value) {
-    stopAutoPlay();
-  }
-  // User manually scrolled; release simulation hold
-  isSimulationActive.value = false;
-};
-
-const jumpToStage = (index) => {
+const scrubberRailRef = ref(null);
+const handleScrubberClick = (e) => {
+  if (!scrubberRailRef.value) return;
   playClick();
-  if (isAutoPlaying.value) {
-    stopAutoPlay();
-  }
-  isSimulationActive.value = false;
-  const targetFraction = index === 0 ? 0.05 : index === 1 ? 0.48 : 0.88;
-  autoPlayProgress.value = targetFraction;
-  if (typeof window === 'undefined' || !containerRef.value) return;
-  const rect = containerRef.value.getBoundingClientRect();
-  const windowH = window.innerHeight || 800;
-  const totalDist = rect.height - windowH;
-  const targetY = (window.pageYOffset || window.scrollY) + rect.top + (totalDist * targetFraction);
-  window.scrollTo({ top: targetY, behavior: 'smooth' });
+  if (isAutoPlaying.value) stopAutoPlay();
+  const rect = scrubberRailRef.value.getBoundingClientRect();
+  // In RTL, right side is 0 and left side is 100%
+  const clickOffsetFromRight = rect.right - e.clientX;
+  const fraction = Math.max(0, Math.min(1, clickOffsetFromRight / rect.width));
+  animateProgressTo(fraction, 220);
 };
-
-onMounted(() => {
-  window.addEventListener('scroll', updateScroll, { passive: true });
-  window.addEventListener('wheel', handleUserScrollInteraction, { passive: true });
-  window.addEventListener('touchmove', handleUserScrollInteraction, { passive: true });
-  updateScroll();
-});
 
 onUnmounted(() => {
-  window.removeEventListener('scroll', updateScroll);
-  window.removeEventListener('wheel', handleUserScrollInteraction);
-  window.removeEventListener('touchmove', handleUserScrollInteraction);
   cancelAnimationFrame(autoPlayRaf);
+  cancelAnimationFrame(stageTransitionRaf);
 });
 
 const persianNumbers = ['۱', '۲', '۳'];
@@ -313,18 +295,23 @@ const packet3Opacity = computed(() => {
             <button
               type="button"
               class="autoplay-pill-btn"
-              :class="{ 'is-active': isAutoPlaying, 'is-ended': autoPlayProgress >= 0.98 && !isAutoPlaying }"
+              :class="{ 'is-active': isAutoPlaying, 'is-ended': currentProgress >= 0.98 && !isAutoPlaying }"
               @click="toggleAutoPlay"
               :title="isAutoPlaying ? 'توقف اجرای خودکار' : 'اجرای خودکار سناریوی کامل'"
             >
               <span class="autoplay-status-dot"></span>
-              <span class="autoplay-btn-icon">{{ isAutoPlaying ? '❚❚' : (autoPlayProgress >= 0.98 ? '↺' : '▶') }}</span>
+              <span class="autoplay-btn-icon">{{ isAutoPlaying ? '❚❚' : (currentProgress >= 0.98 ? '↺' : '▶') }}</span>
               <span class="autoplay-btn-label">
-                {{ isAutoPlaying ? 'توقف شبیه‌سازی' : (autoPlayProgress >= 0.98 ? 'شروع مجدد از ابتدا' : (autoPlayProgress > 0 && isSimulationActive ? 'ادامه شبیه‌سازی' : 'اجرای خودکار')) }}
+                {{ isAutoPlaying ? 'توقف شبیه‌سازی' : (currentProgress >= 0.98 ? 'شروع مجدد از ابتدا' : (currentProgress > 0.08 ? 'ادامه شبیه‌سازی' : 'اجرای خودکار')) }}
               </span>
             </button>
 
-            <div class="progress-indicator">
+            <div
+              ref="scrubberRailRef"
+              class="progress-indicator interactive-scrubber"
+              @click="handleScrubberClick"
+              title="کلیک برای پرش به هر نقطه از شبیه‌سازی"
+            >
               <span class="stage-label">
                 <span v-if="isAutoPlaying" class="live-pulse-txt">🔴 زنده:</span>
                 <span>مرحله</span>
@@ -500,8 +487,21 @@ const packet3Opacity = computed(() => {
              EDITORIAL STAGE NARRATIVE & CONTROLS
              ═══════════════════════════════════════════════ -->
         <div class="narrative-footer">
-          <!-- Step Switcher Tabs -->
+          <!-- Step Switcher Tabs with Navigation Arrows -->
           <div class="stage-stepper-pills">
+            <!-- Right button (in RTL): Previous Stage (moves rightward toward ۰۱) -->
+            <button
+              type="button"
+              class="stepper-arrow-btn"
+              @click="prevStage"
+              :disabled="activeStage === 0"
+              title="مرحله قبلی (بازگشت به راست)"
+              aria-label="مرحله قبلی"
+            >
+              <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </button>
             <button
               v-for="(st, idx) in stages"
               :key="idx"
@@ -514,6 +514,19 @@ const packet3Opacity = computed(() => {
               <span class="step-idx mono-font">{{ st.num }}</span>
               <span class="step-badge-text desktop-only-text">{{ st.badge }}</span>
               <span class="step-badge-text mobile-only-text">{{ st.mobileBadge }}</span>
+            </button>
+            <!-- Left button (in RTL): Next Stage (moves leftward toward ۰۳) -->
+            <button
+              type="button"
+              class="stepper-arrow-btn"
+              @click="nextStage"
+              :disabled="activeStage === stages.length - 1"
+              title="مرحله بعدی (پیشروی به چپ)"
+              aria-label="مرحله بعدی"
+            >
+              <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
             </button>
           </div>
 
@@ -551,18 +564,16 @@ const packet3Opacity = computed(() => {
    ══════════════════════════════════════════════════════════════════ */
 .scrolly-container {
   position: relative;
-  height: 220vh; /* Scroll runway */
-  margin: 36px 0 64px;
+  height: auto;
+  margin: 28px 0 44px;
 }
 
 .sticky-viewport {
-  position: -webkit-sticky;
-  position: sticky;
-  top: clamp(24px, 6vh, 48px);
+  position: relative;
   width: 100%;
   display: flex;
   justify-content: center;
-  z-index: 20;
+  z-index: 10;
 }
 
 .explorable-card {
@@ -868,19 +879,36 @@ const packet3Opacity = computed(() => {
   font-weight: 800;
 }
 
+.interactive-scrubber {
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.interactive-scrubber:hover {
+  background: var(--item-hover-bg);
+}
+
+.interactive-scrubber:hover .progress-bar-rail {
+  transform: scaleY(1.3);
+}
+
 .progress-bar-rail {
   width: 90px;
-  height: 3px;
+  height: 4px;
   background: var(--panel-border);
   border-radius: 999px;
   overflow: hidden;
+  transition: transform 0.2s ease;
 }
 
 .progress-bar-fill {
   height: 100%;
   background: var(--neon);
   border-radius: 999px;
-  transition: width 0.1s linear;
+  transition: width 0.08s linear;
 }
 
 /* ══════════════════════════════════════════════════════════════════
@@ -1149,6 +1177,51 @@ const packet3Opacity = computed(() => {
   flex-wrap: wrap;
 }
 
+.stepper-arrow-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid var(--panel-border);
+  background: var(--item-bg);
+  color: var(--text-soft);
+  font-size: 1.15rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.stepper-arrow-btn:hover:not(:disabled) {
+  background: var(--item-hover-bg);
+  color: var(--neon);
+  border-color: var(--neon);
+}
+
+.stepper-arrow-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.stepper-arrow-btn svg {
+  display: block;
+  pointer-events: none;
+}
+
+.is-paper .stepper-arrow-btn {
+  background: #f3ece0;
+  border-color: #e2d7c5;
+  color: #574e44;
+}
+
+.is-paper .stepper-arrow-btn:hover:not(:disabled) {
+  background: #ede3d2;
+  border-color: #b45309;
+  color: #b45309;
+}
+
 .stepper-btn {
   background: var(--item-bg);
   border: 1px solid var(--panel-border);
@@ -1323,20 +1396,19 @@ const packet3Opacity = computed(() => {
   }
 
   .scrolly-container {
-    height: 190vh;
-    margin: 16px 0 32px;
+    height: auto;
+    margin: 16px 0 24px;
   }
 
   .sticky-viewport {
-    position: -webkit-sticky;
-    position: sticky;
-    top: clamp(8px, 1.5vh, 18px);
+    position: relative;
+    top: 0;
     padding: 0;
   }
 
   .explorable-card {
     border-radius: 14px;
-    max-height: calc(100vh - 16px);
+    max-height: none;
     overflow: hidden;
   }
 

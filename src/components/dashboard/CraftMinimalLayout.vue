@@ -5,6 +5,8 @@ import { useAudioSynth } from '../../composables/useAudioSynth';
 import { useTheme } from '../../composables/useTheme';
 import { useNavigation } from '../../composables/useNavigation';
 import InteractiveMessageBroker from './InteractiveMessageBroker.vue';
+import InteractiveHardwareBridge from './InteractiveHardwareBridge.vue';
+import DigitalSignature from './DigitalSignature.vue';
 
 const props = defineProps({
   isZenMode: Boolean,
@@ -22,13 +24,14 @@ const activeProjectDossier = ref(null);
 const emailCopied = ref(false);
 const hoveredProject = ref(null);
 const tehranTime = ref('');
+const activeArchTab = ref('broker'); // 'broker' | 'hardware'
 
 // Floating Reading Progress & TOC Rail
 const activeSectionId = ref('sec-hero');
 const navSections = [
   { id: 'sec-hero', number: '۰۱', title: 'معرفی' },
   { id: 'sec-works', number: '۰۲', title: 'آثار شاخص' },
-  { id: 'sec-broker', number: '۰۳', title: 'معماری پیام' },
+  { id: 'sec-broker', number: '۰۳', title: 'معماری سیستم' },
   { id: 'sec-principles', number: '۰۴', title: 'دیدگاه مهندسی' },
   { id: 'sec-trajectory', number: '۰۵', title: 'مسیر حرفه‌ای' },
   { id: 'sec-skills', number: '۰۶', title: 'قلمروهای فنی' },
@@ -381,7 +384,7 @@ const flagshipProjects = [
     tagline: 'توسعه و انتشار مستقل اپلیکیشن چندسکویی موسیقی با بهره‌گیری از متدولوژی هوش مصنوعی (Vibe Coding).',
     tags: ['Flutter / Dart', 'Cross-Platform', 'Audio Architecture', 'Vibe Coding', 'AI Workflows'],
     metrics: [
-      { label: 'وضعیت انتشار', value: 'کافه بازار و مایکت (+۷۵ نصب)' },
+      { label: 'وضعیت انتشار', value: 'کافه بازار و مایکت (+۱۶۰ نصب)' },
       { label: 'معماری اپلیکیشن', value: 'Cross-Platform (اندروید و ویندوز)' },
       { label: 'متدولوژی توسعه', value: 'AI-Augmented Engineering' }
     ],
@@ -440,7 +443,7 @@ const flagshipProjects = [
     ],
     challenge: 'تحویل یک محصول تجاری باکیفیت و بدون باگ صوتی در کمترین زمان ممکن، از ایده تا طراحی و انتشار رسمی روی استورهای مطرح کشور.',
     approach: 'استفاده از متدولوژی پیشرو Vibe Coding؛ تبدیل مفاهیم معماری نرم‌افزار به پرامپت‌ها و ساختارهای منسجم کدی، مدیریت چرخه حیات صوت در پس‌زمینه و رابط کاربری مینیمال با فریم‌ورک Flutter.',
-    impact: 'توسعه مستقل و انتشار موفق یک محصول کراس‌پلتفرم واقعی روی کافه بازار و مایکت (+۷۵ نصب در فاز اولیه انتشار)؛ اثبات کارآمدی متدولوژی AI-Augmented در ساخت صفر تا صد اپلیکیشن‌های تعاملی.'
+    impact: 'توسعه مستقل و انتشار موفق یک محصول کراس‌پلتفرم واقعی روی کافه بازار و مایکت (+۱۶۰ نصب فعال)؛ اثبات کارآمدی متدولوژی AI-Augmented در ساخت صفر تا صد اپلیکیشن‌های تعاملی.'
   },
   {
     slug: 'neuroflow-platform',
@@ -803,15 +806,40 @@ const skillDomains = [
     <div class="hairline-divider"></div>
 
     <!-- ═══════════════════════════════════════════════
-         03.5 INTERACTIVE MESSAGE BROKER EXPLORATION
+         03.5 EXPLORABLE SYSTEM ARCHITECTURES (DUAL LAB)
          ═══════════════════════════════════════════════ -->
     <section id="sec-broker" class="section-container">
       <div class="section-eyebrow-row">
         <h2 class="section-title">کاوش تعاملی معماری</h2>
-        <span class="section-count mono-font">پژوهش بصری • رویدادمحوری</span>
+        <span class="section-count mono-font">پژوهش بصری • شبیه‌ساز مهندسی</span>
       </div>
 
-      <InteractiveMessageBroker />
+      <!-- Architecture Switcher Tabs -->
+      <div class="arch-tab-switcher-row">
+        <button
+          type="button"
+          class="arch-tab-pill-btn"
+          :class="{ active: activeArchTab === 'broker' }"
+          @click="activeArchTab = 'broker'; playClick()"
+        >
+          <span class="tab-idx mono-font">۰۱</span>
+          <span>کارگزار پیام (Message Broker FIFO)</span>
+        </button>
+        <button
+          type="button"
+          class="arch-tab-pill-btn"
+          :class="{ active: activeArchTab === 'hardware' }"
+          @click="activeArchTab = 'hardware'; playClick()"
+        >
+          <span class="tab-idx mono-font">۰۲</span>
+          <span>پل ارتباطی سخت‌افزار و نرم‌افزار (RS-485 / WPF)</span>
+        </button>
+      </div>
+
+      <Transition name="fade-fast" mode="out-in">
+        <InteractiveMessageBroker v-if="activeArchTab === 'broker'" key="broker" />
+        <InteractiveHardwareBridge v-else key="hardware" />
+      </Transition>
     </section>
 
     <div class="hairline-divider"></div>
@@ -978,11 +1006,13 @@ const skillDomains = [
          08. COLOPHON & FOOTER
          ═══════════════════════════════════════════════ -->
     <footer class="editorial-colophon">
+      <div class="colophon-signature-row">
+        <DigitalSignature />
+      </div>
       <div class="colophon-bottom">
         <span class="colophon-copy mono-font">
-          © {{ new Date().getFullYear() }} Alireza Lotfi Moghaddam (Damoon)
+          © {{ new Date().getFullYear() }} • تهران، ایران
         </span>
-        <span class="colophon-city">تهران، ایران</span>
       </div>
     </footer>
 
@@ -3293,5 +3323,70 @@ const skillDomains = [
 .expand-dossier-leave-to {
   opacity: 0;
   transform: translateY(-8px);
+}
+
+/* Architecture Switcher Row */
+.arch-tab-switcher-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 18px 0 8px;
+  flex-wrap: wrap;
+}
+
+.arch-tab-pill-btn {
+  background: var(--item-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 999px;
+  padding: 8px 18px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-soft);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: inherit;
+  user-select: none;
+}
+
+.arch-tab-pill-btn:hover {
+  color: var(--text-main);
+  border-color: var(--text-soft);
+  transform: translateY(-1px);
+}
+
+.arch-tab-pill-btn.active {
+  background: var(--neon);
+  border-color: var(--neon);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(56, 189, 248, 0.3);
+}
+
+.is-light .arch-tab-pill-btn.active {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+}
+
+.is-paper .arch-tab-pill-btn.active {
+  background: #b45309;
+  border-color: #b45309;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(180, 83, 9, 0.25);
+}
+
+.tab-idx {
+  font-size: 0.72rem;
+  opacity: 0.85;
+}
+
+.colophon-signature-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 12px;
 }
 </style>

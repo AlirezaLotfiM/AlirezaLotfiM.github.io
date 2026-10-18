@@ -1,6 +1,6 @@
-# 🌲 Alireza Lotfi Moghaddam — Portfolio & Engineering Showcase (v4.0.0)
+# 🌲 Alireza Lotfi Moghaddam — Portfolio & Engineering Showcase (v4.0.1)
 
-[![Version](https://img.shields.io/badge/Version-4.0.0-blue?style=flat-square)](package.json)
+[![Version](https://img.shields.io/badge/Version-4.0.1-blue?style=flat-square)](package.json)
 [![Vue 3](https://img.shields.io/badge/Vue-3.5-4FC08D?style=flat-square&logo=vue.js&logoColor=white)](https://vuejs.org/)
 [![Vite](https://img.shields.io/badge/Vite-7.x-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vitejs.dev/)
 [![.NET 9](https://img.shields.io/badge/.NET-9.0-512BD4?style=flat-square&logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/)

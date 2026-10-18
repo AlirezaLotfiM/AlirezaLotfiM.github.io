@@ -20,7 +20,6 @@ import { useSEO } from "./composables/useSEO";
 
 const CustomCursor = defineAsyncComponent(() => import("./components/CustomCursor.vue"));
 const MatrixRain = defineAsyncComponent(() => import("./components/MatrixRain.vue"));
-const TerminalModal = defineAsyncComponent(() => import("./components/TerminalModal.vue"));
 const PrintResumeView = defineAsyncComponent(
   () => import("./components/PrintResumeView.vue"),
 );
@@ -65,15 +64,7 @@ const isDashboardEntered = ref(
 const showIdentityCard = ref(false);
 const isEnteringDashboard = ref(false);
 const isMatrixMode = ref(false);
-const showTerminal = ref(false);
 const isZenMode = ref(false);
-const terminalInitialCommand = ref('');
-
-// --- Methods ---
-const handleRunCommand = (cmd) => {
-  terminalInitialCommand.value = cmd;
-  showTerminal.value = true;
-};
 
 const handleBootComplete = () => {
   window.sessionStorage.setItem("portfolio-boot-seen", "true");
@@ -95,12 +86,6 @@ const handleMouseMove = (e) => {
 };
 
 const handleKeydown = (e) => {
-  if (e.ctrlKey && e.key === "k") {
-    if (showIdentityCard.value) {
-      e.preventDefault();
-      showTerminal.value = !showTerminal.value;
-    }
-  }
   if (e.ctrlKey && e.key === "z" && selectedNote.value) {
     e.preventDefault();
     isZenMode.value = !isZenMode.value;
@@ -357,13 +342,6 @@ onUnmounted(() => {
       <MatrixRain v-if="isMatrixMode" :color="currentThemeColor" :key="currentThemeColor" />
     </Transition>
 
-    <TerminalModal :visible="showTerminal" :initial-command="terminalInitialCommand" :projects="projects" :skills="mySkills" :contact="{
-      email: profile.contact?.email,
-      linkedin: profile.contact?.linkedin,
-      github: userGithub,
-      telegram: profile.contact?.telegramId,
-    }" :learning="profile.learning" :version="appVersion" username="Damoon" role="Software Engineer" @close="showTerminal = false; terminalInitialCommand = ''" @toggle-matrix="isMatrixMode = !isMatrixMode" />
-
     <main id="main-content" class="dashboard" @mousemove="handleMouseMove" :class="{ 'zen-mode': isZenMode, 'resume-active': route.isResume }">
       <div v-if="route.isResume" class="resume-mode-container" data-lenis-prevent>
         <PrintResumeView />
@@ -373,7 +351,6 @@ onUnmounted(() => {
         <CraftMinimalLayout
           :is-zen-mode="isZenMode"
           @toggle-zen="toggleZenMode"
-          @open-terminal="showTerminal = true"
         />
       </div>
     </main>
