@@ -1,0 +1,85 @@
+/*!
+ * Giscus Custom Theme for Alireza Lotfi Portfolio
+ * Transparent & Neon Aesthetic
+ */
+
+/* Force global text color and remove backgrounds */
+main {
+  /* Text Colors - Mostly White */
+  --color-fg-default: #ffffff !important;
+  --color-fg-muted: #d0d0d0 !important;
+  --color-fg-subtle: #a0a0a0 !important;
+  
+  /* Backgrounds - Totally Transparent */
+  --color-canvas-default: transparent !important;
+  --color-canvas-overlay: transparent !important;
+  --color-canvas-inset: transparent !important;
+  --color-canvas-subtle: transparent !important;
+  
+  /* Borders - Subtle White/Light Gray */
+  --color-border-default: rgba(255, 255, 255, 0.3) !important;
+  --color-border-muted: rgba(255, 255, 255, 0.15) !important;
+  
+  /* Accents - Neon Green */
+  --color-accent-fg: #67FF64 !important;
+  --color-accent-emphasis: #67FF64 !important;
+
+  /* Standard Buttons (Transparent with white border) */
+  --color-btn-text: #ffffff !important;
+  --color-btn-bg: transparent !important;
+  --color-btn-border: rgba(255, 255, 255, 0.3) !important;
+  
+  /* Primary Button (e.g., Submit) - Solid Green */
+  --color-btn-primary-text: #000000 !important;
+  --color-btn-primary-bg: #1c1c1c !important;
+  --color-btn-primary-border: #67FF64 !important;
+}
+
+/* Aggressively target Giscus Tailwind classes */
+.color-text-primary {
+  color: #ffffff !important;
+}
+
+.color-text-secondary {
+  color: #d0d0d0 !important;
+}
+
+.color-text-tertiary {
+  color: #a0a0a0 !important;
+}
+
+/* Comment Box / Textarea */
+.gsc-comment-box-textarea,
+.form-control,
+textarea {
+  background-color: transparent !important; /* No background */
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important; /* White border */
+}
+
+.gsc-comment-box-textarea::placeholder {
+  color: rgba(255, 255, 255, 0.5) !important; /* Lighter white for placeholder */
+}
+
+/* Reaction Menu & Popovers */
+.gsc-reactions-popover {
+  background-color: transparent !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  backdrop-filter: blur(8px); /* Adds a slight blur behind the popover so emojis stay readable */
+}
+
+/* Links */
+a, .color-text-link {
+  color: #67FF64 !important; /* Neon Green */
+}
+
+/* Headers */
+h1, h2, h3, h4, h5, h6 {
+  color: #ffffff !important;
+}
+
+/* Ensure main wrappers are visible and transparent */
+main, .gsc-main, .gsc-header, .gsc-comments, .gsc-timeline {
+  color: #ffffff !important;
+  background: transparent !important;
+}
